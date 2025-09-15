@@ -17,6 +17,8 @@
 		<typeAlias alias="routerVo" type="kr.co.hivesys.router.vo.RouterVO" />
 		<!-- 사용자 -->		
 		<typeAlias alias="userVo" type="kr.co.hivesys.user.vo.UserVO" />
+		<!-- Dataroom -->
+		<!-- <typeAlias alias="dataVo" type="kr.co.hivesys.dataroom.vo.DataroomVO" /> -->
 		
 		<typeAlias alias="fileVo" type="kr.co.hivesys.comm.file.vo.FileVo" />
 	</typeAliases>

@@ -221,7 +221,6 @@ body {
     height: 160px;
     text-indent: -9999px;
     background: url(../images/icons/arex_login_logo.png) no-repeat center center;
-    background-size: cover;
     display: block;
     margin-bottom: 20px;
 }
@@ -1396,3 +1395,74 @@ input:focus{
 .mw_90{max-width: 90%;}
 .mw_100{max-width: 100%;}
 
+
+
+/* 자료실 - 목록 첨부파일 아이콘 스타일 */
+.fileTitleDiv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#fileTd {
+	display: flex;
+    align-items: center;	
+    justify-content: flex-start;
+}
+
+.excelIcon {
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/excel.jfif');
+	background-size : cover;
+	background-repeat : no-repeat;
+	margin-right : 10px;
+	margin-left : -10px;
+}
+
+.pdfIcon {
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/pdf.png');
+	background-size : cover;
+	background-repeat : no-repeat;
+	margin-right : 10px;
+	margin-left : -5px;
+}
+
+.wordIcon {
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/word.jfif');
+	background-size : cover;
+	background-repeat : no-repeat;
+	margin-right : 10px;
+}
+
+.imgIcon {
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/image.png');
+	background-size : cover;
+	background-repeat : no-repeat;
+	margin-right : 10px;
+	margin-left : -5px;
+}
+
+.hwpIcon {	
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/hwp.png');
+	background-size : cover;
+	background-repeat : no-repeat;
+	margin-right : 10px;
+}
+
+.pptIcon {
+	width : 25px;
+	height : 25px;
+	background-image : url('../images/dataroom/ppt.png');
+	background-size : cover;
+	background-repeat : no-repeat;	
+	margin-right : 10px;
+}
