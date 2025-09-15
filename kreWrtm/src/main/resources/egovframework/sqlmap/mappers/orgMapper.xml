@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hivesys.company.mapper.OrgMapper">
+
+  <!-- OrgInfoVO 매핑 -->
+  <resultMap id="OrgInfoMap" type="orgVO">
+    <id     property="orgId"       column="org_id"/>
+    <result property="companyCode" column="company_code"/>
+    <result property="orgName"     column="org_name"/>
+    <result property="createdAt"   column="created_at"/>
+    <result property="updatedAt"   column="updated_at"/>
+  </resultMap>
+
+  <!-- SELECT: PK 단건 -->
+  <select id="select" parameterType="orgVO" resultMap="OrgInfoMap">
+    SELECT org_id, company_code, org_name, created_at, updated_at
+    FROM TBL_ORG_INFO
+    WHERE 1=1
+    <!-- <if test="orgId != null and orgId neq '' ">
+	   and org_id = #{orgId}
+    </if> -->
+    <if test="companyCode != null and companyCode neq '' ">
+	   and company_code = #{companyCode}
+    </if>
+  </select>
+
+  <!-- SELECT: 회사 코드별 목록 -->
+  <select id="selectList" parameterType="orgVO" resultMap="OrgInfoMap">
+    SELECT org_id, company_code, org_name, created_at, updated_at
+    FROM TBL_ORG_INFO
+    WHERE 1=1 
+    <if test="searchType!=null and searchType neq ''">
+			<choose>
+				<when test="searchType eq 'orgName' ">
+					and org_name LIKE CONCAT('%',#{searchValue},'%')
+				</when>
+				<when test="searchType eq 'company_name' ">
+					and company_name LIKE CONCAT('%',#{searchValue},'%')
+				</when>
+				<otherwise>
+					and
+					(
+					org_name LIKE CONCAT('%',#{searchValue},'%')
+					or
+					company_name LIKE CONCAT('%',#{searchValue},'%')
+					)
+				</otherwise>
+			</choose>
+		</if>
+    ORDER BY org_name ASC
+  </select>
+
+  <!-- INSERT: AUTO_INCREMENT 키 반환 -->
+  <insert id="insert" parameterType="orgVO"
+          useGeneratedKeys="true" keyProperty="orgId">
+    INSERT INTO TBL_ORG_INFO
+      (company_code, org_name)
+    VALUES
+      (#{companyCode}, #{orgName})
+  </insert>
+
+  <!-- UPDATE: PK 기준 -->
+  <update id="update" parameterType="orgVO">
+    UPDATE TBL_ORG_INFO
+    SET
+      company_code = #{companyCode},
+      org_name     = #{orgName}
+    WHERE org_id = #{orgId}
+  </update>
+
+  <!-- DELETE: PK 기준 -->
+  <delete id="deleteChk" parameterType="orgVO">
+    DELETE FROM TBL_ORG_INFO
+    WHERE org_id = #{orgId}
+  </delete>
+
+</mapper>

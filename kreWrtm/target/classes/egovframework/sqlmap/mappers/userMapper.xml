@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hivesys.user.mapper.UserMapper">
+<!-- 
+수정일           수정자         수정내용 
+========= ======= ================================================= 
+2020.07.23 정다빈     최초 생성 
+-->
+
+	<!-- 전체 사용자 조회 -->
+	<resultMap type="userVO" id="selectUserList">
+		<result property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userPhone" column="USER_PHONE"/>
+		<result property="userPhone2" column="USER_PHONE2"/>
+		<result property="companyCode" column="COMPANY_CODE"/>
+		<result property="companyName" column="COMPANY_NAME"/>
+		<result property="orgId" column="ORG_ID"/>
+		<result property="orgName" column="ORG_NAME"/>
+		<result property="userType" column="USER_TYPE"/>
+		<result property="regDate" column="reg_date"/>
+	</resultMap>	
+	<select id="selectList" parameterType="userVO" resultMap="selectUserList">
+		SELECT J1.*,C.ORG_NAME FROM
+		(
+			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE 
+			FROM
+			tbl_user_info A
+			INNER JOIN 
+			tbl_company_info B
+			ON A.COMPANY_CODE=B.COMPANY_CODE
+		)J1
+		LEFT JOIN TBL_ORG_INFO C
+		ON J1.ORG_ID=C.ORG_ID
+		WHERE 1=1 	
+	   	<!-- 검색조건 타입/검색어 -->
+		<if test="searchType!=null and searchType neq ''">
+	        <choose>
+	            <when test="searchType eq 'companyName' ">
+					and company_name LIKE CONCAT('%',#{searchValue},'%')
+	            </when>
+	            <when test="searchType eq 'orgName' ">
+					and org_name LIKE CONCAT('%',#{searchValue},'%')
+	            </when>
+	            <when test="searchType eq 'userName' ">
+					and user_name LIKE CONCAT('%',#{searchValue},'%')
+	            </when>
+	            <otherwise>
+			        and 
+			        (
+				        company_name LIKE CONCAT('%',#{searchValue},'%') 
+				        or 
+				        org_name LIKE CONCAT('%',#{searchValue},'%')
+				        or 
+				        user_name LIKE CONCAT('%',#{searchValue},'%')
+			        )
+			    </otherwise>  
+	        </choose>
+	    </if>
+		ORDER BY reg_date ASC
+	</select>
+
+	<!-- 특정 사용자 조회 -->
+	<select id="select" parameterType="userVO" resultMap="selectUserList">
+		SELECT J1.*,C.ORG_NAME FROM
+		(
+			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE  
+			FROM
+			tbl_user_info A
+			INNER JOIN 
+			tbl_company_info B
+			ON A.COMPANY_CODE=B.COMPANY_CODE
+		)J1
+		LEFT JOIN TBL_ORG_INFO C
+		ON J1.ORG_ID=C.ORG_ID
+		WHERE USER_ID=#{userId}
+	</select>
+	
+	<!-- 사용자 등록 -->
+	<insert id="insert" parameterType="userVO">
+		INSERT INTO TBL_USER_INFO
+		(
+			 user_id
+			,user_pw
+			,user_name
+			,company_code
+			,org_id
+			,user_phone
+			,user_phone2
+		)
+		VALUES
+		(
+			 #{userId}
+			,#{userPw}
+			,#{userName}
+			,#{companyCode}
+			,#{orgId}
+			,#{userPhone}
+			,#{userPhone2}
+		)
+	</insert>
+	
+	<!-- 사용자 정보 수정-->
+	<update id="update" parameterType="userVO">
+		UPDATE TBL_USER_INFO
+		SET
+			,USER_NAME=#{userName}
+			<if test="userPw !=null and userPw  neq '' ">
+				,USER_PW=#{userPw}
+			</if>
+			,company_code=#{companyCode}
+			,org_id=#{orgId}
+			,user_phone=#{userPhone}
+			,user_phone2=#{userPhone2}
+			,updated_at=cureate()
+			
+		WHERE `USER_ID` =#{userId}
+	</update>
+	
+	<!-- 사용자 삭제 -->
+	<delete id="deleteChk" parameterType="userVO">
+		DELETE FROM TBL_USER_INFO 
+		WHERE USER_ID IN
+		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+	</delete>
+
+</mapper>

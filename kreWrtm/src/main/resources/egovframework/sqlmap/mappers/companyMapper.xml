@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hivesys.company.mapper.CompanyMapper">
+
+  <!-- CompanyInfoVO 매핑 -->
+  <resultMap id="CompanyInfoMap" type="companyVo">
+    <id     property="companyCode" column="company_code"/>
+    <result property="companyName" column="company_name"/>
+    <result property="userType"    column="user_type"/>
+    <result property="regDate"     column="reg_date"/>
+    <result property="createdAt"   column="created_at"/>
+    <result property="updatedAt"   column="updated_at"/>
+  </resultMap>
+
+  <!-- SELECT: PK 단건 -->
+  <select id="select" parameterType="companyVo" resultMap="CompanyInfoMap">
+    SELECT * FROM TBL_COMPANY_INFO
+    WHERE 1=1 
+    <if test="userType neq '코레일'">
+	    and company_code = #{companyCode}
+    </if>
+    order by user_type desc
+  </select>
+
+  <!-- SELECT: 전체 목록 -->
+  <select id="selectList" resultMap="CompanyInfoMap">
+    SELECT * FROM TBL_COMPANY_INFO
+    where 1=1
+    <!-- pk -->
+    <if test="tagId != null and tagId neq ''">
+        and company_code=#{tagId}
+    </if>
+    <!-- 시간 -->
+    <if test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
+        and reg_date between #{sDate} and  #{eDate} 
+    </if>
+    <!-- 권한 -->
+	<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
+	    and company_code = #{companyCode}
+    </if>
+    <!-- 검색조건 타입/검색어 -->
+	<if test="searchType!=null and searchType neq ''">
+        <choose>
+            <when test="searchType eq 'companyCode' ">
+        	       and company_code LIKE CONCAT('%',#{searchValue},'%')
+            </when>
+            <when test="searchType eq 'companyName' ">
+    	          and company_name LIKE CONCAT('%',#{searchValue},'%')
+            </when>
+            <otherwise>
+		        and 
+		        (
+			        company_code LIKE CONCAT('%',#{searchValue},'%') 
+			        or 
+			        company_name LIKE CONCAT('%',#{searchValue},'%')
+		        )
+		    </otherwise>  
+        </choose>
+    </if>
+    ORDER BY reg_date ASC
+  </select>
+
+  <!-- INSERT -->
+  <insert id="insert" parameterType="companyVo">
+    INSERT INTO TBL_COMPANY_INFO
+      (company_code, company_name, user_type, reg_date)
+    VALUES
+      (#{companyCode}, #{companyName}, #{userType}, curdate())
+  </insert>
+
+  <!-- UPDATE: PK 기준 -->
+  <update id="update" parameterType="companyVo">
+    UPDATE TBL_COMPANY_INFO
+    SET
+      company_name = #{companyName},
+      user_type    = #{userType}
+    WHERE company_code = #{companyCode}
+  </update>
+
+  <!-- DELETE: PK 기준 -->
+  <delete id="deleteChk" parameterType="companyVo">
+    DELETE FROM TBL_COMPANY_INFO
+    WHERE company_code IN
+    <foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+       #{item}
+   </foreach>
+  </delete>
+
+</mapper>

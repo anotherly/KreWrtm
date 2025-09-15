@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.hivesys.router.mapper.RouterMapper">
+
+	<!-- RouterInfoVO 매핑 -->
+	<resultMap id="routerInfoMap" type="routerVo">
+		<id property="deviceId" column="device_id" />
+		<result property="deviceName" column="device_name" />
+		<result property="modelName" column="model_name" />
+		<result property="volteNum" column="volte_num" />
+		<result property="keywords" column="keywords" />
+		<result property="companyCode" column="company_code" />
+		<result property="companyName" column="company_name" />
+		<result property="orgId" column="org_id" />
+		<result property="orgName" column="org_name" />
+		<result property="carNum" column="car_num" />
+		<result property="updateDate" column="update_date" />
+		<result property="makerPhone1" column="maker_phone_1" />
+		<result property="makerPhone2" column="maker_phone_2" />
+		<result property="regDate" column="reg_date" />
+		<result property="extraInfo" column="extra_info" />
+	</resultMap>
+
+	<!-- SELECT: PK 단건 -->
+	<select id="select" parameterType="routerVo"
+		resultMap="routerInfoMap">
+		SELECT * FROM TBL_ROUTER_INFO
+		WHERE 1=1
+		<if test="deviceId != null and deviceId neq ''">
+			AND device_id = #{deviceId}
+		</if> 
+		<if test="volteNum != null and volteNum neq ''">
+			AND volte_num = #{volteNum}
+		</if> 
+	</select>
+
+	<!-- SELECT: 소속별 목록 -->
+	<select id="selectList" parameterType="routerVo"
+		resultMap="routerInfoMap">
+		SELECT J2.* FROM
+		(
+			SELECT J1.*,C.ORG_NAME FROM
+			(
+				SELECT A.*,B.COMPANY_NAME,B.USER_TYPE FROM 
+				TBL_ROUTER_INFO A
+				LEFT JOIN
+				(select * from TBL_COMPANY_INFO) B
+				ON A.COMPANY_CODE=B.COMPANY_CODE
+			)J1
+			LEFT JOIN tbl_org_info C 
+			ON J1.ORG_ID=C.ORG_ID
+		)J2
+		where 1=1
+		<!-- pk -->
+		<if test="tagId != null and tagId neq ''">
+			and device_id=#{tagId}
+		</if>
+		<!-- 권한 -->
+		<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
+		    and J2.company_code = #{companyCode}
+	    </if>
+		<!-- 시간 -->
+		<if
+			test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
+			and reg_date between #{sDate} and #{eDate}
+		</if>
+		<!-- 검색조건 타입/검색어 -->
+		<if test="searchType!=null and searchType neq ''">
+			<choose>
+				<when test="searchType eq 'deviceName' ">
+					and device_name LIKE CONCAT('%',#{searchValue},'%')
+				</when>
+				<when test="searchType eq 'modelName' ">
+					and model_name LIKE CONCAT('%',#{searchValue},'%')
+				</when>
+				
+				<when test="searchType eq 'companyName' ">
+					and company_name LIKE CONCAT('%',#{searchValue},'%')
+				</when>
+				<otherwise>
+					and
+					(
+					device_name LIKE CONCAT('%',#{searchValue},'%')
+					or
+					model_name LIKE CONCAT('%',#{searchValue},'%')
+					or
+					company_name LIKE CONCAT('%',#{searchValue},'%')
+					)
+				</otherwise>
+			</choose>
+		</if>
+		ORDER BY reg_date ASC
+	</select>
+
+	<!-- INSERT: AUTO_INCREMENT 키 반환 -->
+	<insert id="insert" parameterType="routerVo">
+		INSERT INTO TBL_ROUTER_INFO
+		(device_id,device_name, model_name, volte_num, keywords,
+		company_code, org_id, car_num,
+		update_date, maker_phone_1, maker_phone_2,
+		reg_date, extra_info, created_by)
+		VALUES
+		(
+			concat(#{companyCode},'_',#{deviceName},DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')),
+			concat(#{companyCode},'_',#{deviceName}),
+			concat(#{modelName},'-',#{companyCode},'_',#{deviceName}), 
+			#{volteNum}, 
+			#{keywords},
+			#{companyCode}, 
+			#{orgId}, 
+			#{carNum},
+			#{updateDate}, 
+			#{makerPhone1}, 
+			#{makerPhone2},
+			curdate(), 
+			#{extraInfo}, 
+			now()
+		)
+	</insert>
+
+	<!-- UPDATE: PK 기준 -->
+	<update id="update" parameterType="routerVo">
+		UPDATE TBL_ROUTER_INFO
+		SET
+		device_name = concat(#{companyCode},'_',#{deviceName}),
+		model_name = concat(#{modelName},'-',#{companyCode},'_',#{deviceName}),
+		volte_num = #{volteNum},
+		keywords = #{keywords},
+		company_code = #{companyCode},
+		org_id = #{orgId},
+		car_num = #{carNum},
+		update_date = #{updateDate},
+		maker_phone_1 = #{makerPhone1},
+		maker_phone_2 = #{makerPhone2},
+		extra_info = #{extraInfo},
+		updated_by = now()
+		WHERE device_id = #{deviceId}
+	</update>
+
+	<!-- DELETE: PK 기준 -->
+	<delete id="deleteChk" parameterType="routerVo">
+		DELETE FROM TBL_ROUTER_INFO
+		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+	       #{item}
+	   </foreach>
+	</delete>
+
+</mapper>
