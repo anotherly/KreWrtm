@@ -8,12 +8,21 @@ public class FileVo {
 	private String fileVersion;
 	private String filePath;
 	private String fileType;
+	private String fileTitle;
+	private String writerId;
+	private String boardContent;
 	
-	public String getFileType() {
-		return fileType;
+	public String getWriterId() {
+		return writerId;
 	}
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
+	public void setWriterId(String writerId) {
+		this.writerId = writerId;
+	}
+	public String getBoardContent() {
+		return boardContent;
+	}
+	public void setBoardContent(String boardContent) {
+		this.boardContent = boardContent;
 	}
 	public String getFileId() {
 		return fileId;
@@ -51,9 +60,29 @@ public class FileVo {
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
+	public String getFileType() {
+		return fileType;
+	}
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+	public String getFileTitle() {
+		return fileTitle;
+	}
+	public void setFileTitle(String fileTitle) {
+		this.fileTitle = fileTitle;
+	}
+	
 	@Override
 	public String toString() {
 		return "FileVo [fileId=" + fileId + ", fileDir=" + fileDir + ", fileName=" + fileName + ", regDt=" + regDt
-				+ ", fileVersion=" + fileVersion + ", filePath=" + filePath + ", fileType=" + fileType + "]";
+				+ ", fileVersion=" + fileVersion + ", filePath=" + filePath + ", fileType=" + fileType + ", fileTitle="
+				+ fileTitle + ", getFileId()=" + getFileId() + ", getFileDir()=" + getFileDir() + ", getFileName()="
+				+ getFileName() + ", getRegDt()=" + getRegDt() + ", getFileVersion()=" + getFileVersion()
+				+ ", getFilePath()=" + getFilePath() + ", getFileType()=" + getFileType() + ", getFileTitle()="
+				+ getFileTitle() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()="
+				+ super.toString() + "]";
 	}
+	
+	
 }

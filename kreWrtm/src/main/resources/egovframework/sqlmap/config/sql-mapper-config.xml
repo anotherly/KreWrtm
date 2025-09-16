@@ -17,8 +17,10 @@
 		<typeAlias alias="routerVo" type="kr.co.hivesys.router.vo.RouterVO" />
 		<!-- 사용자 -->		
 		<typeAlias alias="userVo" type="kr.co.hivesys.user.vo.UserVO" />
-		<!-- Dataroom -->
-		<!-- <typeAlias alias="dataVo" type="kr.co.hivesys.dataroom.vo.DataroomVO" /> -->
+		<!-- 자료실 -->
+		<typeAlias alias="dataVo" type="kr.co.hivesys.dataroom.vo.DataroomVO"/>
+		<!-- 장애이력 관리 -->
+		<typeAlias alias="obsVo" type="kr.co.hivesys.obs.vo.ObsVo"/>
 		
 		<typeAlias alias="fileVo" type="kr.co.hivesys.comm.file.vo.FileVo" />
 	</typeAliases>

@@ -1,26 +1,17 @@
 package kr.co.hivesys.comm.file;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.co.hivesys.comm.file.vo.FileVo;
 
@@ -30,7 +21,75 @@ public class FileUploadSave implements ApplicationContextAware{
 	private WebApplicationContext context = null;
 	public static final Logger logger = LoggerFactory.getLogger(FileUploadSave.class);
 	
-	
+	// 자료실 파일 등록
+		public FileVo fileUploadMultipleDataroom(List<MultipartFile> files, String inputPath, FileVo inputVo, String fileType) {
+		    FileVo fileList = new FileVo();
+
+		    try {
+		        for (MultipartFile mfile : files) {
+		            String originalFileName = mfile.getOriginalFilename();
+
+		            // 랜덤 문자열 생성
+		            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		            String randomString = new java.security.SecureRandom()
+		                .ints(5, 0, characters.length())
+		                .mapToObj(a -> characters.charAt(a))
+		                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+		                .toString();
+
+		            File targetFile;
+		            File file = new File(inputPath + originalFileName); // 기본 경로
+
+		            if ("I".equalsIgnoreCase(fileType)) {
+		                // I 타입: 랜덤폴더 포함 경로
+		                targetFile = new File(inputPath + randomString + "/" + originalFileName);
+		            } else if ("U".equalsIgnoreCase(fileType)) {
+		                // U 타입: 기본 경로
+		                targetFile = file;
+		            } else {
+		                continue;
+		            }
+
+		            if (mfile.getSize() != 0) {
+		                // targetFile 경로에 파일 저장
+		                if (!targetFile.exists()) {
+		                    targetFile.getParentFile().mkdirs();
+		                    mfile.transferTo(targetFile);
+		                } else {
+		                    targetFile.delete();
+		                    mfile.transferTo(targetFile);
+		                }
+
+		                // I 타입일 때만 기본 경로(file)로 복사 (경로 없으면 생성)
+		                if ("I".equalsIgnoreCase(fileType)) {
+		                    if (!file.exists()) {
+		                        file.getParentFile().mkdirs();
+		                    }
+		                }
+		            }
+
+		            // 리턴 값 세팅
+		            if ("I".equalsIgnoreCase(fileType)) {
+		            	fileList.setFileId(randomString);
+		                fileList.setFileDir("/" + randomString + "/");
+		                fileList.setFileName(originalFileName);
+			            fileList.setFileTitle(inputVo.getFileTitle());
+		            } else {
+		            	fileList.setFileId(inputVo.getFileId());
+		            	fileList.setFileName(originalFileName);
+			            fileList.setFileTitle(inputVo.getFileTitle());
+		            }
+		            
+		            
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return fileList;
+		}
+		
+		
 	/*채택*/
 	// 여러 개의 파일 업로드
     public List<FileVo> fileUploadMultiple(List<MultipartFile> files, String inputPath,FileVo inputVo) {
@@ -110,7 +169,7 @@ public class FileUploadSave implements ApplicationContextAware{
        return fileList;
     }
     
-	//폴더내 받아온 이름제외 나머지 파일 삭제
+/*	//폴더내 받아온 이름제외 나머지 파일 삭제 (이전)
 	public void deleteFile (String filepath,String fileName){      
 		File dirFile = new File(filepath);
 		String fileList[] = dirFile.list();
@@ -121,7 +180,58 @@ public class FileUploadSave implements ApplicationContextAware{
 		        delFile.delete();
 		    }
 		}
-	}
+	}*/
+    
+    
+    
+  //폴더내 받아온 이름제외 나머지 파일 삭제
+  	public void deleteFile (String filepath,String fileName){      
+  		File dirFile = new File(filepath);
+  		String fileList[] = dirFile.list();
+  		
+  		if(fileList != null) {
+  			for(int i = 0; i < fileList.length; i++) {
+  			    String chkFileNm = fileList[i];
+  			    if(!chkFileNm.equals(fileName)) {
+  			        File delFile = new File(filepath + File.separator + chkFileNm);
+  			        delFile.delete();
+  			    }
+  			}
+  		}
+  		
+  	}
+  	
+ // 여러개 삭제   
+ 	public void ArrdeleteFile(String filepath, List<String> dataArr) {      
+ 	    // dataArr의 각 항목에 대해 반복
+ 	    for (String fileName : dataArr) {
+ 	        // fileName에 해당하는 폴더 경로 설정
+ 	        File dirFile = new File(filepath + File.separator + fileName);
+
+ 	        // 폴더가 존재하고 디렉토리일 경우
+ 	        if (dirFile.exists() && dirFile.isDirectory()) {
+ 	            // 폴더 내의 파일과 서브디렉토리 삭제
+ 	            File[] files = dirFile.listFiles();
+ 	            if (files != null) {
+ 	                for (File file : files) {
+ 	                    if (file.isDirectory()) {
+ 	                        // 서브디렉토리도 재귀적으로 삭제
+ 	                        File[] subFiles = file.listFiles();
+ 	                        if (subFiles != null) {
+ 	                            for (File subFile : subFiles) {
+ 	                                subFile.delete();
+ 	                            }
+ 	                        }
+ 	                    } 
+ 	                    // 파일 삭제
+ 	                    file.delete();
+ 	                }
+ 	            }
+ 	            // 폴더 삭제
+ 	            dirFile.delete();
+ 	        }
+ 	    }
+ 	}
     
 	public void setApplicationContext(org.springframework.context.ApplicationContext applicationContext) throws BeansException {
 		// TODO Auto-generated method stub
