@@ -44,5 +44,42 @@
 	</select>
 
 
+	<!-- 장애이력 관리 상세 정보 조회 -->
+	<select id="selectData" parameterType="obsVo" resultMap="selectDataList">
+		SELECT * FROM TBL_OBS_INFO
+		WHERE OBS_ID = #{obsId}	
+	</select>
+	
+	
+	<!-- 장애이력 관리 등록 -->
+	<insert id="insertData" parameterType="obsVo">
+		INSERT INTO TBL_OBS_INFO
+		VALUES(#{obsId},#{carNum},#{rptDate},#{obsName},#{prcDate},#{prcComment},#{reason},#{etc})	
+	</insert>
+	
+	
+	<!-- 장애이력 관리 수정 -->
+	<update id="updateObs" parameterType="obsVo">
+		UPDATE TBL_OBS_INFO SET		
+			CAR_NUM = #{carNum},
+			RPT_DATE = #{rptDate},
+			OBS_NAME = #{obsName},
+			PRC_DATE = #{prcDate},
+			PRC_COMMENT = #{prcComment},
+			REASON = #{reason},
+			ETC = #{etc}
+		WHERE OBS_ID = #{obsId}
+	</update>
+	
+
+	<!-- 장애이력 관리 삭제 -->
+	<delete id="deleteData" parameterType="obsVo">
+		DELETE FROM TBL_OBS_INFO 
+		WHERE OBS_ID IN
+		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+	</delete> 
+
 
 </mapper>

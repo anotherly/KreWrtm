@@ -284,3 +284,32 @@ function concatenate(str,arr){
 	}
 	return conStr;
 }
+
+
+
+
+
+////////////////////////////////////////////////////////////
+/*시작일과 종료일 유효성 검사*/
+////////////////////////////////////////////////////////////
+function compareSE(sDate,eDate) {
+	var startDate = new Date(sDate);
+	var endDate = new Date(eDate);
+	 
+	if(endDate < startDate) {
+		alert("종료일이 시작일보다 먼저일 수 없습니다.");
+		return false;
+	} else {
+		return true;
+	}
+	
+}
+
+
+
+
+
+
+
+
+

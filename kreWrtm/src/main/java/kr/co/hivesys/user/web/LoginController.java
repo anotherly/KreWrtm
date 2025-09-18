@@ -131,7 +131,8 @@ public class LoginController {
 					// ${}세션
 					model.addAttribute("user", userVo);
 				}
-				url = "/chart/main.do";
+				/*url = "/chart/main.do";*/
+				url = "/obs/list.do"; // 25-09-18 : 임시로 첫 진입 화면 장애이력 관리로 변경
 			}
 			mav.addObject("url", url);
 		} catch (Exception e) {

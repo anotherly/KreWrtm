@@ -155,7 +155,7 @@
 									>
 								</div>
 								<div class="ctn_tbl_td">
-									<input type="button" id="dupChk" alt="증복확인" value="증복확인" />
+									<input type="button" id="dupChk" alt="중복확인" value="중복확인" />
 									<p id="dupComment"></p>
 								</div>
 								<div class="ctn_tbl_td"></div>

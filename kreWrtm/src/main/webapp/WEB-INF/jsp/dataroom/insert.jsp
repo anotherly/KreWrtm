@@ -22,34 +22,42 @@
 				var fileName = $('#fileName')[0].files;
 				
 				// 유효성 검사
-				if(fileTitle.length === 0){
-					alert("자료의 제목을 입력해주세요.");
-					validChk = false;
-					return false;
-				} else if(fileName.length === 0){
-					alert("첨부파일이 선택되지 않았습니다.");
-					validChk = false;
-					return false;
+				if (fileTitle.length === 0) {
+				    alert("자료의 제목을 입력해주세요.");
+				    validChk = false;
+				    return false;
+				
+				} else if (fileName.length === 0) {
+				    alert("첨부파일이 선택되지 않았습니다.");
+				    validChk = false;
+				    return false;
+				
 				} else if (fileName.length > 1) {
 				    alert("첨부파일은 1개만 선택할 수 있습니다.");
 				    validChk = false;
 				    return false;
+				
+				} else if (fileName[0].size > 10 * 1024 * 1024) { 
+				    alert("첨부파일의 용량은 10MB 미만이어야 합니다.");
+				    validChk = false;
+				    return false;
+				
 				} else {
-					var allowedExtensions = ['xls', 'xlsx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'hwp', 'doc', 'docx', 'pdf'];
+				    var allowedExtensions = ['xls', 'xlsx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'hwp', 'doc', 'docx', 'pdf'];
 				    
 				    for (var i = 0; i < fileName.length; i++) {
 				        var file = fileName[i];
 				        var fileExt = file.name.split('.').pop().toLowerCase();  // 확장자 추출
-
+				
 				        if (!allowedExtensions.includes(fileExt)) {
-				        	alert("허용되지 않은 파일 형식입니다");
+				            alert("허용되지 않은 파일 형식입니다");
 				            validChk = false;
 				            return false;
 				        }
 				    }
-				    
+				
 				    validChk = true;
-				}			
+				}
 				
 				// 유효성 체크
 				if(validChk) {
@@ -125,8 +133,9 @@
 							</div>
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">첨부파일</div>
-								<div class="ctn_tbl_td">
+								<div class="ctn_tbl_td" style="display : flex; flex-direction: column; align-items: flex-start;">
 									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control input_base_require" multiple>
+									<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀 , PPT, 한글 , 워드, PDF </p>
 								</div>
 							</div>	
 						</div>

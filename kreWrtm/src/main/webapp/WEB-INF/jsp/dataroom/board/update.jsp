@@ -36,21 +36,28 @@
 				    validChk = false;
 				    return false;
 				} else if(fileName.length === 1) {
-					var allowedExtensions = ['xls', 'xlsx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'hwp', 'doc', 'docx', 'pdf'];
-				    
-				    for (var i = 0; i < fileName.length; i++) {
-				        var file = fileName[i];
-				        var fileExt = file.name.split('.').pop().toLowerCase();  // 확장자 추출
+					
+					if(fileName[0].size > 3 * 1024 * 1024) {
+						alert("첨부파일의 용량은 10MB 미만이어야 합니다.");
+					    validChk = false;
+					    return false;
+					} else {
+						var allowedExtensions = ['xls', 'xlsx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'hwp', 'doc', 'docx', 'pdf'];
+					    
+					    for (var i = 0; i < fileName.length; i++) {
+					        var file = fileName[i];
+					        var fileExt = file.name.split('.').pop().toLowerCase();  // 확장자 추출
 
-				        if (!allowedExtensions.includes(fileExt)) {
-				            alert("허용되지 않은 파일 형식입니다");
-				            validChk = false;
-				            return false;
-				        }
-				    }
-				    
+					        if (!allowedExtensions.includes(fileExt)) {
+					            alert("허용되지 않은 파일 형식입니다");
+					            validChk = false;
+					            return false;
+					        }
+					    }
+					}
+
 				    validChk = true;
-				} 
+				}
 				
 				// 유효성 체크
 				if(validChk) {
@@ -135,8 +142,9 @@
 									${data.regDt}
 								</div>
 								<div class="ctn_tbl_th ">첨부파일 <br>(변경시에만 선택)</div>
-								<div class="ctn_tbl_td">
-									<input type="file" id="fileName" name="multiFile" placeholder="변경 시에만 선택하세요." class="form-control input_base_require" multiple>
+								<div class="ctn_tbl_td" style="display : flex; flex-direction: column; align-items: flex-start;">
+									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control input_base_require" multiple>
+									<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀 , PPT, 한글 , 워드, PDF </p>
 								</div>
 							</div>
 							

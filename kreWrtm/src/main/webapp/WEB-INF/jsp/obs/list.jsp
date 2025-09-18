@@ -170,7 +170,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/dataroom/insert.do";
+			location.href="/obs/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -179,30 +179,49 @@
 		    var tagId = $(this).parent().children().first().children().first().val();
 		    $(this).attr('id');
 
-		    if ($(this).index() === 2) {  // 세 번째 칸(첨부파일)인 경우
-		        console.log("세 번째 칸 클릭됨");
-		        
-		    	console.log(tagId);
-		    	// 파일 다운로드 기능
-		    	window.location = '/dataroom/fileDownload.ajax?fileId=' + tagId;
-		    } else { 
-		        if (tagId != "chkTd") {
-		        	console.log(tagId);
-		        	window.location = "/dataroom/detail.do?fileId=" + tagId;
-		        } 
-		    }
+		    window.location = "/obs/detail.do?obsId=" + tagId;
 		});
 
 		
 	});
 	
 	/* 검색 함수 */
-	 function search(){
-		 console.log("검색");
-		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/obs/list.ajax";
-		 tbSearch("tableList",tagUrl,frm);
-	 }
+	function search() {
+	    console.log("검색");
+	    let frm = $("#searchFrm").serialize();
+	    var tagUrl = "/obs/list.ajax";
+	
+	    var sDate = $('#sDate').val();
+	    var eDate = $('#eDate').val();
+	    var ssDate = $('#ssDate').val();
+	    var eeDate = $('#eeDate').val();
+	
+	    var startDate = new Date(sDate);
+	    var endDate = new Date(eDate);
+	    var startDate2 = new Date(ssDate);
+	    var endDate2 = new Date(eeDate);
+	
+	    // 검색 유효성 검사식
+	    if ($('#dateChk').is(':checked')) {
+	        console.log("신고일시");
+	        if (endDate < startDate) {
+	            alert("신고 일시의 종료일이 시작일보다 먼저일 수 없습니다.");
+	            return false; // 유효성 실패 시에만 중단
+	        }
+	    }
+	
+	    if ($('#dateChkPrc').is(':checked')) {
+	        console.log("처리일시");
+	        if (endDate2 < startDate2) {
+	            alert("처리 일시의 종료일이 시작일보다 먼저일 수 없습니다.");
+	            return false; // 유효성 실패 시에만 중단
+	        }
+	    }
+	
+	    // 조건 모두 통과했을 때 검색 실행
+	    console.log("검색 성공");
+	    tbSearch("tableList", tagUrl, frm);
+	}
 	
 	
 	
@@ -234,7 +253,7 @@
                 <div class="search_box">
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group" style="margin-right: 339px; margin-left: 15px;">
-                        	<input type="checkbox" id="dateChk" name="dateChk" value="">
+                        	<input type="checkbox" id="dateChk" name="dateChk">
                             <label for="dateChk" class="form-control-label">                           	
                             	신고 일시
                             </label>

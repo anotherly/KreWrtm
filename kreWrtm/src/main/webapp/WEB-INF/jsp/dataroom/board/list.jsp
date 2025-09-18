@@ -20,7 +20,7 @@
 		//테이블 기본설정 세팅
 		dtTbSetting();
 		iidx = 3;
-		console.log("자료실 목록 화면 진입");
+
 		var colCnt=0;
 		var idxTb =0;
 		
@@ -133,7 +133,6 @@
 	
 		// 날짜 선택 여부
 		$("#dateChk").on("click",function(){
-			console.log("날짜선택여부");
 			if($(this).is(':checked')){
 				$("#datetimepicker1").find("input").prop('disabled', false);
 				$("#datetimepicker2").find("input").prop('disabled', false);
@@ -150,7 +149,6 @@
 		
 		//상세 화면 조회
 		$("#tableList").on("click", "tbody td:not(:first-child)", function () {
-		    console.log("목록에서 상세요소 클릭");
 		    var tagId = $(this).parent().children().first().children().first().val();
 		    $(this).attr('id');
 
@@ -162,9 +160,20 @@
 	
 	/* 검색 함수 */
 	 function search(){
-		 console.log("검색");
 		 let frm = $("#searchFrm").serialize();
 		 var tagUrl="/dataroom/board/list.ajax";
+		 
+		 var sDate = $('#sDate').val();
+		 var eDate = $('#eDate').val();
+		 
+		 if ($('#dateChk').is(':checked')) {
+			 var searchChk = compareSE(sDate,eDate);
+			 if(!searchChk) {
+				 return false;
+			 }
+				 
+		 }
+
 		 tbSearch("tableList",tagUrl,frm);
 	 }
 	
