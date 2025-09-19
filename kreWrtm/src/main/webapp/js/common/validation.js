@@ -1,3 +1,44 @@
+//ID 검사 (영문 소문자+숫자, 6~20자리)
+function checkId(that) {
+  let val = $(that).val();
+  // 허용 문자 이외 제거
+  val = val.replace(/[^a-z0-9]/g, "");
+  // 길이 제한 (20자)
+  if (val.length > 20) {
+    val = val.substring(0, 20);
+  }
+  $(that).val(val);
+}
+
+//비밀번호 검사 (영문+숫자+특수문자 최소 1개씩 포함, 6~20자리)
+function checkPw(that) {
+	  let val = $(that).val();
+	  // 허용 문자 이외 제거
+	  val = val.replace(/[^A-Za-z0-9~!@#$%^&*()_+|\[\]]/g, "");
+	  // 길이 제한 (20자)
+	  if (val.length > 20) {
+	    val = val.substring(0, 20);
+	  }
+	  $(that).val(val);
+}
+
+//ID 검사 함수 (영문 소문자 반드시 포함, 숫자는 선택, 6~20자리)
+// ^ 시작 ~ $ 끝
+// (?=.*[a-z]) → 소문자 반드시 1개 이상
+// [a-z0-9]{6,20} → 허용 문자로만 6~20자리
+function validateId(id) {
+    const regex = /^(?=.*[a-z])[a-z0-9]{6,20}$/;
+    return regex.test(id);
+}
+
+// 비밀번호 검사 함수 
+// 조건: 6~20자리, 영문+숫자+특수문자 최소 1개씩 포함
+// 허용 특수문자: ~!@#$%^&*()_+|[]
+function validatePassword(password) {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()_+|\[\]])[A-Za-z\d~!@#$%^&*()_+|\[\]]{6,20}$/;
+    return regex.test(password);
+}
+
 /************************************************************************
 함수명 : boardWriteCheck
 설 명 : 입력정보 null 체크
@@ -10,36 +51,48 @@
 2020.07.30   정다빈       최초작성
 ************************************************************************/
 function boardWriteCheck(form) {
-	//특수문자 정규식
-	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
-	
-	$(form).find('span').text("");	
-	
-	for (var i = 0; i < form.length; i++) {
-		//id의 경우 6자 이상인지
-		if(form[i].name =='userId'){
-			if(form[i].value.length<5){
-				alert("id 형식이 올바르지 않습니다.");
-				form[i].focus();
-				return false;
+    console.log("사용자정보 저장 시 유효성검사");
+    
+    // form 안의 input 요소만 가져오기
+    var inputs = $(form).find("input");
 
-			}
-		}
-		//pw : (영문 특수문자 포함 8자이상 10자 이하)
-		if(form[i].name =='userPw' && form[i].value.length >0){
-			if(form[i].value.length<8 /*|| !(regExp.test(form[i].value)) */){
-				alert("비밀번호 형식이 올바르지 않습니다.");
-				form[i].focus();
-				return false;
-			}
-		}
-	}
-	//확인 비밀번호와 비밀번호가 다를 때
-	if($("#userPw").val()!=$("#userPw2").val()){
-		alert("비밀번호가 서로 일치하지 않습니다.");
-		return false;
-	}
-	return true;
+    for (var i = 0; i < inputs.length; i++) {
+        var el = inputs[i];
+
+        //  필수값 체크 (class="input_base_require")
+        if ($(el).hasClass("input_base_require")) {
+            if ($(el).val() == null || $(el).val().trim() === "") {
+                alert("필수 항목을 기재해 주세요");
+                $(el).focus();
+                return false;
+            }
+        }
+
+        //  ID 검사
+        if (el.name === 'userId') {
+            if (!validateId(el.value)) {
+                alert("ID 형식이 올바르지 않습니다.");
+                el.focus();
+                return false;
+            }
+        }
+
+        // 비밀번호 검사
+        if (el.name === 'userPw' && el.value.length > 0) {
+            if (!validatePassword(el.value)) {
+                alert("비밀번호 형식이 올바르지 않습니다.");
+                el.focus();
+                return false;
+            }
+        }
+    }
+    //  비밀번호 확인 검사
+    if ($("#userPw").val() !== $("#userPw2").val()) {
+        alert("비밀번호가 서로 일치하지 않습니다.");
+        $("#userPw2").focus();
+        return false;
+    }
+    return true;
 }
 
 /************************************************************************

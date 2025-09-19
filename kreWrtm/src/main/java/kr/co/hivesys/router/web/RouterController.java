@@ -157,7 +157,7 @@ public class RouterController{
 		try {
 			orgList = orgService.select(ovo);
 			comList=companyService.select(ovo);
-			data = routerService.selectList(inputVo).get(0);
+			data = routerService.select(inputVo).get(0);
 			mav.addObject("orgList", orgList);
 			mav.addObject("comList", comList);
 			mav.addObject("data", data);

@@ -48,18 +48,18 @@
             ],
             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
             "pageLength": 10,
-            pagingType : "full_numbers",
-            columnDefs: [ 
+            pagingType : "full_numbers"
+            ,columnDefs: [ 
             	{ orderable: false, targets: [0] }//특정 열(인덱스번호)에 대한 정렬 비활성화
             	,{className: "dt-center",targets: "_all"} 
-            ],
-            select: {
+            ]
+            ,select: {
                 style:    'multi',
                 selector: 'td:first-child'
-            },
-            //order: [[ 9, 'desc' ]]
-            responsive: true
-           ,language : lang_kor // //or lang_eng
+            }
+            ,order: [[ 6, 'desc' ]]
+            ,responsive: true
+            ,language : lang_kor // //or lang_eng
 		});
 		$("#tableList_filter").attr("hidden", "hidden");
 		
