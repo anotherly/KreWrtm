@@ -89,7 +89,7 @@
 							<div class="ctn_tbl_th ">첨부파일</div>
 							<div class="ctn_tbl_td" id="fileTd">
 								<div id="fileIcon" style="margin-left : 0px; margin-right : 0px;"></div>
-								<a style="color: #59636b; text-decoration: none;" href="/dataroom/fileDownload.ajax?fileId=${data.fileId}">${data.fileName}</a>
+								<a style="color: #59636b; text-decoration: none;" href="/dataroom/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">${data.fileName}</a>
 							</div>
 						</div>
 					</div>

@@ -33,51 +33,47 @@
                 "type":"POST",
                 "dataType": "json",
             },  
-             columns: [
-            	 {
-             		data:   "fileId",
- 	            	"render": function (data, type, row, meta) {
- 	            		//console.log(meta.row+"	/	"+meta.col);
-                         return '<input type="checkbox" id="chk" name="chk" value="'+data+'">';
- 	                },
-                 },
-                {data:"fileTitle"},
+            columns: [
+                {
+                    data: "fileId",
+                    render: function(data, type, row, meta) {
+                        return '<input type="checkbox" id="chk" name="chk" value="' + data + '" title="상세보기">';
+                    },
+                },
+                {
+                    data: "fileTitle",
+                    render: function(data, type, row, meta) {
+                        return '<div title="상세보기">' + data + '</div>';
+                    }
+                },
                 {
                     data: "fileName",
-                    "render": function(data, type, row, meta) {
-                        // 뒤에서 첫 번째 .을 기준으로 확장자 추출
-                        var fileExtension = data.substring(data.lastIndexOf('.') + 1).toLowerCase(); // 확장자 (소문자로 변환)
-
-                        // 확장자에 따라 다른 <div> 추가
+                    render: function(data, type, row, meta) {
+                        var fileExtension = data.substring(data.lastIndexOf('.') + 1).toLowerCase();
+                        var iconClass = '';
                         switch(fileExtension) {
                             case 'xls':
-                            case 'xlsx':
-                                return '<div class="fileTitleDiv"><div class="excelIcon"></div>' + data + '</div';
-                                break;
-                            case 'pdf':
-                            	return '<div class="fileTitleDiv"><div class="pdfIcon"></div>' + data + '</div';
-                                break;
+                            case 'xlsx': iconClass = 'excelIcon'; break;
+                            case 'pdf': iconClass = 'pdfIcon'; break;
                             case 'doc':
-                            case 'docx':
-                            	return '<div class="fileTitleDiv"><div class="wordIcon"></div>' + data + '</div';
-                                break;
+                            case 'docx': iconClass = 'wordIcon'; break;
                             case 'jpg':
                             case 'jpeg':
                             case 'png':
-                            case 'gif':
-                            	return '<div class="fileTitleDiv"><div class="imgIcon"></div>' + data + '</div';
-                                break;
+                            case 'gif': iconClass = 'imgIcon'; break;
                             case 'ppt':
-                            case 'pptx':
-                                return '<div class="fileTitleDiv"><div class="pptIcon"></div>' + data + '</div';  // PPT 아이콘 추가
-                                break;
-                            default:
-                                return '<div class="fileTitleDiv"><div class="hwpIcon"></div>' + data + '</div';
-                                break;
+                            case 'pptx': iconClass = 'pptIcon'; break;
+                            default: iconClass = 'hwpIcon'; break;
                         }
+                        return '<div class="fileTitleDiv" title="다운로드"><div class="' + iconClass + '"></div>' + data + '</div>';
                     }
                 },
-                {data:"regDt"}
+                {
+                    data: "regDt",
+                    render: function(data, type, row, meta) {
+                        return '<div title="상세보기">' + data + '</div>';
+                    }
+                }
             ],
             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
             "pageLength": 10,

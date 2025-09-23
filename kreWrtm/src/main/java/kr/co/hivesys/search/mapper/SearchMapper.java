@@ -1,0 +1,29 @@
+package kr.co.hivesys.search.mapper;
+
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.mapper.Mapper;
+import kr.co.hivesys.search.vo.SearchVo;
+
+
+/**
+ * 검색&모니터링 매퍼 클래스
+ * @author 솔루션 디자인팀 최다슬
+ * @since 2025.09.19
+ * @version 1.0
+ * @see
+ *
+ * << 개정이력(Modification Information) >>
+ *
+ *   수정일            수정자              수정내용
+ *  -------    -------- ---------------------------
+ *  2025.09.19  최다슬          최초 생성
+ */
+
+@Mapper("searchMapper")
+public interface SearchMapper {
+
+	// 장치 관리 검색
+	public List<SearchVo> searchDataList(SearchVo inputVo) throws Exception;
+	
+}

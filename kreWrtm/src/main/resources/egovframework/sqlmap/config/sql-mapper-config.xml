@@ -21,6 +21,8 @@
 		<typeAlias alias="dataVo" type="kr.co.hivesys.dataroom.vo.DataroomVO"/>
 		<!-- 장애이력 관리 -->
 		<typeAlias alias="obsVo" type="kr.co.hivesys.obs.vo.ObsVo"/>
+		<!-- 장치&모니터링 -->
+		<typeAlias alias="searchVo" type="kr.co.hivesys.search.vo.SearchVo"/>		
 		
 		<typeAlias alias="fileVo" type="kr.co.hivesys.comm.file.vo.FileVo" />
 	</typeAliases>

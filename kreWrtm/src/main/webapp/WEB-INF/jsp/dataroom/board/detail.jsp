@@ -98,7 +98,7 @@
 							        <c:otherwise>
 							            <div id="fileIcon" style="margin-left: 0px; margin-right: 0px;"></div>
 							            <a style="color: #59636b; text-decoration: none;"
-							               href="/dataroom/board/fileDownload.ajax?fileId=${data.fileId}">
+							               href="/dataroom/board/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">
 							                ${data.fileName}
 							            </a>
 							        </c:otherwise>

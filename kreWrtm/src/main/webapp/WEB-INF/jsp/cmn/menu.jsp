@@ -61,9 +61,9 @@ $(document).ready(function() {
 	</a>
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a id="/depart/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
+	<a href="/search/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
 		<i class="menu-icon n09"></i>
-		<div>검사 & 모니터링</div>
+		<div>검색 & 모니터링</div>
 	</a>
 	<ul class="menu-sub">
 		<li class="menu-item" style="cursor:pointer;"><a id="/depart/list.do" class="menu-link"><div>단말기 검색</div></a></li>

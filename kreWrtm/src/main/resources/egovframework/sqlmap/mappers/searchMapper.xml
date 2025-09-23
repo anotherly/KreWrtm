@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hivesys.search.mapper.SearchMapper">
+
+<!-- 
+수정일           수정자         수정내용 
+========= ======= ================================================= 
+2025.09.19 최다슬     최초 생성 
+========= ======= =================================================
+2025.09.23 최다슬     검색&모니터링 검색 기능 생성
+========= ======= =================================================
+-->
+
+
+
+	<!-- 검색&모니터링 검색 -->
+	<resultMap type="searchVo" id="searchDataList">
+		<result property="deviceId" column="DEVICE_ID"/>
+		<result property="deviceName" column="DEVICE_NAME"/>
+		<result property="modelName" column="MODEL_NAME"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="volteNum" column="VOLTE_NUM"/>
+		<result property="keywords" column="KEYWORDS"/>
+		<result property="version" column="VERSION"/>
+		<result property="location" column="LOCATION"/>
+	</resultMap>
+
+	<select id="searchDataList" parameterType="searchVo" resultMap="searchDataList">
+	    SELECT 
+	        r.device_id,
+	        r.device_name,
+	        r.model_name,
+	        r.car_num,
+	        r.volte_num,
+	        r.keywords,
+	        l.version,
+	        l.location
+	    FROM 
+	        tbl_router_info r
+	    LEFT JOIN 
+	        tbl_last_data l
+	        ON r.volte_num = l.volte_num
+	
+	    <where>
+	        <if test="searchVal != null and searchVal != ''">
+	           (
+	                r.device_name LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.model_name LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.car_num LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
+	                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
+	                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
+	            )
+	        </if>
+	    </where>
+	
+	    ORDER BY r.reg_date DESC
+	</select>
+
+</mapper>

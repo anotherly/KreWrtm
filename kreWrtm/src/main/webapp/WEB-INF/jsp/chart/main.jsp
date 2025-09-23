@@ -7,7 +7,7 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var teamCode='';
+/* 	var teamCode='';
 	var chkTerId='';
 	$(document).ready(function(){
 		
@@ -99,11 +99,129 @@
     	
     	chkTerId=$(this).attr('id');
     	$("#all_chart").load("/chart/subDetail.do",{"lteRIp":chkTerId});
+    }); */
+    
+    
+    
+    $(document).ready(function(){
+    	
+    	dtTbSetting();
+    	var tb2=$("#tableList").DataTable({
+			ajax : {
+                "url":"/main/Datalist.ajax",
+                "type":"POST",
+                "dataType": "json",
+            },  
+             columns: [
+            	{data:"companyName"},
+                {data:"firmUse"},
+                {data:"etc"}
+            ],
+            lengthChange: false, 
+            "pageLength": 5,
+            pagingType : "full_numbers",
+            columnDefs: [ 
+            	{ orderable: false, targets: [0] }
+            	,{className: "dt-center",targets: "_all"} 
+            ],
+            select: {
+                style:    'multi',
+                selector: 'td:first-child'
+            },
+            responsive: true
+           ,language : lang_kor ,
+           dom: 'lrtip'
+		});
+    	
+    	
+    	
+    	
+        // 차트 생성
+        var chart = c3.generate({
+            bindto: '.ring_chart_div',
+            data: {
+                columns: [
+                    ['에스트레픽', 0.5],  
+                    ['케이원', 3.9],  
+                    ['회명정보통신', 95.4] 
+                ],
+                type: 'donut'  
+            },
+            legend: {
+                position: 'left'  
+            }
+        });
+        
+        
+        
+        var chart = c3.generate({
+            bindto: '.bar_chart_div',  
+            data: {
+                columns: [
+                    ['에스트레픽', 30, 200, 200, 400, 150, 250],  
+                    ['케이원', 130, 100, 100, 200, 150, 50],  
+                    ['회명정보통신', 230, 200, 200, 300, 250, 250] 
+                ],
+                type: 'bar',  
+                groups: [
+                    ['에스트레픽', '케이원' ,'회명정보통신']  
+                ]
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]  
+                }
+            },
+            axis: {
+                x: {
+                    tick: {
+                        rotate: 0,  
+                        multiline: false
+                    }
+                },
+                y: {
+
+                }
+            },
+            bar: {
+                width: {
+                    ratio: 0.5  
+                }
+            }
+        });
+
+    	
     });
 	
 </script>
+<style>
+
+.top_container {
+    width: 90%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.bottom_container {
+	width: 90%;
+    height: 50%;
+    display : flex;
+    flex-direction : column;
+}
+
+
+.ring_chart_container , .datatable-list-01 {
+    width: 48%;
+    height: 100%;
+}
+
+
+
+
+</style>
 </head>
-<!-- style="background: url(../images/bg/bg0.png);background-size: cover;" -->
 <body class="open" >
     <!-- lnb Start ------------------>
     <aside id="lnb" class="lnb">
@@ -121,40 +239,43 @@
 		<!-- header End ------------------>
 
 		<!-- contents Start ------------------>
-		<div id="containerAll" class="containerAll">
+		<div id="containerAll" class="containerAll" style="flex-direction : column; width: calc(100vw - 60px); align-items: center;">
 			<!-- 내용 부분 -->
-			<!-- <div id="container_chart" class="container_b"></div> -->
-			<div id="all_chart" class="container_b"></div>
-			<!-- 우측 단말기 테이블 전체-->
-			<div id="container_b" class="container_b" style="padding: 20px 0 0 37px;">
-				<!-- 팀별 선택 현황 -->
-				<div style="width:100%;display:flex;margin-bottom:10px;">
-					<div id="teamSlt" class="tab_container" style="display:flex;">
-						<div id="tab_all" class="arex_tab selected"><span>전체</span></div>
-						<div id="sht" class="arex_tab"><span>신호</span></div>
-						<div id="sst" class="arex_tab"><span>시설</span></div>
-						<div id="jgt" class="arex_tab"><span>전기</span></div>
-					</div>
-					<div id="paging" style="width: 100px;">
-						<span id="pageStart" class="pg-btn">◀</span>
-						<span id="pageEnd"  class="pg-btn">▶</span>
-					</div>
+			<div class="top_container">
+				<div class="ring_chart_container">
+				<div class="ctn_tbl_header" style="margin-top : 20px;">
+					<div class="ttl_ctn">회사별 펌웨어 사용 비율</div>
 				</div>
-				
-				<!-- 단말기 테이블 -->
-				<div id="trainDiv"style="width: 100%;height: 100%;" >
-					<div class="lte-div">
-						<div id="trainNum">
-							<table id="trainTb" class="lte-table">
-								<tbody id="lteTbd"></tbody>
+				<div class="ring_chart_div">
+				</div>
+				</div>
+				<div class="datatable-list-01">
+					<div id ="btnDiv" class="btn_box" style="display: flex;flex-direction: row-reverse;float:right;">
+						<div id="btnIns" style="display: flex;justify-content: flex-end;width: 230px;">
+							<input type='button' class="btn btn_primary" id='btnInsert' value='다운로드'>
+						</div>
+					</div>
+					<div class="page-description">
+						<div class="rows">
+							<table id="tableList" class="table table-bordered" style="width: 100%;">
+								<thead>
+									<tr>
+										<th>회사명</th>
+										<th>사용량(MB)</th>
+										<th>비고</th>
+									</tr>
+								</thead>
 							</table>
 						</div>
 					</div>
+				
 				</div>
-				<div class="tilte" style="width: 100%;display: flex;align-items: center;">
-					<span style="font-size: 18px;font-weight: bold;color: #fff;margin-right:10px;">최신 데이터 수신시각 : </span>
-					<span id="nowDt" style="font-size: 18px;font-weight: bold;color: #fff;"> 1234</span>
+			</div>
+			<div class="bottom_container">
+				<div class="ctn_tbl_header" >
+					<div class="ttl_ctn">금일 시간대별 사용량</div>
 				</div>
+				<div class="bar_chart_div"></div>
 			</div>
 		</div>
 	</div>	
