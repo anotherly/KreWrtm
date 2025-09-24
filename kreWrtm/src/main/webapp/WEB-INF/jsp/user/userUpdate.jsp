@@ -23,23 +23,18 @@
 				  });
 			  });
 			
+			//save
+			
+			//save
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
-				
-				$(".input_base_require").each(function(i,list){
-					console.log("필수값체크");
-					if($(this).val()==null||$(this).val()==''){
-						alert("필수 항목을 기재해 주세요");
-						$(this).focus();
-						validChk=false;
-						return false;
-					}
-				});
-				if(dupChkFlag && boardWriteCheck($("#insertForm"))){
-					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/user/userUpdate.ajax',queryString,'/user/userList.do','저장되었습니다');
+				if(!dupChkFlag){
+				    alert("ID 중복 체크를 확인하세요");
 				}else{
-					alert("volte 중복 체크를 확인하세요");
+				    if(boardWriteCheck($("#insertForm"))){
+				        let queryString = $("#insertForm").serialize();
+				        ajaxMethod('/user/userUpdate.ajax', queryString, '/user/userList.do', '저장되었습니다');
+				    }
 				}
 			}); 
 			
@@ -190,7 +185,7 @@
 										id="phoneCell" 
 										name ="userPhone2" 
 										placeholder="" 
-										class="form-control input_base_require"
+										class="form-control"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)"
 										value="${data.userPhone2}"

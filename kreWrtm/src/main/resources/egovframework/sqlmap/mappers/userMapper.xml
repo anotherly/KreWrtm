@@ -107,7 +107,7 @@
 	<update id="update" parameterType="userVO">
 		UPDATE TBL_USER_INFO
 		SET
-			,USER_NAME=#{userName}
+			USER_NAME=#{userName}
 			<if test="userPw !=null and userPw  neq '' ">
 				,USER_PW=#{userPw}
 			</if>
@@ -115,7 +115,7 @@
 			,org_id=#{orgId}
 			,user_phone=#{userPhone}
 			,user_phone2=#{userPhone2}
-			,updated_at=cureate()
+			,updated_at=curdate()
 			
 		WHERE `USER_ID` =#{userId}
 	</update>

@@ -176,10 +176,11 @@ public class UserController {
 		OrgVO ovo = nlvo;
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
+		inputVo.setUserId(inputVo.getTagId());
 		try {
 			orgList = orgService.select(ovo);
 			comList=companyService.select(ovo);
-			data = userService.selectList(inputVo).get(0);
+			data = userService.select(inputVo).get(0);
 			mav.addObject("orgList", orgList);
 			mav.addObject("comList", comList);
 			mav.addObject("data", data);
@@ -203,7 +204,7 @@ public class UserController {
 		UserVO thvo= null;
 		try {
 			//패스워드 암호화 처리
-			if (inputVo.getUserPw()!=null && inputVo.getUserPw().equals("")) {
+			if (inputVo.getUserPw()!=null && !inputVo.getUserPw().equals("")) {
 				String hashedPw = BCrypt.hashpw(inputVo.getUserPw(), BCrypt.gensalt());
 				//vo에 암호화된 password 삽입
 				inputVo.setUserPw(hashedPw);
@@ -219,7 +220,7 @@ public class UserController {
 	}
 	
 	//사용자 삭제
-	@RequestMapping(value="/user/delete.ajax")
+	@RequestMapping(value="/user/userDelete.ajax")
 	public @ResponseBody ModelAndView userDelete
 	( @RequestParam(value="idArr[]")List<String> dataArr,HttpServletRequest request) throws Exception{
 		logger.debug("▶▶▶▶▶▶▶.회원정보 삭제!!!!!!!!!!!!!!!!");

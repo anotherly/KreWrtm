@@ -48,21 +48,13 @@
 			//save
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
-				
-				$(".input_base_require").each(function(i,list){
-					console.log("필수값체크");
-					if($(this).val()==null||$(this).val()==''){
-						alert("필수 항목을 기재해 주세요");
-						$(this).focus();
-						validChk=false;
-						return false;
-					}
-				});
-				if(dupChkFlag && boardWriteCheck($("#insertForm"))){
-					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/user/userInsert.ajax',queryString,'/user/userList.do','저장되었습니다');
+				if(!dupChkFlag){
+				    alert("ID 중복 체크를 확인하세요");
 				}else{
-					alert("ID 중복 체크를 확인하세요");
+				    if(boardWriteCheck($("#insertForm"))){
+				        let queryString = $("#insertForm").serialize();
+				        ajaxMethod('/user/userInsert.ajax', queryString, '/user/userList.do', '저장되었습니다');
+				    }
 				}
 			}); 
 			
@@ -114,7 +106,7 @@
 											name ="userId" 
 											placeholder="6~20자리  영문소문자 숫자 조합" 
 											class="form-control input_base_require"
-											oninput=""
+											oninput="checkId(this)"
 											maxLength="20"
 										>
 									</div>
@@ -150,6 +142,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control input_base_require"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td" style="padding: 0;font-size: 12px;" >허용 특수문자 : ~, !, @, #, $, %, ^, &, *, (, ), _, +, |, [, ] </div>
@@ -165,6 +158,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control input_base_require"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td"></div>
@@ -210,7 +204,7 @@
 										id="phoneCell" 
 										name ="userPhone2" 
 										placeholder="" 
-										class="form-control input_base_require"
+										class="form-control"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)"
 									>
