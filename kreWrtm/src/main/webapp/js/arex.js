@@ -13,10 +13,13 @@ var plusPage=0;// 몫/6의 나머지 -> 남은 행수를 계산해서 채울때 
 
 /////////////////////////////
 
-//차트화면 우측 단말기테이블
+//차트화면 우측 단말기테이블 (25/09/25 수정)
 function trainOne(alData){
 	console.log("차트화면 우측 단말기테이블");
-	$("#lteTbd").empty();
+	
+	// 기존 단말기 테이블 초기화
+	$("#routerTable").empty();
+	
 	//전역변수 초기화
 	tbM="";
 	trCnt=1;
@@ -28,26 +31,17 @@ function trainOne(alData){
 	mok=Math.floor(alData.length/7,0);
 	namage=alData.length%7;
 	maxPage=Math.floor(mok/6,0);
-	
-	var oldName="";//팀이 변경되기 전 이전 팀
+
 	var enterLine=1;//현재 td number
 	var blankCnt=0;//페이지 안깨지기 위한 공백 카운트
 	
 	for (var i = 0; i < alData.length; i++) {
-		var backName="";
-		if(i==0){
-			oldName=alData[i].teamName;
-		}
-		/*공백처리안함*/
-		//배경 선택
-		backName=selectBackgra(alData[i].teamName,alData[i].obsCount);
-		//td 내부 만듬
-		tbM+= tdCreate(alData[i].lteRIp,backName,alData[i].lteRUsed); 
+		tbM+= tdCreate(alData[i].deviceId,alData[i].carNum); 
 		tbCnt++;
 		//7열 초과시 줄바꿈
-		if(parseInt((enterLine)%7)==0){
-			var tbCont = "<tr id='tr"+trCnt+"'>"+tbM+"</tr>";
-			$("#lteTbd").append(tbCont);	
+		if(parseInt((enterLine)%6)==0){
+			var tbCont = "<tr id='tr" + trCnt + "' class='router_table_tr'>" + tbM + "</tr>";
+			$("#routerTable").append(tbCont);	
 			tbM="";
 			trCnt++;
 		}else{
@@ -61,7 +55,7 @@ function trainOne(alData){
 		
 	}
 	//테이블 생성 완료후 해야할 것들
-	plusPage=6-($("#lteTbd tr").length%6);
+	plusPage=6-($("#routerTable tr").length%6);
 	
 	hideTr(startNum*6,endNum*6);
 
@@ -69,49 +63,44 @@ function trainOne(alData){
 
 //tr을 생성하고 행번호를 생성
 function trCreate(){
-	var trValue = "<tr id='tr"+trCnt+"'>"+tbM+"</tr>";
-	$("#lteTbd").append(trValue);	
+	var trValue = "<tr id='tr" + trCnt + "' class='router_table_tr'>" + tbM + "</tr>";
+	$("#routerTable").append(trValue);	
 	tbM="";
 	trCnt++;
 }
 
 //중간에 들어가는 td값을 채움
 //tdid,tdCont,spanVal
-function tdCreate(tdid,backName,spanVal){
+function tdCreate(tdid,spanVal){
 	var funcTbCont="";
 	//갱신전에 선택된 단말기였다면 선택배경 유지되도록
-	if(chkTerId==tdid){
-		funcTbCont=
-			"<td id='"+tdid+"' class='selected'>"
-			+"<div class='td-div'>"
-				+"<div class='img-container'>"
-					+"<div style=" 
-						+"'background:url(../images/arex/"+backName+".png) no-repeat;" 
-						+"background-size: contain;'>" 
-					+"</div>"
-				+"</div>"
-				+"<span>"+spanVal+"</span>"
-			+"</div>"
-		+"</td>";
-	}else{
-		funcTbCont=
-			"<td id='"+tdid+"'>"
-			+"<div class='td-div'>"
-				+"<div class='img-container'>"
-					+"<div style=" 
-						+"'background:url(../images/arex/"+backName+".png) no-repeat;" 
-						+"background-size: contain;'>" 
-					+"</div>"
-				+"</div>"
-				+"<span>"+spanVal+"</span>"
-			+"</div>"
-		+"</td>";
+	if (chkTerId == tdid) {
+		funcTbCont =
+			"<td id='" + tdid + "' class='router_table_td selected'>"
+			+ "<div class='td-div'>"
+				+ "<div class='img-container'>"
+					+ "<div style='background:url(../images/arex/facility.png) no-repeat; background-size: contain;'></div>"
+				+ "</div>"
+				+ "<span>" + spanVal + "</span>"
+			+ "</div>"
+		+ "</td>";
+	} else {
+		funcTbCont =
+			"<td id='" + tdid + "' class='router_table_td'>"
+			+ "<div class='td-div'>"
+				+ "<div class='img-container'>"
+					+ "<div style='background:url(../images/arex/facility.png) no-repeat; background-size: contain;'></div>"
+				+ "</div>"
+				+ "<span>" + spanVal + "</span>"
+			+ "</div>"
+		+ "</td>";
 	}
+	
 	return funcTbCont;
 }
 
 //배경 선택
-function selectBackgra(teamName,obsCount){
+/*function selectBackgra(teamName,obsCount){
 	var backgra='';
 	//배경 선택가능
 	if(teamName.indexOf('전기') != -1){
@@ -139,12 +128,13 @@ function selectBackgra(teamName,obsCount){
 		backgra=backgra;
 	}
 	return backgra;
-}
+}*/
 
 //페이징 처리를 위한 행 감춤
 function hideTr(startPage,endPage){
-	$("#lteTbd tr").each(function(i,list){
-		//console.log("i : "+i+"	/	"+"list : "+list);
+	console.log("페이징 진입");
+	
+	$("#routerTable tr").each(function(i,list){
 		if(i >= startPage && i < endPage){
 			$(list).show();
 		}else{

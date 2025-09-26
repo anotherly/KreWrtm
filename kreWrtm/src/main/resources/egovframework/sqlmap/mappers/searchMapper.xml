@@ -55,9 +55,135 @@
 	                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
 	            )
 	        </if>
+	        <if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode !='all'">
+	            AND r.company_code = #{companyCode}
+	        </if>
 	    </where>
 	
-	    ORDER BY r.reg_date DESC
+	    ORDER BY r.car_num DESC
+	</select>
+	
+	
+	
+	<select id="searchRouterDataList" parameterType="searchVo" resultMap="searchDataList">
+    SELECT 
+        r.device_id,
+        r.device_name,
+        r.model_name,
+        r.car_num,
+        r.volte_num,
+        r.keywords,
+        l.version,
+        l.location
+    FROM 
+        tbl_router_info r
+    LEFT JOIN 
+        tbl_last_data l
+        ON r.volte_num = l.volte_num
+    WHERE 1=1
+        <if test="searchVal != null and searchVal != ''">
+            AND (
+                r.model_name LIKE CONCAT('%', #{searchVal}, '%')
+                OR r.car_num LIKE CONCAT('%', #{searchVal}, '%')
+                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
+                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
+                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
+                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
+            )
+        </if>
+        <if test="deviceName != 'all'">
+            AND r.device_name = #{deviceName}
+        </if>
+        <if test="companyCode != 'all'">
+            AND r.company_code = #{companyCode}
+        </if>
+    ORDER BY r.car_num DESC
+</select>
+	
+
+	
+	<resultMap type="searchVo" id="searchDetailList">
+		<result property="deviceId" column="DEVICE_ID"/>
+		<result property="deviceName" column="DEVICE_NAME"/>
+		<result property="modelName" column="MODEL_NAME"/>
+		<result property="carNum" column="CAR_NUM"/>
+		<result property="keywords" column="KEYWORDS"/>
+		<result property="version" column="VERSION"/>
+		<result property="location" column="LOCATION"/>
+		<result property="extraInfo" column="EXTRA_INFO" />
+		<result property="usimSlot" column="USIM_SLOT" />
+		<result property="mobileIp" column="MOBILE_IP" />
+		<result property="localIp" column="LOCAL_IP" />
+		<result property="imei" column="IMEI" />
+		<result property="imsi" column="IMSI" />
+		<result property="rsrp" column="RSRP" />
+		<result property="rsrq" column="RSRQ" />
+		<result property="mcpttNum" column="MCPTT_NUM" />
+		<result property="autoSwitchingRadio" column="AutoSwitchingRadio" />
+		<result property="currentRadioType" column="CurrentRadiotype" />
+		<result property="cellId" column="CELL_ID" />
+		<result property="gpsLat" column="GPS_LAT" />
+		<result property="gpsLon" column="GPS_LON" />
+		<result property="rcvDt" column="RCV_DT" />	
+		<result property="companyCode" column="COMPANY_CODE"/>
+		<result property="companyName" column="COMPANY_NAME"/>
+		<result property="volteNum" column="VOLTE_NUM"/>
+	</resultMap>
+	
+	
+	<!-- 실시간 데이터 조회 - 단말기 검색 조건 옵션 셋팅 -->
+	<select id="companyTypeList" parameterType="searchVo" resultMap="searchDetailList">
+		SELECT COMPANY_NAME , COMPANY_CODE
+		FROM TBL_COMPANY_INFO
+		WHERE 1 = 1
+		<if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode !='all'" >
+			AND COMPANY_CODE = #{companyCode}
+		</if>
+	</select>
+	
+	<select id="deviceNameTypeList" parameterType="searchVo" resultMap="searchDetailList">
+		SELECT DEVICE_NAME
+		FROM TBL_ROUTER_INFO
+		WHERE 1=1
+		<if test="companyCode != 'all'">
+			and company_code = #{companyCode}
+		</if>
+		GROUP BY DEVICE_NAME
+	</select>
+	
+	
+	<!-- 장치 & 모니터링 장치 상세 정보 조회 -->
+	<select id="selectDetail" parameterType="searchVo" resultMap="searchDetailList">
+		SELECT 
+		    r.device_id,
+		    r.device_name,
+		    r.model_name,
+		    r.car_num,
+		    r.volte_num,
+		    r.keywords,
+			 r.extra_info,
+		    l.version,
+		    l.location,
+		    l.USIM_SLOT,
+		    l.MOBILE_IP,
+		    l.LOCAL_IP,
+		    l.IMEI,
+		    l.IMSI,
+		    l.RSRP,
+		    l.RSRQ,
+		    l.MCPTT_NUM,
+		    l.AutoSwitchingRadio,
+		    l.CurrentRadioType,
+		    l.CELL_ID,
+		    l.GPS_Lat,
+		    l.GPS_Lon,
+		    l.RCV_DT    
+		FROM 
+		    tbl_router_info r
+		LEFT JOIN 
+		    tbl_last_data l
+		    ON r.volte_num = l.volte_num
+		WHERE r.device_id = #{deviceId}	
 	</select>
 
 </mapper>

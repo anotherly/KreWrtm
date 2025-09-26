@@ -1493,3 +1493,248 @@ input:focus{
     display: inline-block;
     background-size: contain;
 }
+
+
+
+
+/* 장치 & 모니터링 관련 스타일 */
+
+
+	.left-container {
+		width : 58%;
+		height : 100%;
+	}
+	
+	.right-container {
+		width : 42%;
+		height : 100%;		
+	}
+	
+	
+	.click_title_div {
+		width: 100%;
+	    height: 10%;
+	    display: flex;
+	    align-items: flex-end;
+	    justify-content: space-around;
+	    margin-top : 20px;
+	}
+	
+	
+	.click_table_div {
+		width: 100%;
+	    height: 70%;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	}
+	
+	
+	.click_remote_div {
+	    width: 100%;
+	    height: 20%;
+	    display: flex;
+    	justify-content: center;
+    }
+    
+    
+    .search_table_div {
+		width: 100%;
+	    height: 10%; 
+	    margin-top : 20px; 
+    }
+    
+    .router_table_div {
+    	width: 100%;
+    }
+    
+    .page_btn_div {
+    	width: 100%;
+	    height: 5%;
+	    display : flex;
+	    justify-content: space-evenly;
+	    gap: 8px;
+	    align-items: center;
+	    margin: 10px 0;
+    }
+    
+
+
+	.sub_title_div , .arrow , .select_carNum{
+		font-size : 32px;
+	}
+	
+	
+	.carNum_container {
+		display : flex;		
+	}
+	
+	
+	.table_area {
+		min-width : 1000px;
+		margin-top : 30px;
+		display: flex;
+	    flex-flow: column nowrap;
+	    background: #ffffff;
+	    border-top: 2px solid #1181d7;
+	    border-bottom: 2px solid #1181d7;
+	}
+	
+	
+	.table_row {
+		display: flex;
+    	flex-flow: row nowrap;
+    	width: 100%;
+	}
+	
+	
+	/* 행 색상 변환 */
+	.tbl_cc {
+		background-color : #dceefe; 
+	}
+	
+	
+	/* 테이블 제일 윗 상단 타이틀  */
+	.table_title_th{
+		min-height : 50px;
+		display : flex;
+		justify-content : center;
+		align-items : center;
+		padding : 10px 20px;
+		font-size : 20px;
+		font-weight : 500;
+		box-sizing : border-box;
+		position : relative;
+		color : #222222;
+		flex : 0 0 200px;		
+	}
+	
+	.table_row > div:not(:first-child) {
+	   border-left: 2px solid #cdd1d2;
+	}
+	
+	.table_row > div:nth-child(1),
+	.table_row > div:nth-child(3) {
+	    min-width: 200px;
+	}
+	
+	.table_row > div:nth-child(2),
+	.table_row > div:nth-child(4) {
+	    min-width: 300px;
+	}
+
+	
+	.table_th {
+		min-height: 40px;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    padding: 5px 20px;
+	    font-size: 18px;
+	    box-sizing: border-box;
+	    position: relative;
+	    color: #222222;
+	    flex: 0 0 200px;
+	}
+	
+	.table_td {
+		min-height: 45px;
+	    display: flex;
+	    justify-content : flex-start;
+	    align-items : center;
+	    flex : 1;
+	    gap : 10px;
+	    font-size : 18px;
+	    padding : 5px 20px;
+	    box-sizing : border-box;
+	    color: #222222;
+	}
+	
+	
+	
+	
+	.custom-btn {
+		margin: 20px;
+	  width: 400px;
+	  height: 100px;
+	  font-size : 26px;
+	  color: #fff;
+	  border-radius: 5px;
+	  padding: 10px 25px;
+	  font-family: 'Lato', sans-serif;
+	  font-weight: 500;
+	  background: transparent;
+	  cursor: pointer;
+	  transition: all 0.3s ease;
+	  position: relative;
+	  display: inline-block;
+	   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+	   7px 7px 20px 0px rgba(0,0,0,.1),
+	   4px 4px 5px 0px rgba(0,0,0,.1);
+	  outline: none;
+	}
+	
+	.btn-1 {
+	  background: rgb(6,14,131);
+	  background: linear-gradient(0deg, rgba(6,14,131,1) 0%, rgba(12,25,180,1) 100%);
+	  border: none;
+	}
+	.btn-1:hover {
+	   background: rgb(0,3,255);
+	background: linear-gradient(0deg, rgba(0,3,255,1) 0%, rgba(2,126,251,1) 100%);
+	}
+	
+	
+	.searchType1_container , .searchType2_container {
+		display : flex;
+	}
+	
+	.searchType1_title , .searchType2_title{
+		font-size : 18px;
+		margin-right : 10px;
+		font-weight : bold;
+	}
+	
+	#router_table,
+	#router_table tr,
+	#router_table td {
+	    border: 1px solid #757575; 
+	    border-collapse: collapse; 
+	}
+
+	.router_table_tr {
+		min-width : 125px;
+		min-height : 112px;
+	}
+	
+	
+
+
+	.router_table_td {
+		min-width : 125px;
+		min-height : 112px;
+	
+	}
+
+
+	.router_table {
+		
+		margin-top : 30px;
+		margin-left : 15px;
+	}
+	
+	
+
+.page_btn_div button {
+    font-size: 18px;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.page_btn_div button:hover {
+    background-color: #f0f0f0;
+}

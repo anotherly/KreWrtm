@@ -34,4 +34,26 @@ public class SearchServiceImpl implements SearchService{
 	public List<SearchVo> searchDataList(SearchVo inputVo) throws Exception {
 		return searchMapper.searchDataList(inputVo);
 	}
+	
+	// 단말기 조회
+	public List<SearchVo> searchRouterDataList (SearchVo inputVo) throws Exception {
+		return searchMapper.searchRouterDataList(inputVo);		
+	}
+	
+	
+	// 실시간 데이터 - 단말기 조회 검색 옵션 셋팅
+	public List<SearchVo> companyTypeList(SearchVo inputVo) throws Exception {
+		return searchMapper.companyTypeList(inputVo);
+	}
+	
+	public List<SearchVo> deviceNameTypeList(SearchVo inputVo) throws Exception {
+		return searchMapper.deviceNameTypeList(inputVo);
+	}
+		
+	// 장치 상세 정보 검색
+	public SearchVo selectDetail(SearchVo inputVo) throws Exception {
+		return searchMapper.selectDetail(inputVo);
+	}
+	
+	
 }

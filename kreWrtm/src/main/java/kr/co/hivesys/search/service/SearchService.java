@@ -21,6 +21,16 @@ import kr.co.hivesys.search.vo.SearchVo;
 public interface SearchService {
 
 	// 장치 관리 검색
-	public List<SearchVo> searchDataList(SearchVo inputVo) throws Exception;
+	public List<SearchVo> searchDataList(SearchVo inputVo) throws Exception;	
+	
+	// 단말기 조회
+	public List<SearchVo> searchRouterDataList (SearchVo inputVo) throws Exception;
+	
+	// 실시간 데이터 - 단말기 조회 검색 옵션 셋팅
+	public List<SearchVo> companyTypeList(SearchVo inputVo) throws Exception;
+	public List<SearchVo> deviceNameTypeList(SearchVo inputVo) throws Exception;
+
+	// 장치 상세 정보 검색
+	public SearchVo selectDetail(SearchVo inputVo) throws Exception;
 
 }

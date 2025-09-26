@@ -7,7 +7,11 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <jsp:include page="../cmn/top.jsp" flush="false" />
 </head>
-
+<style>
+	td {
+		cursor : pointer;
+	}
+</style>
 <script>
 	var searchSendValue = '${searchVal}';
 
@@ -62,6 +66,17 @@
 				search();
 			}
 		});
+		
+		
+		//상세 화면 조회
+		$("#tableList").on("click","tr",function () {			
+			var tagUrl = "/search/monitering.do";
+		    var tagId = $(this).find("td:eq(1) input[type='hidden']").val(); // 장치명에 hidden 처리 된 deviceId 가져오기
+		    
+		    window.location = tagUrl + "?deviceId=" + tagId;  // 모니터링(상세)으로 이동
+		});
+		
+		
 	}); 
 
 	function search() {
@@ -100,11 +115,11 @@
 		<!-- contents Start ------------------>
 		<div id="contents" class="contents-wrap">
 			<div id="work" class="work-wrap list_page" style="justify-content : center; align-items : center;">
-				<div class="ctn_tbl_header" style="justify-content: center; border-bottom: 2px solid #555555; padding-bottom: 15px; width: 180px;">
+				<div class="ctn_tbl_header" style=" margin-top : -120px; justify-content: center; border-bottom: 2px solid #555555; padding-bottom: 15px; width: 180px;">
 					<div class="ttl_ctn" style="font-size : 32px;">장치 관리</div>
 				</div>
                 <!-- search_box Start -->
-                <div class="search_box" style=" margin-top: calc(10px + 0vh); background : none; box-shadow : none;">
+                <div class="search_box" style=" margin-top: calc(10px + 0vh); background : none; box-shadow : none; margin-bottom:0;">
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data" style="justify-content : center;">
                             <input type="text" class="searchText" id="searchVal" name="searchVal" placeholder="차량번호, 제조사 등 검색어를 입력하세요.">
                     </form>
