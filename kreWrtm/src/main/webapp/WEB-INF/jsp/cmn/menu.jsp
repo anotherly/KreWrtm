@@ -71,7 +71,7 @@ $(document).ready(function() {
 	</ul>
 </li>	
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/obs/list.do" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="/obs/list.do?" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n03"></i>
 		<div>장애 관리</div>
 	</a>

@@ -715,7 +715,7 @@ aside.lnb {
     justify-content: flex-start;    
     padding-left: 10px;
     min-width: 100px;
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.2;
     font-weight: 500;
     color: #222222;
@@ -1687,6 +1687,7 @@ input:focus{
 	
 	.searchType1_container , .searchType2_container {
 		display : flex;
+		margin-right: 15px;
 	}
 	
 	.searchType1_title , .searchType2_title{
@@ -1737,4 +1738,73 @@ input:focus{
 
 .page_btn_div button:hover {
     background-color: #f0f0f0;
+}
+
+
+
+.table_td.extraInfo {
+	line-height: 35px;
+	display: inline-block;
+	width: 300px;     
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;  
+}
+
+
+.status_container {
+	width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	
+}
+
+.status_0 {
+	width: 120px;
+    height: 28px;
+    background-color: rgba(251, 226, 74, 0.5);
+    border-radius: 20px;
+    line-height: 26px;
+    border: 1px solid #7a6b25;
+    color: #7a6b25;
+    font-size : 15px;
+	text-align : center;
+}
+
+.status_1 {
+	width: 120px;
+    height: 28px;
+    background-color: rgb(255, 108, 108, 0.5);
+    border-radius: 20px;
+    line-height: 26px;
+    border: 1px solid #6f2f2f;
+    color: #6f2f2f;
+    font-size : 15px;
+    text-align : center;
+}
+
+
+.status_2 {
+	width: 120px;
+    height: 28px;
+    background-color: rgba(83, 199, 101, 0.5);
+    border-radius: 20px;
+    line-height: 26px;
+    border: 1px solid #215028;
+    color: #215028;
+    font-size : 15px;
+    text-align : center;
+}
+
+.status_3 {
+	width: 120px;
+    height: 28px;
+    background-color: rgb(190, 190, 190, 0.5);
+    border-radius: 20px;
+    line-height: 26px;
+    border: 1px solid #636363;
+    color: #636363;	
+    font-size : 15px;
+    text-align : center;
 }

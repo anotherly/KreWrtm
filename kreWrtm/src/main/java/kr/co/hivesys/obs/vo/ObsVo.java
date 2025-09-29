@@ -14,7 +14,16 @@ public class ObsVo {
 	private String ssDate;  // 처리일시 검색 시작일
 	private String eeDate;  // 처리일시 검색 종료일
 	
+	private String delCode;
+	private String status;
 	
+	
+	public String getDelCode() {
+		return delCode;
+	}
+	public void setDelCode(String delCode) {
+		this.delCode = delCode;
+	}
 	public String getsDate() {
 		return sDate;
 	}
@@ -23,6 +32,12 @@ public class ObsVo {
 	}
 	public String geteDate() {
 		return eDate;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public void seteDate(String eDate) {
 		this.eDate = eDate;

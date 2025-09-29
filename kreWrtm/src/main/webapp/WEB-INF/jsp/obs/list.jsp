@@ -20,7 +20,7 @@
 		//테이블 기본설정 세팅
 		dtTbSetting();
 		iidx = 3;
-		console.log("장애이력 관리 목록 화면 진입");
+
 		var colCnt=0;
 		var idxTb =0;
 		
@@ -29,23 +29,50 @@
 		$("#datetimepicker3").find("input").prop('disabled', true);
 		$("#datetimepicker4").find("input").prop('disabled', true);
 		
+		let nowDate = new Date().toISOString().split('T')[0];
+		let nextDate = new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0];
+		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
                 "url":"/obs/list.ajax",
                 "type":"POST",
                 "dataType": "json",
+                "data" : {"sDate" : nowDate , "eDate" : nextDate } 
             },  
              columns: [
             	 {
              		data:   "obsId",
  	            	"render": function (data, type, row, meta) {
- 	            		//console.log(meta.row+"	/	"+meta.col);
                          return '<input type="checkbox" id="chk" name="chk" value="'+data+'">';
  	                },
                  },
                 {data:"carNum"},
+                {
+                    data: "status",
+                    render: function(data, type, row, meta) {
+                        switch (data) {
+                            case "0":
+                                return '<div class="status_container"><div class="status_0">조치 진행중</div></div>';
+                            case "1":
+                                return '<div class="status_container"><div class="status_1">조치 미완료</div></div>';
+                            case "2":
+                                return '<div class="status_container"><div class="status_2">조치 완료</div></div>';
+                            default:
+                                return '<div class="status_container"><div class="status_3">알 수 없음</div></div>';
+                        }
+                    }
+                },
                 {data:"rptDate"},
-                {data:"prcDate"},
+                {
+                    data: "prcDate",
+                    render: function(data, type, row, meta) {
+                        if (!data || data.trim() === "") {
+                            return "해당 없음";
+                        } else {
+                            return data;
+                        }
+                    }
+                },
                 {data:"obsName"}
             ],
             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
@@ -147,7 +174,7 @@
 	
 		// 날짜 선택 여부   
 		$("#dateChk").on("click",function(){
-			console.log("날짜선택여부");
+			
 			if($(this).is(':checked')){
 				$("#datetimepicker1").find("input").prop('disabled', false);
 				$("#datetimepicker2").find("input").prop('disabled', false);
@@ -158,7 +185,6 @@
 		});
 		
 		$("#dateChkPrc").on("click",function(){
-			console.log("날짜선택여부");
 			if($(this).is(':checked')){
 				$("#datetimepicker3").find("input").prop('disabled', false);
 				$("#datetimepicker4").find("input").prop('disabled', false);
@@ -175,7 +201,6 @@
 		
 		//상세 화면 조회
 		$("#tableList").on("click", "tbody td:not(:first-child)", function () {
-		    console.log("목록에서 상세요소 클릭");
 		    var tagId = $(this).parent().children().first().children().first().val();
 		    $(this).attr('id');
 
@@ -187,7 +212,6 @@
 	
 	/* 검색 함수 */
 	function search() {
-	    console.log("검색");
 	    let frm = $("#searchFrm").serialize();
 	    var tagUrl = "/obs/list.ajax";
 	
@@ -203,7 +227,6 @@
 	
 	    // 검색 유효성 검사식
 	    if ($('#dateChk').is(':checked')) {
-	        console.log("신고일시");
 	        if (endDate < startDate) {
 	            alert("신고 일시의 종료일이 시작일보다 먼저일 수 없습니다.");
 	            return false; // 유효성 실패 시에만 중단
@@ -211,7 +234,6 @@
 	    }
 	
 	    if ($('#dateChkPrc').is(':checked')) {
-	        console.log("처리일시");
 	        if (endDate2 < startDate2) {
 	            alert("처리 일시의 종료일이 시작일보다 먼저일 수 없습니다.");
 	            return false; // 유효성 실패 시에만 중단
@@ -219,7 +241,6 @@
 	    }
 	
 	    // 조건 모두 통과했을 때 검색 실행
-	    console.log("검색 성공");
 	    tbSearch("tableList", tagUrl, frm);
 	}
 	
@@ -315,6 +336,7 @@
 									<tr>
 										<th><input type="checkbox" id="chkAll" class="chk"></th>
 										<th>호차</th>
+										<th>진행 상태</th>
 										<th>신고 일시</th>
 										<th>처리 일시</th>
 										<th>신고 증상</th>									

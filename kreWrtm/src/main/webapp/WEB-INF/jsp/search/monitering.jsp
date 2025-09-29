@@ -8,7 +8,6 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <jsp:include page="../cmn/top.jsp" flush="false" />
 </head>
-
 <script>
 	var nowTagId = '${data.deviceId}';	
 	var chkTerId='${data.deviceId}';
@@ -17,36 +16,16 @@
 	var startNum=0;
 	var endNum=1;
 	
-	$(document).ready(function(){
-		// 넘어가는 글자 줄바꿈 정리하기
-		$('.extraInfo').each(function () {
-	        const width = $(this).outerWidth();
-	
-	        if (width > 300) {
-	            $(this).css({
-	                'max-width': '300px',
-	                'word-break': 'break-word',
-	                'white-space': 'normal',
-	                'font-size': '12px'
-	            });
-	        } else {
-	            $(this).css({
-	                'max-width': '',
-	                'word-break': '',
-	                'white-space': '',
-	                'font-size': ''
-	            });
-	        }
-	    });
+	$(document).ready(function(){	
 
 		// 첫 진입 시 단말기 테이블 띄우기
-		var alData = ajaxMethod("/search/list.ajax");
+		var alData = ajaxMethod("/search/list.ajax");		
+		var len = alData.data.length;
+
+		// 단말기 총 개수 텍스트 변경
+		$('#routerCounter').text("검색 결과 : 총 " + len + " 개");
+		
 		trainOne(alData.data);
-		hideTr(nowPage*6,nextPage*6);
-		
-		// 검색 조건(소속 / 장치명) 옵션 설정
-		searchTypeOne(alData.comData , alData.dnData);
-		
 		
 		var tblist= $(".routerTable td");
     	$(tblist).each(function(i,list){
@@ -55,8 +34,28 @@
     		}
 		});
     	
-    	
-    	
+    	let selectedIndex = $("#routerTable td.selected").closest("tr").index();
+
+    	if (selectedIndex === -1) {
+    	    hideTr(0, 6);
+    	    startNum = 0;
+    	    endNum = 1;
+    	    nowPage = 0;
+    	    nextPage = 1;
+    	} else {
+    	    let selectedPage = Math.floor(selectedIndex / 6);
+    	    hideTr(selectedPage * 6, (selectedPage + 1) * 6);
+
+    	    startNum = selectedPage;
+    	    endNum = selectedPage + 1;
+    	    nowPage = selectedPage;
+    	    nextPage = selectedPage + 1;
+    	}
+
+		
+		// 검색 조건(소속 / 장치명) 옵션 설정
+		searchTypeOne(alData.comData , alData.dnData);
+		
     	// 행 클릭 시    	
     	$(document).on('click','#router_table td',function(){
     		
@@ -85,13 +84,9 @@
     	
     	//페이징 처리
  		$('.page_btn_div button').on('click',function(){
- 			console.log("페이징 버튼 클릭");
- 			
- 			
+
 			var btnId=$(this).attr('id');
-			console.log("클릭 된 버튼 : " + btnId);
-			
-			
+		
 			if (btnId=='pageStart') {//앞으로 가기
 				//starNum이 0보다 작을경우 반응하지 않음
 				if(startNum>0){
@@ -170,7 +165,6 @@
 			data : frm,
 			async : false,
 			success : function(data) {
-				console.log("데이터테이블 검색 성공");
 				dataList = data; 
 			},
 			error : function(e) {
@@ -182,6 +176,10 @@
 		nowPage = 0; 
 		nextPage = 1;
 
+		var len = dataList.data.length;
+
+		// 단말기 총 개수 텍스트 변경
+		$('#routerCounter').text("검색 결과 : 총 " + len + " 개");
 		
 		// 단말기 테이블 갱신
 		trainOne(dataList.data);
@@ -215,9 +213,10 @@
 						<div class="select_carNum" id="select_carNum" style="font-weight : bold;">
 							${data.carNum} / 
 							<c:choose>
-							    <c:when test="${data.location == 1}">TC1</c:when>
-							    <c:when test="${data.location == 2}">TC2</c:when>
-							</c:choose>
+						        <c:when test="${data.location == 1}">TC1</c:when>
+						        <c:when test="${data.location == 2}">TC2</c:when>
+						        <c:otherwise>정보 없음</c:otherwise>
+						    </c:choose>
 						</div>
 					</div>
 				</div> <!-- 상단 타이틀 div -->
@@ -230,82 +229,142 @@
 							<div class="table_title_th">데이터(정보)</div>
 						</div>
 						<div class="table_row">
-							<div class="table_th tbl_cc">차량 번호</div>
-							<div class="table_td tbl_cc">${data.carNum}</div>
-							<div class="table_th tbl_cc">RSRQ</div>
-							<div class="table_td tbl_cc">${data.rsrq} dBm</div>
+						    <div class="table_th tbl_cc">차량 번호</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.carNum ? '정보 없음' : data.carNum}
+						    </div>
+						
+						    <div class="table_th tbl_cc">RSRQ</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.rsrq ? '정보 없음' : data.rsrq} 
+						        <c:if test="${not empty data.rsrq}"> dBm</c:if>
+						    </div>
 						</div>
 						<div class="table_row">
-							<div class="table_th">탑재 위치</div>
-							<div class="table_td">
-								<c:choose>
-							        <c:when test="${data.location == 1}">TC1</c:when>
-							        <c:when test="${data.location == 2}">TC2</c:when>
-							    </c:choose>
-							</div>
-							<div class="table_th">VoLTE 번호</div>
-							<div class="table_td">${data.volteNum}</div>
+						    <div class="table_th">탑재 위치</div>
+						    <div class="table_td">
+						        <c:choose>
+						            <c:when test="${data.location == 1}">TC1</c:when>
+						            <c:when test="${data.location == 2}">TC2</c:when>
+						            <c:otherwise>정보 없음</c:otherwise>
+						        </c:choose>
+						    </div>
+						
+						    <div class="table_th">VoLTE 번호</div>
+						    <div class="table_td">
+						        ${empty data.volteNum ? '정보 없음' : data.volteNum}
+						    </div>
+						</div>						
+						<div class="table_row">
+						    <div class="table_th tbl_cc">장치명</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.deviceName ? '정보 없음' : data.deviceName}
+						    </div>
+						
+						    <div class="table_th tbl_cc">PTT 번호</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.mcpttNum ? '정보 없음' : data.mcpttNum}
+						    </div>
 						</div>
 						<div class="table_row">
-							<div class="table_th tbl_cc">장치명</div>
-							<div class="table_td tbl_cc">${data.deviceName}</div>
-							<div class="table_th tbl_cc">PTT 번호</div>
-							<div class="table_td tbl_cc">${data.mcpttNum}</div>
+						    <div class="table_th">모델명</div>
+						    <div class="table_td">
+						        ${empty data.modelName ? '정보 없음' : data.modelName}
+						    </div>						    
+						    <div class="table_th">현재 무선방식</div>
+						    <div class="table_td">
+						        ${empty data.currentRadioType ? '정보 없음' : data.currentRadioType}
+						    </div>
+						</div>
+						
+						<div class="table_row">
+						    <div class="table_th tbl_cc">SW 버전</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.version ? '정보 없음' : data.version}
+						    </div>
+						    
+						    <div class="table_th tbl_cc">무선망 자동절체</div>
+						    <div class="table_td tbl_cc">
+						        <c:choose>
+						            <c:when test="${data.autoSwitchingRadio == 1}">예</c:when>
+						            <c:when test="${data.autoSwitchingRadio == 0}">아니오</c:when>
+						            <c:otherwise>정보 없음</c:otherwise>
+						        </c:choose>
+						    </div>
+						</div>						
+						<div class="table_row">
+						    <div class="table_th">사용 유심</div>
+						    <div class="table_td">
+						        <c:choose>
+								    <c:when test="${empty data.usimSlot}">
+								        정보 없음
+								    </c:when>
+								    <c:otherwise>
+								        ${data.usimSlot} 번 유심
+								    </c:otherwise>
+								</c:choose>
+						    </div>						    
+						    <div class="table_th">셀 아이디</div>
+						    <div class="table_td">
+						        ${empty data.cellId ? '정보 없음' : data.cellId}
+						    </div>
+						</div>				
+						<div class="table_row">
+						    <div class="table_th tbl_cc">모바일 IP</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.mobileIp ? '정보 없음' : data.mobileIp}
+						    </div>
+						    
+						    <div class="table_th tbl_cc">(GPS)위도</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.gpsLat ? '정보 없음' : data.gpsLat}
+						    </div>
+						</div>						
+						<div class="table_row">
+						    <div class="table_th">로컬 IP</div>
+						    <div class="table_td">
+						        ${empty data.localIp ? '정보 없음' : data.localIp}
+						    </div>
+						    
+						    <div class="table_th">(GPS)경도</div>
+						    <div class="table_td">
+						        ${empty data.gpsLon ? '정보 없음' : data.gpsLon}
+						    </div>
+						</div>						
+						<div class="table_row">
+						    <div class="table_th tbl_cc">IMEI</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.imei ? '정보 없음' : data.imei}
+						    </div>
+						    
+						    <div class="table_th tbl_cc">키워드</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.keywords ? '정보 없음' : data.keywords}
+						    </div>
 						</div>
 						<div class="table_row">
-							<div class="table_th">모델명</div>
-							<div class="table_td">${data.modelName}</div>
-							<div class="table_th">현재 무선방식</div>
-							<div class="table_td">${data.currentRadioType}</div>
-						</div>
+						    <div class="table_th">IMSI</div>
+						    <div class="table_td">
+						        ${empty data.imsi ? '정보 없음' : data.imsi}
+						    </div>
+						
+						    <div class="table_th">추가정보</div>
+						    <div class="table_td extraInfo" title="${data.extraInfo}">
+						        ${empty data.extraInfo ? '정보 없음' : data.extraInfo}
+						    </div>
+						</div>					
 						<div class="table_row">
-							<div class="table_th tbl_cc">SW 버전</div>
-							<div class="table_td tbl_cc">${data.version}</div>
-							<div class="table_th tbl_cc">무선망 자동절체</div>
-							<div class="table_td tbl_cc">
-								<c:choose>
-							        <c:when test="${data.autoSwitchingRadio == 1}">예</c:when>
-							        <c:when test="${data.autoSwitchingRadio == 0}">아니오</c:when>
-							    </c:choose>
-							</div>
+						    <div class="table_th tbl_cc">RSRP</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.rsrp ? '정보 없음' : data.rsrp} 
+						        <c:if test="${not empty data.rsrq}"> dBm</c:if>
+						    </div>
+						
+						    <div class="table_th tbl_cc">수신시간</div>
+						    <div class="table_td tbl_cc">
+						        ${empty data.rcvDt ? '정보 없음' : data.rcvDt}
+						    </div>
 						</div>
-						<div class="table_row">
-							<div class="table_th">사용 유심</div>
-							<div class="table_td">${data.usimSlot} 번 유심</div>
-							<div class="table_th">셀 아이디</div>
-							<div class="table_td">${data.cellId}</div>
-						</div>
-						<div class="table_row">
-							<div class="table_th tbl_cc">모바일 IP</div>
-							<div class="table_td tbl_cc">${data.mobileIp}</div>
-							<div class="table_th tbl_cc">(GPS)위도</div>
-							<div class="table_td tbl_cc">${data.gpsLat}</div>
-						</div>
-						<div class="table_row">
-							<div class="table_th">로컬 IP</div>
-							<div class="table_td">${data.localIp}</div>
-							<div class="table_th">(GPS)경도</div>
-							<div class="table_td">${data.gpsLon}</div>
-						</div>
-						<div class="table_row">
-							<div class="table_th tbl_cc">IMEI</div>
-							<div class="table_td tbl_cc">${data.imei}</div>
-							<div class="table_th tbl_cc">키워드</div>
-							<div class="table_td tbl_cc">${data.keywords}</div>
-						</div>
-						<div class="table_row">
-							<div class="table_th">IMSI</div>
-							<div class="table_td">${data.imsi}</div>
-							<div class="table_th">추가정보</div>
-							<div class="table_td extraInfo">${data.extraInfo}</div>
-						</div>
-						<div class="table_row">
-							<div class="table_th tbl_cc">RSRP</div>
-							<div class="table_td tbl_cc">${data.rsrp} dBm</div>
-							<div class="table_th tbl_cc">수신시간</div>
-							<div class="table_td tbl_cc">${data.rcvDt}</div>
-						</div>
-
 					</div>
 				
 				</div> <!-- 정보 테이블 div -->		
@@ -316,24 +375,30 @@
 			<div class="right-container"> <!-- 우측 단말기 테이블 -->
 				<div class="search_table_div">
 					<form id=searchFrm name="searchFrm" method="post" enctype="multipart/form-data" style="display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: space-around;">
-						<div class="searchType1_container">
-							<div class="searchType1_title">소속</div>
-							<div class="searchType1">
-								<select id="companyCode" name="companyCode" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">
-									
-								</select>
+						<div style="display: flex; flex-direction: column;">
+							<div id="routerCounter" style="font-size: 18px; margin-bottom: 5px;"></div>
+							<div style="display : flex;">
+								<div class="searchType1_container">
+									<div class="searchType1_title">소속</div>
+									<div class="searchType1">
+										<select id="companyCode" name="companyCode" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">										
+										</select>
+									</div>
+								</div>
+								<div class="searchType2_container">
+									<div class="searchType2_title">장치명</div>
+									<div class="searchType2">
+										<select id="deviceName" name="deviceName" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">
+											
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="searchType2_container">
-							<div class="searchType2_title">장치명</div>
-							<div class="searchType2">
-								<select id="deviceName" name="deviceName" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">
-									
-								</select>
-							</div>
-						</div>
+						
+
 						<div class="searchBox">
-							<input type="text" class="searchText" id="searchVal" name="searchVal" placeholder="검색어를 입력하세요." style="width:300px; padding-left:25px;">
+							<input type="text" class="searchText" id="searchVal" name="searchVal" title="차량번호, 제조사 등을 입력하세요." placeholder="검색어를 입력하세요." style="width:300px; padding-left:25px;">
 							<div class="search_btn" style="position: absolute; right: 20px; top: 110px;">
 		                        <button class="btn btn_sch btn_primary" onclick="search()" style="width:auto; background : none; box-shadow : none; "><div class="ico_sch_search"></div></button>
 		                    </div>

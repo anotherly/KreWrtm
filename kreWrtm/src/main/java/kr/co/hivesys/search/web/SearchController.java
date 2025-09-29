@@ -166,6 +166,14 @@ public class SearchController {
 			SearchVo data= null;
 			try {
 				data = searchService.selectDetail(inputVo);
+				
+				// datetime type 포맷팅
+				String date = data.getRcvDt();
+				if(date != null && !date.isEmpty()) {
+					String dateFtm = date.substring(0, date.length() - 2);
+					data.setRcvDt(dateFtm);
+				}
+				
 				mav.addObject("data", data);
 				mav.setViewName(url);
 				

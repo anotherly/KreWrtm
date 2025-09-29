@@ -252,7 +252,7 @@
 				<div class="datatable-list-01">
 					<div id ="btnDiv" class="btn_box" style="display: flex;flex-direction: row-reverse;float:right;">
 						<div id="btnIns" style="display: flex;justify-content: flex-end;width: 230px;">
-							<input type='button' class="btn btn_primary" id='btnInsert' value='다운로드'>
+							<!-- <input type='button' class="btn btn_primary" id='btnInsert' value='다운로드'> -->
 						</div>
 					</div>
 					<div class="page-description">
@@ -262,7 +262,7 @@
 									<tr>
 										<th>회사명</th>
 										<th>사용량(MB)</th>
-										<th>비고</th>
+										<th>등록일</th>
 									</tr>
 								</thead>
 							</table>

@@ -9,9 +9,16 @@
 </head>
 <script>
 
+	var statusVal = '${data.status}';
 	$(document).ready(function(){
 		console.log("수정");
 
+		
+		if(statusVal !=2) {
+			$('#prcDate').prop('disabled', true);
+		}
+		
+		
 		var toDate = new Date();
 		$('#datetimepicker1').datetimepicker({
 			 format:"YYYY-MM-DD",
@@ -63,6 +70,12 @@
 					validChk = false;
 					return false;
 				} else {
+					var status = $('#status').val();
+
+				    if (status !== "2") {
+				        $('#prcDate').val("");
+				    }
+				    
 					var chk = confirm("이대로 등록하시겠습니까?");
 					
 					if(chk) {
@@ -101,6 +114,19 @@
 		// 취소 버튼 클릭 시 이전 페이지로 이동
 		$("#btnCancel").on('click', function(){
 			history.back();
+		});
+		
+		
+		$('#status').change(function() {
+		    const selectedValue = $(this).val();
+		    
+		    if (selectedValue === "2") {
+		        $('#prcDate').prop('disabled', false); 
+		    } else {
+		        $('#prcDate').prop('disabled', true);  
+		    }
+
+		    
 		});
 	});
 	
@@ -145,8 +171,14 @@
 								<div class="ctn_tbl_td">
 									<input type="text" id="carNum" name ="carNum" value="${data.carNum}" maxlength="6" class="form-control input_base_require">
 								</div>
-								<div class="ctn_tbl_td"></div>
-								<div class="ctn_tbl_td"></div>
+								<div class="ctn_tbl_th fm_rep">진행 상태</div>
+								<div class="ctn_tbl_td">
+								    <select id="status" name="status" class="form-control">
+								        <option value="0" ${data.status == '0' ? 'selected' : ''}>조치 진행중</option>
+								        <option value="1" ${data.status == '1' ? 'selected' : ''}>조치 미완료</option>
+								        <option value="2" ${data.status == '2' ? 'selected' : ''}>조치 완료</option>
+								    </select>
+								</div>
 							</div>
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">신고 일시</div>
@@ -158,7 +190,7 @@
 										</span>
 									</div>
 								</div>
-								<div class="ctn_tbl_th fm_rep">처리 일시</div>
+								<div class="ctn_tbl_th">처리 일시</div>
 								<div class="ctn_tbl_td">
 									<div class='input-group date' id='datetimepicker2'>
 										<input type='text' class="form-cont" name="prcDate" id="prcDate" value="${data.prcDate}" required/>

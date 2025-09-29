@@ -16,8 +16,7 @@
 	var searchSendValue = '${searchVal}';
 
 	$(document).ready(function() {
-		
-		console.log(searchSendValue);
+
 		// 기본 검색어 셋팅
 		$('#searchVal').val(searchSendValue);
 	
@@ -31,6 +30,7 @@
 			},
 			columns: [
 				{ data: "version" },
+				{ data: "companyName" },
 				{
 				    data: "deviceName",
 				    render: function(data, type, row, meta) {
@@ -71,8 +71,8 @@
 		//상세 화면 조회
 		$("#tableList").on("click","tr",function () {			
 			var tagUrl = "/search/monitering.do";
-		    var tagId = $(this).find("td:eq(1) input[type='hidden']").val(); // 장치명에 hidden 처리 된 deviceId 가져오기
-		    
+		    var tagId = $(this).find("td:eq(2) input[type='hidden']").val(); // 장치명에 hidden 처리 된 deviceId 가져오기
+
 		    window.location = tagUrl + "?deviceId=" + tagId;  // 모니터링(상세)으로 이동
 		});
 		
@@ -80,13 +80,12 @@
 	}); 
 
 	function search() {
-		console.log("검색");
 		let frm = $("#searchFrm").serialize();
 		var tagUrl = "/search/list.ajax";
 	
 		var searchVal = $('#searchVal').val();
 	
-		if (searchVal.length > 0 && searchVal.length < 2) {
+		if (searchVal.length < 2) {
 			alert("검색어가 너무 짧습니다. 2글자 이상 입력해주세요.");
 			return false;
 		} else {
@@ -132,10 +131,11 @@
                 <div class="datatable-list-01">
 					<div class="page-description">
 						<div class="rows">
-							<table id="tableList" class="table table-bordered" style="width: 100%;">
+							<table id="tableList" class="table table-bordered" style="min-width: 1200px;">
 								<thead>
 									<tr>
 										<th>SW 버전</th>
+										<th>회사명</th>
 										<th>장치명</th>
 										<th>모델명</th>
 										<th>차량 번호</th>

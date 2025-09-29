@@ -42,18 +42,14 @@
 		resultMap="routerInfoMap">
 		SELECT J2.* FROM
 		(
-			SELECT J1.*,C.ORG_NAME FROM
-			(
-				SELECT A.*,B.COMPANY_NAME,B.USER_TYPE FROM 
-				TBL_ROUTER_INFO A
-				LEFT JOIN
-				(select * from TBL_COMPANY_INFO) B
-				ON A.COMPANY_CODE=B.COMPANY_CODE
-			)J1
-			LEFT JOIN tbl_org_info C 
-			ON J1.ORG_ID=C.ORG_ID
+			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE FROM 
+			TBL_ROUTER_INFO A
+			LEFT JOIN
+			(select * from TBL_COMPANY_INFO) B
+			ON A.COMPANY_CODE=B.COMPANY_CODE
 		)J2
 		where 1=1
+		and device_id !=null
 		<!-- pk -->
 		<if test="tagId != null and tagId neq ''">
 			and device_id=#{tagId}
@@ -99,7 +95,7 @@
 	<insert id="insert" parameterType="routerVo">
 		INSERT INTO TBL_ROUTER_INFO
 		(device_id,device_name, model_name, volte_num, keywords,
-		company_code, org_id, car_num,
+		company_code, car_num,
 		update_date, maker_phone_1, maker_phone_2,
 		reg_date, extra_info, created_by)
 		VALUES
@@ -110,7 +106,6 @@
 			#{volteNum}, 
 			#{keywords},
 			#{companyCode}, 
-			#{orgId}, 
 			#{carNum},
 			#{updateDate}, 
 			#{makerPhone1}, 
@@ -130,7 +125,6 @@
 		volte_num = #{volteNum},
 		keywords = #{keywords},
 		company_code = #{companyCode},
-		org_id = #{orgId},
 		car_num = #{carNum},
 		update_date = #{updateDate},
 		maker_phone_1 = #{makerPhone1},

@@ -25,6 +25,7 @@
 		<result property="keywords" column="KEYWORDS"/>
 		<result property="version" column="VERSION"/>
 		<result property="location" column="LOCATION"/>
+		<result property="companyName" column="COMPANY_NAME"/>
 	</resultMap>
 
 	<select id="searchDataList" parameterType="searchVo" resultMap="searchDataList">
@@ -36,16 +37,18 @@
 	        r.volte_num,
 	        r.keywords,
 	        l.version,
-	        l.location
+	        l.location,
+	        c.company_name  
 	    FROM 
 	        tbl_router_info r
 	    LEFT JOIN 
-	        tbl_last_data l
-	        ON r.volte_num = l.volte_num
+	        tbl_last_data l ON r.volte_num = l.volte_num
+	    LEFT JOIN 
+	        tbl_company_info c ON r.company_code = c.company_code  
 	
 	    <where>
 	        <if test="searchVal != null and searchVal != ''">
-	           (
+	            (
 	                r.device_name LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.model_name LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.car_num LIKE CONCAT('%', #{searchVal}, '%')
@@ -53,15 +56,17 @@
 	                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
 	                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
 	                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
+	                OR c.company_name LIKE CONCAT('%', #{searchVal}, '%') 
 	            )
 	        </if>
-	        <if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode !='all'">
+	        <if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode != 'all'">
 	            AND r.company_code = #{companyCode}
 	        </if>
 	    </where>
 	
 	    ORDER BY r.car_num DESC
 	</select>
+
 	
 	
 	

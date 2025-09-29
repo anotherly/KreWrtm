@@ -58,7 +58,7 @@ function trainOne(alData){
 	plusPage=6-($("#routerTable tr").length%6);
 	
 	hideTr(startNum*6,endNum*6);
-
+	
 }
 
 //tr을 생성하고 행번호를 생성
