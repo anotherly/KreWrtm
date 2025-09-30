@@ -7,21 +7,23 @@
 
 	<!-- RouterInfoVO 매핑 -->
 	<resultMap id="routerInfoMap" type="routerVo">
-		<id property="deviceId" column="device_id" />
-		<result property="deviceName" column="device_name" />
-		<result property="modelName" column="model_name" />
-		<result property="volteNum" column="volte_num" />
-		<result property="keywords" column="keywords" />
-		<result property="companyCode" column="company_code" />
-		<result property="companyName" column="company_name" />
-		<result property="orgId" column="org_id" />
-		<result property="orgName" column="org_name" />
-		<result property="carNum" column="car_num" />
-		<result property="updateDate" column="update_date" />
-		<result property="makerPhone1" column="maker_phone_1" />
-		<result property="makerPhone2" column="maker_phone_2" />
-		<result property="regDate" column="reg_date" />
-		<result property="extraInfo" column="extra_info" />
+		<id property="deviceId" column="DEVICE_ID"/>
+		<result property="deviceName" column="DEVICE_NAME" />
+		<result property="modelName" column="MODEL_NAME" />
+		<result property="volteNum" column="VOLTE_NUM" />
+		<result property="keywords" column="KEYWORDS" />
+		<result property="companyCode" column="COMPANY_CODE" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="carNum" column="CAR_NUM" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="makerPhone1" column="MAKER_PHONE_1" />
+		<result property="makerPhone2" column="MAKER_PHONE_2" />
+		<result property="regDate" column="REG_DATE" />
+		<result property="extraInfo" column="EXTRA_INFO" />
+		<result property="createdAt" column="CREATED_AT"/> 
+    	<result property="createdBy" column="CREATED_BY"/>  
+    	<result property="updatedAt" column="UPDATED_AT"/>  
+    	<result property="updatedBy" column="UPDATED_BY"/>   
 	</resultMap>
 
 	<!-- SELECT: PK 단건 -->
@@ -29,17 +31,12 @@
 		resultMap="routerInfoMap">
 		SELECT * FROM TBL_ROUTER_INFO
 		WHERE 1=1
-		<if test="deviceId != null and deviceId neq ''">
-			AND device_id = #{deviceId}
-		</if> 
-		<if test="volteNum != null and volteNum neq ''">
-			AND volte_num = #{volteNum}
-		</if> 
+		AND device_id = #{tagId}
 	</select>
 
 	<!-- SELECT: 소속별 목록 -->
-	<select id="selectList" parameterType="routerVo"
-		resultMap="routerInfoMap">
+	
+	<select id="selectList" parameterType="routerVo" resultMap="routerInfoMap">
 		SELECT J2.* FROM
 		(
 			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE FROM 
@@ -49,11 +46,7 @@
 			ON A.COMPANY_CODE=B.COMPANY_CODE
 		)J2
 		where 1=1
-		and device_id !=null
-		<!-- pk -->
-		<if test="tagId != null and tagId neq ''">
-			and device_id=#{tagId}
-		</if>
+
 		<!-- 권한 -->
 		<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
 		    and J2.company_code = #{companyCode}
@@ -89,7 +82,7 @@
 			</choose>
 		</if>
 		ORDER BY reg_date ASC
-	</select>
+	</select> 
 
 	<!-- INSERT: AUTO_INCREMENT 키 반환 -->
 	<insert id="insert" parameterType="routerVo">

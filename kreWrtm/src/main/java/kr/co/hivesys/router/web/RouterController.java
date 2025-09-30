@@ -57,10 +57,9 @@ public class RouterController{
 			,@ModelAttribute("routerVO") RouterVO inputVo) throws Exception{
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
 		ModelAndView mav = new ModelAndView("jsonView");
-		List<RouterVO> sList= null;
+		RouterVO sList= null;
 		try {
-			sList =
-					routerService.select(inputVo);
+			sList = routerService.select(inputVo);
 			mav.addObject("data", sList);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,7 +138,7 @@ public class RouterController{
 		return mav;
 	}
 	
-	//(상셰)
+	//(상세)
 	@RequestMapping(value= {"/router/routerDetail.do","/router/routerUpdate.do"})
 	public @ResponseBody ModelAndView Detail( 
 	HttpServletRequest request, HttpServletResponse response
@@ -149,6 +148,7 @@ public class RouterController{
 		
 		ModelAndView mav = new ModelAndView(url);
 		RouterVO data= null;
+		
 		//로그인한 세션을 받아와 주입
 		UserVO nlvo = (UserVO) request.getSession().getAttribute("login");
 		OrgVO ovo = nlvo;
@@ -157,7 +157,8 @@ public class RouterController{
 		try {
 			orgList = orgService.select(ovo);
 			comList=companyService.select(ovo);
-			data = routerService.select(inputVo).get(0);
+			data = routerService.select(inputVo);
+			
 			mav.addObject("orgList", orgList);
 			mav.addObject("comList", comList);
 			mav.addObject("data", data);

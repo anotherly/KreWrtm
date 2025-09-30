@@ -170,7 +170,7 @@
 					<div class="ttl_ctn">장치 목록</div>
 				</div>
                 <!-- search_box Start -->
-                <div class="search_box">
+                <div class="search_box" style="margin-bottom: calc(10px + 2vh);">
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group" >
                             <select class="table_sel"  style="width: 164px; height:100%;"  name="searchType">

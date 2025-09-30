@@ -7,143 +7,25 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-/* 	var teamCode='';
-	var chkTerId='';
-	$(document).ready(function(){
-		
-		var alData=ajaxMethod("/router/routerList.ajax");
-		trainOne(alData.data);
-		
-		//시간 갱신
-		$("#nowDt").text(alData.nowDt);
-		
-		console.log("chart 진입");
-		
-		//페이징 처리
-		$('#paging span').on('click',function(){
-			var btnId=$(this).attr('id');
-			if (btnId=='pageStart') {//앞으로 가기
-				//starNum이 0보다 작을경우 반응하지 않음
-				if(startNum>0){
-					startNum=startNum-1;
-					endNum=endNum-1;
-					hideTr(startNum*6,endNum*6);
-				}
-			} else {//뒤로 가기
-				//최대 페이지 수-1 보다 
-				if(startNum<maxPage){
-					startNum=startNum+1;
-					endNum=endNum+1;
-					hideTr(startNum*6,endNum*6);
-				}
-			}
-		});
-		//우측상단 탭 클릭시
-		//팀별 조회
-		$(".arex_tab").on('click',function(){
-			//색상 활성 비활성
-			var parDiv=$(this).parent().children();
-			$(parDiv).each(function(i,list){
-				$(list).removeClass('selected');
-			});
-			var tagId = $(this).attr('id');
-			$(this).addClass('selected');
-			
-			if(tagId!='tab_all'){
-				teamCode=tagId;
-			}else{
-				teamCode='';
-			}
-			alData=ajaxMethod("/terminal/list.ajax",{"teamCode":teamCode}).data;
-			if(alData.length!=0){
-				trainOne(alData);
-			}
-		});
-		
-		//좌측 메인차트 갱신
-		mainChartTimer=setInterval(function(){
-			$("#all_chart").empty();
-		},30*1000);
-		
-		//우측 단말기 갱신
-		tableTimer=setInterval(function(){
-			console.log("우측 단말기 갱신");
-			var alData=ajaxMethod("/terminal/list.ajax");
-			trainOne(alData.data);
-			
-			//시간 갱신
-			$("#nowDt").text(alData.nowDt);
-			
-			//상세보기에서 갱신되도 배경선택은 유지하도록
-			var tblist= $(".lte-table td");
-	    	$(tblist).each(function(i,list){
-	    		if(list==chkTerId){
-	    			$(list).addClass('selected');
-	    		}
-			});
-			
-		},30*1000);
-	});
-	
-	//동적 테이블(삭제 및 갱신)시 td 클릭 이벤트
-	//차트 상세
-    $(document).on('click','#trainTb td',function(){
-    	var tblist= $(".lte-table td");
-    	$(tblist).each(function(i,list){
-			$(list).removeClass('selected');
-		});
-    	$(this).addClass("selected");
-    	chartTimerReset();
-    	
-    	$("#all_chart").empty();
-    	
-    	chkTerId=$(this).attr('id');
-    	$("#all_chart").load("/chart/subDetail.do",{"lteRIp":chkTerId});
-    }); */
-    
-    
-    
+
     $(document).ready(function(){
-    	
-    	dtTbSetting();
-    	var tb2=$("#tableList").DataTable({
-			ajax : {
-                "url":"/main/Datalist.ajax",
-                "type":"POST",
-                "dataType": "json",
-            },  
-             columns: [
-            	{data:"companyName"},
-                {data:"firmUse"},
-                {data:"etc"}
-            ],
-            lengthChange: false, 
-            "pageLength": 5,
-            pagingType : "full_numbers",
-            columnDefs: [ 
-            	{ orderable: false, targets: [0] }
-            	,{className: "dt-center",targets: "_all"} 
-            ],
-            select: {
-                style:    'multi',
-                selector: 'td:first-child'
-            },
-            responsive: true
-           ,language : lang_kor ,
-           dom: 'lrtip'
-		});
-    	
-    	
-    	
+
+    	// 가져온 데이터 분할
+    	var hiveMB = '${HIVE}';
+    	var koneMB = '${KONE}';
+    	var kregMB = '${KREG}';
+    	var kremMB = '${KREM}';
+ 
     	
         // 차트 생성
         var chart = c3.generate({
             bindto: '.ring_chart_div',
             data: {
                 columns: [
-                    ['에스트레픽', 0.5],  
-                    ['케이원', 3.9],  
-                    ['회명정보통신', 95.4] 
+                    ['하이브시스템', hiveMB],  
+                    ['케이원', koneMB],  
+                    ['구로관제', kregMB] ,
+                    ['중앙관제', kremMB]
                 ],
                 type: 'donut'  
             },
@@ -192,6 +74,7 @@
 
     	
     });
+    
 	
 </script>
 <style>
@@ -257,14 +140,42 @@
 					</div>
 					<div class="page-description">
 						<div class="rows">
-							<table id="tableList" class="table table-bordered" style="width: 100%;">
+							<table id="tableList" style="min-width : 800px; margin-top : 70px;">
 								<thead>
-									<tr>
-										<th>회사명</th>
-										<th>사용량(MB)</th>
-										<th>등록일</th>
+									<tr style="height :40px;">
+										<th style="min-width : 290px;">회사명</th>
+										<th style="min-width : 252px;">사용량(MB)</th>
+										<th style="min-width : 257px;">등록일</th>
 									</tr>
 								</thead>
+								<tbody>
+									<tr style="height :40px;">
+										<td style="text-align: center; background-color : white;">하이브 시스템</td>
+										<td style="text-align: center; background-color : white;">${HIVE}</td>
+										<td style="text-align: center; background-color : white;">${hiveRegDt}</td>
+									</tr>
+									<tr style="height :40px;">
+										<td style="text-align: center; background-color : white;">케이원</td>
+										<td style="text-align: center; background-color : white;">${KONE}</td>
+										<td style="text-align: center; background-color : white;">${koneRegDt}</td>
+									</tr>
+									<tr style="height :40px;">
+										<td style="text-align: center; background-color : white;">구로관제</td>
+										<td style="text-align: center; background-color : white;">${KREG}</td>
+										<td style="text-align: center; background-color : white;">${kregRegDt}</td>
+									</tr>
+									<tr style="height :40px;">
+										<td style="text-align: center; background-color : white;">중앙관제</td>
+										<td style="text-align: center; background-color : white;">${KREM}</td>
+										<td style="text-align: center; background-color : white;">${kremRegDt}</td>
+									</tr>
+									<tr style="height :40px;">
+										<c:set var="totalMB" value="${HIVE + KONE + KREG + KREM}" />
+										<td style="text-align: center; background-color : white;">합계</td>
+										<td style="text-align: center; background-color : white;">${totalMB}</td>
+										<td style="background-color : white;"></td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 					</div>

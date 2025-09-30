@@ -133,6 +133,22 @@
 	            '<option value="' + device.deviceName + '">' + device.deviceName + '</option>'
 	        );
 	    });
+	    
+	    
+	    // 원격제어 버튼
+	    $('.custom-btn').on('click', function() {
+	    	var clickCar = $(this).attr('id');
+	    	console.log("버튼 클릭 : " + clickCar);
+	    	
+	    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
+	    	
+	    	if(chkRemote) {
+	    		ajaxMethod("/remote/remoteControll.ajax",{"carNum" : clickCar});
+	    	} else {
+	    		return false;
+	    	}	    	
+	    });
+	    
 
 	}
 	
@@ -369,7 +385,7 @@
 				
 				</div> <!-- 정보 테이블 div -->		
 				<div class="click_remote_div">
-					<button class="custom-btn btn-1">원격제어 <br> 차량번호 : ${data.carNum}</button>
+					<button class="custom-btn btn-1" id="${data.carNum}">원격제어 <br> 차량번호 : ${data.carNum}</button>
 				</div> <!-- 원격제어 버튼 div -->
 			</div>
 			<div class="right-container"> <!-- 우측 단말기 테이블 -->

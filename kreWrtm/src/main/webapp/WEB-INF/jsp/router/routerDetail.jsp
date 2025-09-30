@@ -9,10 +9,10 @@
 <jsp:include page="../cmn/top.jsp" flush="false" />
 
 <script>
+	var tagId='${data.deviceId}';
 
 	$(document).ready(function(){
 		console.log("상세");
-		var tagId='${data.deviceId}';
 		$("#btnSave").on('click', function(){
 			location.href='/router/routerUpdate.do?tagId='+tagId;
 		});

@@ -12,7 +12,7 @@ public interface RouterMapper {
 
 	void insert(RouterVO thvo);
 
-	List<RouterVO> select(RouterVO thvo);
+	public RouterVO select(RouterVO thvo) throws Exception;
 
 	void update(RouterVO thvo);
 	

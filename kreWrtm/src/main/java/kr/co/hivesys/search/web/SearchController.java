@@ -13,11 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import kr.co.hivesys.dataroom.vo.DataroomVO;
 import kr.co.hivesys.search.service.SearchService;
 import kr.co.hivesys.search.vo.SearchVo;
 import kr.co.hivesys.user.vo.UserVO;
@@ -184,5 +182,30 @@ public class SearchController {
 			}
 			return mav;
 	}
+	
+	
+	
+	// 원격 제어 버튼 클릭 시 실행
+	@RequestMapping(value="/remote/remoteControll.ajax")
+	public @ResponseBody ModelAndView remoteController(HttpServletRequest request, @ModelAttribute("SearchVo") SearchVo inputVo) throws Exception{
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+
+		try {			
+			String carNum = inputVo.getCarNum();
+			
+			String filePath = "C:\\RemoteControll\\remoteControll.txt";
+	        String cmd = "cmd /c start \"\" \"" + filePath + "\"";
+
+	        Process process = Runtime.getRuntime().exec(cmd);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("에러메시지 : "+e.toString());
+		}
+		return mav;
+	}
+	
 	
 }

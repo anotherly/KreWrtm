@@ -35,6 +35,10 @@ public class RouterVO extends OrgVO {
 
 	/** 추가정보 */
 	private String extraInfo;
+	
+	private String createdBy;
+	
+	private String updatedBy;
 
 	// ===== Getter / Setter =====
 	public String getDeviceId() {
@@ -115,6 +119,22 @@ public class RouterVO extends OrgVO {
 
 	public void setExtraInfo(String extraInfo) {
 		this.extraInfo = extraInfo;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 
 }

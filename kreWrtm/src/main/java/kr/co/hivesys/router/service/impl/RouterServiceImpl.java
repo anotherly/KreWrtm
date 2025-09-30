@@ -2,9 +2,10 @@ package kr.co.hivesys.router.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.hivesys.router.mapper.RouterMapper;
 import kr.co.hivesys.router.service.RouterService;
@@ -26,7 +27,7 @@ public class RouterServiceImpl implements RouterService {
 	}
 
 	@Override
-	public List<RouterVO> select(RouterVO thVo) {
+	public RouterVO select(RouterVO thVo) throws Exception{
 		return routerMapper.select(thVo);
 	}
 
