@@ -39,10 +39,21 @@ public class RouterVO extends OrgVO {
 	private String createdBy;
 	
 	private String updatedBy;
+	
+	private String routerCount;
 
 	// ===== Getter / Setter =====
+	
 	public String getDeviceId() {
 		return deviceId;
+	}
+
+	public String getRouterCount() {
+		return routerCount;
+	}
+
+	public void setRouterCount(String routerCount) {
+		this.routerCount = routerCount;
 	}
 
 	public void setDeviceId(String deviceId) {

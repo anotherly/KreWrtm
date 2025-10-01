@@ -17,11 +17,68 @@
 		<result property="etc" column="ETC"/>
 	</resultMap>
 	
+	<resultMap type="kr.co.hivesys.router.vo.RouterVO" id="selectRouterList">
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="routerCount" column="ROUTER_COUNT"/>
+	</resultMap>
+	
 	<select id="selectDataList" parameterType="kr.co.hivesys.chart.vo.ChartVo" resultMap="selectDataList">
 		select * from tbl_use_info
 	
 	</select>
 
+	<select id="routerList" parameterType="kr.co.hivesys.router.vo.RouterVO" resultMap="selectRouterList">
+		SELECT 
+		    B.COMPANY_NAME, 
+		    COUNT(*) AS ROUTER_COUNT
+		FROM 
+		    TBL_ROUTER_INFO A
+		LEFT JOIN 
+		    TBL_COMPANY_INFO B
+		    ON A.COMPANY_CODE = B.COMPANY_CODE
+		GROUP BY 
+		    A.COMPANY_CODE, B.COMPANY_NAME
+	</select>
 
+
+	<resultMap id="CompanyInfoMap" type="companyVo">
+	    <id     property="companyCode" column="company_code"/>
+	    <result property="companyName" column="company_name"/>
+	    <result property="userType"    column="user_type"/>
+	    <result property="regDate"     column="reg_date"/>
+	    <result property="createdAt"   column="created_at"/>
+	    <result property="updatedAt"   column="updated_at"/>
+	    <result property="rsrqAvg" column="rsrq_avg"/>
+	    <result property="todayCnt" column="today_cnt"/>
+	  </resultMap>
+  
+	<select id="getComCode" resultMap="CompanyInfoMap">
+		SELECT COMPANY_CODE, COMPANY_NAME FROM TBL_COMPANY_INFO
+		ORDER BY COMPANY_CODE ASC
+	</select>
+	
+	<!-- AND b.company_code IS NOT NULL은 tbl_last_data와 tbl_router_info와 volteNum이 
+	일치 하지 않기 때문에 임시로 넣은 것임 -->
+	<select id="currentList" resultMap="CompanyInfoMap">  
+		SELECT b.company_code, COUNT(*) AS today_cnt
+		FROM tbl_last_data a
+		LEFT JOIN tbl_router_info b
+		  ON a.volte_num = b.volte_num
+		WHERE DATE(a.rcv_dt) = CURDATE()
+		  AND b.company_code IS NOT NULL  
+		GROUP BY b.company_code
+		ORDER BY b.company_code asc
+	</select>
+	
+	<select id="rsrqAvgList" resultMap="CompanyInfoMap">
+		SELECT b.company_code, AVG(a.rsrq) AS rsrq_avg
+		FROM tbl_last_data a
+		LEFT JOIN tbl_router_info b
+		  ON a.volte_num = b.volte_num
+		WHERE DATE(a.rcv_dt) = CURDATE()
+		  AND b.company_code IS NOT NULL
+		GROUP BY b.company_code
+		ORDER BY b.company_code asc
+	</select>
 	
 </mapper>

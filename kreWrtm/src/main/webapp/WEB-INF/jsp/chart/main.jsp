@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,18 +16,22 @@
     	var koneMB = '${KONE}';
     	var kregMB = '${KREG}';
     	var kremMB = '${KREM}';
- 
     	
+    	
+    	// 회사별 단말기 현황 
+    	var routerCntList = ajaxMethod("/chart/routerList.ajax").routerList;    	
+     	var columnsData = [];  // 차트 동적 생성을 위한 배열 변수 초기화
+
+     	// 차트 동적 생성을 위한 배열에 데이터 삽입
+        routerCntList.forEach(function(item) {
+            columnsData.push([item.companyName, item.routerCount]);
+        }); 
+        
         // 차트 생성
         var chart = c3.generate({
             bindto: '.ring_chart_div',
             data: {
-                columns: [
-                    ['하이브시스템', hiveMB],  
-                    ['케이원', koneMB],  
-                    ['구로관제', kregMB] ,
-                    ['중앙관제', kremMB]
-                ],
+                columns: columnsData, // Line : 22~27
                 type: 'donut'  
             },
             legend: {
@@ -34,41 +39,39 @@
             }
         });
         
+       
+     
+        // 차트 생성
         
+        var result = ${resultJson};
         
         var chart = c3.generate({
-            bindto: '.bar_chart_div',  
+            bindto: '.bar_chart_div',
             data: {
+                x: 'x',   // x축 지정
                 columns: [
-                    ['에스트레픽', 30, 200, 200, 400, 150, 250],  
-                    ['케이원', 130, 100, 100, 200, 150, 50],  
-                    ['회명정보통신', 230, 200, 200, 300, 250, 250] 
+                    ['x'].concat(result.x),                 // 회사명
+                    ['사용량'].concat(result["사용량"]),     // 사용량
+                    ['수신 데이터량'].concat(result["수신 데이터량"]), // 수신량
+                    ['RSRQ'].concat(result["RSRQ"].map(function(v){ return Math.abs(v); })) // 절대값처리
                 ],
-                type: 'bar',  
+                type: 'bar',
                 groups: [
-                    ['에스트레픽', '케이원' ,'회명정보통신']  
+                    // ['사용량','수신 데이터량','RSRQ']
                 ]
-            },
-            grid: {
-                y: {
-                    lines: [{value: 0}]  
-                }
             },
             axis: {
                 x: {
-                    tick: {
-                        rotate: 0,  
-                        multiline: false
-                    }
-                },
-                y: {
-
+                    type: 'category' // 문자열 축
                 }
             },
             bar: {
                 width: {
-                    ratio: 0.5  
+                    ratio: 0.6
                 }
+            },
+            legend: {
+                position: 'bottom'
             }
         });
 
@@ -127,7 +130,7 @@
 			<div class="top_container">
 				<div class="ring_chart_container">
 				<div class="ctn_tbl_header" style="margin-top : 20px;">
-					<div class="ttl_ctn">회사별 펌웨어 사용 비율</div>
+					<div class="ttl_ctn">회사별 단말기 현황</div>
 				</div>
 				<div class="ring_chart_div">
 				</div>
@@ -141,42 +144,37 @@
 					<div class="page-description">
 						<div class="rows">
 							<table id="tableList" style="min-width : 800px; margin-top : 70px;">
-								<thead>
-									<tr style="height :40px;">
-										<th style="min-width : 290px;">회사명</th>
-										<th style="min-width : 252px;">사용량(MB)</th>
-										<th style="min-width : 257px;">등록일</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr style="height :40px;">
-										<td style="text-align: center; background-color : white;">하이브 시스템</td>
-										<td style="text-align: center; background-color : white;">${HIVE}</td>
-										<td style="text-align: center; background-color : white;">${hiveRegDt}</td>
-									</tr>
-									<tr style="height :40px;">
-										<td style="text-align: center; background-color : white;">케이원</td>
-										<td style="text-align: center; background-color : white;">${KONE}</td>
-										<td style="text-align: center; background-color : white;">${koneRegDt}</td>
-									</tr>
-									<tr style="height :40px;">
-										<td style="text-align: center; background-color : white;">구로관제</td>
-										<td style="text-align: center; background-color : white;">${KREG}</td>
-										<td style="text-align: center; background-color : white;">${kregRegDt}</td>
-									</tr>
-									<tr style="height :40px;">
-										<td style="text-align: center; background-color : white;">중앙관제</td>
-										<td style="text-align: center; background-color : white;">${KREM}</td>
-										<td style="text-align: center; background-color : white;">${kremRegDt}</td>
-									</tr>
-									<tr style="height :40px;">
-										<c:set var="totalMB" value="${HIVE + KONE + KREG + KREM}" />
-										<td style="text-align: center; background-color : white;">합계</td>
-										<td style="text-align: center; background-color : white;">${totalMB}</td>
-										<td style="background-color : white;"></td>
-									</tr>
-								</tbody>
-							</table>
+						    <thead>
+						        <tr style="height :40px;">
+						            <th style="min-width : 290px;">회사명</th>
+						            <th style="min-width : 252px;">사용량(MB)</th>
+						            <th style="min-width : 257px;">등록일</th>
+						        </tr>
+						    </thead>
+						    <tbody>
+						        <!-- 회사별 데이터 반복 출력 -->
+						        <c:forEach var="company" items="${firmUseList}">
+						            <tr style="height :40px;">
+						                <td style="text-align: center; background-color : white;">
+						                    ${company.companyName}
+						                </td>
+						                <td style="text-align: center; background-color : white;">
+						                    ${company.dirMb}
+						                </td>
+						                <td style="text-align: center; background-color : white;">
+						                    - ${company.dirRegDt}
+						                </td>
+						            </tr>
+						        </c:forEach>
+						
+						        <!-- 합계 행 -->
+						        <tr style="height :40px;">
+						            <td style="text-align: center; background-color : white;">합계</td>
+						            <td style="text-align: center; background-color : white;">${firmUseCnt}</td>
+						            <td style="background-color : white;"></td>
+						        </tr>
+						    </tbody>
+						</table>
 						</div>
 					</div>
 				
@@ -184,7 +182,7 @@
 			</div>
 			<div class="bottom_container">
 				<div class="ctn_tbl_header" >
-					<div class="ttl_ctn">금일 시간대별 사용량</div>
+					<div class="ttl_ctn">제조사별 수신량 / 성능</div>
 				</div>
 				<div class="bar_chart_div"></div>
 			</div>

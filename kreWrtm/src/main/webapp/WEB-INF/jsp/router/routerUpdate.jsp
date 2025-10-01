@@ -17,6 +17,14 @@
 			var modNm = '${data.modelName}';
 			var devNm = '${data.deviceName}';
 			
+			var userTypeVal = $('#userType').val();
+			changeSelect(userTypeVal);
+			
+			var companyCodeVal = '${data.companyCode}';
+			var userType = '${data.userType}';
+			
+			selectDropBox(companyCodeVal , userType);
+			
 			//모델명 치환
 			modNm=modNm.replaceAll('-'+devNm,'');
 			$("#modelName").val(modNm);
@@ -30,15 +38,7 @@
 			  $("#deviceName").on("input", function(){
 			    $("#modelNameDisplay").text($(this).val());
 			  });
-				/* 회사코드에 따른 조회 */
-			  $("#userType").on("change", function(){
-				  var selectList = ajaxMethod("/org/comCodeOrg.ajax",{"companyCode":$(this).val()}).data;
-				  $("#orgSel").empty();
-				  $(selectList).each(function(i,list){
-					  $("#orgSel").append("<option value='"+list.orgId+"'>"+list.orgName+"</option>");
-					 
-				  });
-			  });
+
 			//volte 중복확인
 			$('input[name ="volteNum"]').on("change",function(){
 				dupChkFlag = false;
@@ -48,21 +48,22 @@
 				  if(volteVal.length<11){
 					  alert("유효한 volte 값을 입력하세요");
 				  }else{
-					  var selectOne = ajaxMethod("/router/selectOne.ajax",{"volteNum":volteVal}).data.length;
-					  if(selectOne>0){
-						  if(volteVal==bfVolte){
-							  alert("기존과 동일한 volte 번호입니다");
-						  }else{
-							  dupChkFlag = false;
-							  $("#dupComment").empty();
-							  $("#dupComment").css('color','red');
-							  $("#dupComment").append("사용중인 volte 번호입니다");
-						  }
+					  var selectOne = ajaxMethod("/router/selectOne.ajax",{"volteNum":volteVal}).result;
+					  if(selectOne != 0){
+						  dupChkFlag = false;
+						  $("#dupComment").empty();
+						  $("#dupComment").css('color','red');
+						  $("#dupComment").append("사용중인 volte 번호입니다");
+						  
+						  $('#phoneCell').val("");
+						  
 					  }else{
 						  dupChkFlag = true;
 						  $("#dupComment").empty();
 						  $("#dupComment").css('color','blue');
 						  $("#dupComment").append("사용 가능한 volte 번호입니다");
+
+						  $('#phoneCell').val(volteVal2);
 					  }
 				  }
 			});
@@ -90,7 +91,51 @@
 			$("#btnCancel").on('click',function(){
 				location.href='/router/routerList.do';
 			});
+			
+			//select 변경할 때 마다 실행하는 함수
+			$('#userType').on('change', function () {
+			      var userValue = $(this).val();
+			      changeSelect(userValue);
+			});
 		});
+		
+		
+		
+		// ajax 요청하는 함수
+		function changeSelect(userType) {
+			event.preventDefault(); 
+			var comData = ajaxMethod("/router/selectCompany.ajax",{"userType":userType}).data;
+			
+			// option 요소 동적 생성
+			$('#companyCode').empty(); 
+			
+			var loginComcode = '${login.companyCode}';
+			var userType = '${login.userType}';
+			
+			if(userType != '코레일') {
+				comData.forEach(function(company) {
+				    if (company.companyCode == loginComcode) {  
+				        $('#companyCode').append(
+				            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+				        );
+				    }
+				});
+			} else {
+				comData.forEach(function(company) {
+			        $('#companyCode').append(
+			            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+			        );
+			    });
+			}
+		
+		}
+		
+		
+		
+		function selectDropBox(companyCode, userType) {
+			$("#companyCode").val(companyCode);
+		}
+		
 	</script>
 
 </head>
@@ -205,22 +250,18 @@
 							</div>
 						
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th  fm_rep">제조사</div>
+								<div class="ctn_tbl_th  fm_rep">사용자 유형</div>
 								<div class="ctn_tbl_td">
-									<select id="userType" name ="companyCode">
-										<c:forEach var="comVo" items="${comList}">
-									        <option value="${comVo.companyCode}" <c:if test="${comVo.companyCode eq data.companyCode}">selected</c:if>>
-									        	${comVo.companyName}
-									        </option>
+									<select class="table_sel"  style="width: 164px; height:100%;" id="userType" name ="userType">
+										<c:forEach var="orgVo" items="${orgList}">
+									        <option value="${orgVo.userType}" <c:if test="${orgVo.userType eq data.userType}">selected</c:if>>${orgVo.userType}</option>
 									    </c:forEach>
 									</select>
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-		                            <select class="table_sel"  style="width: 164px; height:100%;" id="orgSel" name="orgId">
-									    <c:forEach var="orgVo" items="${orgList}">
-									        <option value="${orgVo.orgId}" <c:if test="${orgVo.orgId eq data.orgId}">selected</c:if>>${orgVo.orgName}</option>
-									    </c:forEach>
+		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyCode">
+
 									</select>
 								</div>
 							</div>
@@ -244,7 +285,7 @@
 										id="phoneCell" 
 										name ="makerPhone2" 
 										placeholder="" 
-										class="form-control input_base_require"
+										class="form-control"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)"
 										value="${data.makerPhone2}"

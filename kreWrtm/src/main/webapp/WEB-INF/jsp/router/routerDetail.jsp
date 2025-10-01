@@ -90,13 +90,13 @@
 							</div>
 						
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th  fm_rep">제조사</div>
+								<div class="ctn_tbl_th  fm_rep">사용자 유형</div>
 								<div class="ctn_tbl_td">
-										${data.companyName}
+										${data.userType}
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-									 ${data.orgName}
+									 ${data.companyName}
 								</div>
 							</div>
 						

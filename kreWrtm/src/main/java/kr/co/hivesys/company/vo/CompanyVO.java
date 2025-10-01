@@ -12,6 +12,14 @@ public class CompanyVO extends BaseVO {
 
 	/** 사용자 구분 (코레일 / 제조사) */
 	private String userType;
+	
+	
+	// 차트 그리기용 추가 컬럼(DB에는 X)
+	private String dirMb;
+	private String dirRegDt;
+	private String todayCnt;
+	private String rsrqAvg;
+	
 
 	// ===== Getter / Setter =====
 	public String getCompanyCode() {
@@ -36,6 +44,38 @@ public class CompanyVO extends BaseVO {
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	
+	public String getDirMb() {
+		return dirMb;
+	}
+
+	public void setDirMb(String dirMb) {
+		this.dirMb = dirMb;
+	}
+
+	public String getDirRegDt() {
+		return dirRegDt;
+	}
+
+	public void setDirRegDt(String dirRegDt) {
+		this.dirRegDt = dirRegDt;
+	}
+
+	public String getTodayCnt() {
+		return todayCnt;
+	}
+
+	public void setTodayCnt(String todayCnt) {
+		this.todayCnt = todayCnt;
+	}
+
+	public String getRsrqAvg() {
+		return rsrqAvg;
+	}
+
+	public void setRsrqAvg(String rsrqAvg) {
+		this.rsrqAvg = rsrqAvg;
 	}
 
 	@Override

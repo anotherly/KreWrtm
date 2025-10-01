@@ -23,15 +23,53 @@
 		<result property="createdAt" column="CREATED_AT"/> 
     	<result property="createdBy" column="CREATED_BY"/>  
     	<result property="updatedAt" column="UPDATED_AT"/>  
-    	<result property="updatedBy" column="UPDATED_BY"/>   
+    	<result property="updatedBy" column="UPDATED_BY"/>
+    	<result property="userType" column="USER_TYPE"/>   
 	</resultMap>
+	
+	<resultMap id="CompanyInfoMap" type="companyVo">
+	    <id     property="companyCode" column="company_code"/>
+	    <result property="companyName" column="company_name"/>
+	    <result property="userType"    column="user_type"/>
+	    <result property="regDate"     column="reg_date"/>
+	    <result property="createdAt"   column="created_at"/>
+	    <result property="updatedAt"   column="updated_at"/>
+	  </resultMap>
 
 	<!-- SELECT: PK 단건 -->
-	<select id="select" parameterType="routerVo"
-		resultMap="routerInfoMap">
-		SELECT * FROM TBL_ROUTER_INFO
+	<select id="select" parameterType="routerVo" resultMap="routerInfoMap">
+	    SELECT 
+	        A.*, 
+	        B.user_type,B.company_name
+	    FROM 
+	        TBL_ROUTER_INFO A
+	    LEFT JOIN 
+	        TBL_COMPANY_INFO B
+	    ON 
+	        A.COMPANY_CODE = B.COMPANY_CODE
+	    WHERE 1=1
+	    <if test="tagId != null and tagId != ''">
+			AND device_id = #{tagId}
+		</if> 
+		<if test="volteNum != null and volteNum neq ''">
+			AND volte_num = #{volteNum}
+		</if>
+	</select>
+	
+	<select id="userTypeSelect" parameterType="companyVo" resultMap="CompanyInfoMap">
+		SELECT USER_TYPE FROM tbl_company_info
 		WHERE 1=1
-		AND device_id = #{tagId}
+		<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
+			AND COMPANY_CODE = #{companyCode}
+		</if>
+		GROUP BY USER_TYPE;
+	</select>
+	
+	
+	<select id="selectCompany" parameterType="routerVo" resultMap="routerInfoMap">
+		SELECT * FROM TBL_COMPANY_INFO
+		where 1=1
+		and user_type = #{userType}
 	</select>
 
 	<!-- SELECT: 소속별 목록 -->
@@ -128,11 +166,20 @@
 	</update>
 
 	<!-- DELETE: PK 기준 -->
-	<delete id="deleteChk" parameterType="routerVo">
+<!-- 	<delete id="deleteChk" parameterType="routerVo">
 		DELETE FROM TBL_ROUTER_INFO
-		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
-	       #{item}
-	   </foreach>
+		WHERE device_id IN
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+		    #{id}
+		</foreach>
+	</delete>
+	 -->
+	<delete id="deleteChk" parameterType="map">
+	    DELETE FROM TBL_ROUTER_INFO
+	    WHERE device_id IN
+	    <foreach collection="chkList" item="id" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
 	</delete>
 
 </mapper>

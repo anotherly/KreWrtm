@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import kr.co.hivesys.company.vo.OrgVO;
 import kr.co.hivesys.router.mapper.RouterMapper;
 import kr.co.hivesys.router.service.RouterService;
 import kr.co.hivesys.router.vo.RouterVO;
@@ -42,5 +43,15 @@ public class RouterServiceImpl implements RouterService {
 		map.put("chkList",paramArr);
 		routerMapper.deleteChk(map);		
 	}
+	
+	@Override
+	public List<OrgVO> userTypeSelect(OrgVO inputVo) throws Exception {
+		return routerMapper.userTypeSelect(inputVo);
+	}
 
+	
+	@Override
+	public List<RouterVO> selectCompany(RouterVO inputVo) throws Exception {
+		return routerMapper.selectCompany(inputVo);
+	}
 }

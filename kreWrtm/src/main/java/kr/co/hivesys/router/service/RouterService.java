@@ -2,6 +2,7 @@ package kr.co.hivesys.router.service;
 
 import java.util.List;
 
+import kr.co.hivesys.company.vo.OrgVO;
 import kr.co.hivesys.router.vo.RouterVO;
 
 public interface RouterService {
@@ -14,4 +15,8 @@ public interface RouterService {
 	void update(RouterVO thvo);
 	
 	void deleteChk(List<String> paramArr);
+	
+	public List<OrgVO> userTypeSelect(OrgVO inputVo) throws Exception;
+	
+	public List<RouterVO> selectCompany(RouterVO inputVo) throws Exception;
 }

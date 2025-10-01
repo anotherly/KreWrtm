@@ -60,7 +60,12 @@ public class RouterController{
 		RouterVO sList= null;
 		try {
 			sList = routerService.select(inputVo);
-			mav.addObject("data", sList);
+			if (sList == null) {
+		        mav.addObject("result", 0);
+		    } else {
+		        // 결과가 있는 경우
+		        mav.addObject("result", 1);
+		    }
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug("에러메시지 : "+e.toString());
@@ -108,7 +113,7 @@ public class RouterController{
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
 		try {
-			orgList = orgService.select(ovo);
+			orgList = routerService.userTypeSelect(ovo);
 			comList=companyService.select(ovo);
 
 			mav.addObject("orgList", orgList);
@@ -155,12 +160,10 @@ public class RouterController{
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
 		try {
-			orgList = orgService.select(ovo);
-			comList=companyService.select(ovo);
+			orgList = routerService.userTypeSelect(ovo);
 			data = routerService.select(inputVo);
 			
 			mav.addObject("orgList", orgList);
-			mav.addObject("comList", comList);
 			mav.addObject("data", data);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -208,5 +211,29 @@ public class RouterController{
 		}
 		return mav;
 	}
+	
+	
+	
+	// 옵션 변경 시 실행
+	@RequestMapping(value="/router/selectCompany.ajax")
+	public @ResponseBody ModelAndView selectCompany
+	( @ModelAttribute("RouterVO") RouterVO inputVo ,HttpServletRequest request) throws Exception{
+	
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		 
+		ModelAndView mav = new ModelAndView("jsonView");
+		List<RouterVO> comList = null;
+		
+		try {
+			comList = routerService.selectCompany(inputVo);
+			mav.addObject("data",comList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug(""+e);
+			mav.addObject("msg","에러가 발생했습니다.");
+		}
+		return mav;
+	}
+	
 	
 }

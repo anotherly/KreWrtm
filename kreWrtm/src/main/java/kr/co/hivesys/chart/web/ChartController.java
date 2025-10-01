@@ -5,6 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.co.hivesys.chart.service.ChartService;
+import kr.co.hivesys.company.vo.CompanyVO;
+import kr.co.hivesys.router.vo.RouterVO;
 
 @Controller
 public class ChartController {
@@ -43,45 +52,74 @@ public class ChartController {
 	
 	
 	@RequestMapping(value="/chart/main.do")
-	public @ResponseBody ModelAndView mainChart( 
+	public ModelAndView mainChart( 
 	HttpServletRequest request, HttpServletResponse response ) throws Exception{
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
 
 	    ModelAndView mav = new ModelAndView("jsonView");
 
 	    try {
-	        File targetFolder1 = new File("C:/FirmWare/HIVE");
-	        File targetFolder2 = new File("C:/FirmWare/KONE");
-	        File targetFolder3 = new File("C:/FirmWare/KREG");
-	        File targetFolder4 = new File("C:/FirmWare/KREM");
+	        
+	        // 제조사별 수신량/성능 차트를 위한 데이터 가져오기
+	        // 1. 사용량 값 넣기
+		        // 회사코드 가져오기
+	        	List<CompanyVO> companyList = null;;
+	        	companyList = chartService.getComCode();  // 비교용, 기본형
+	        	
+	        	List<CompanyVO> firmUseList = new ArrayList<>();  // 사용량 반환 
+	        	
+		        // 회사코드 별 C 드라이브 내 디렉토리 크기 및 생성된 날짜 구하기
+	        	String basePath = "C:/FirmWare/";
+	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	            
+	            for (CompanyVO origin : companyList) {
 
-	        long size1 = getFolderSize(targetFolder1);
-	        long size2 = getFolderSize(targetFolder2);
-	        long size3 = getFolderSize(targetFolder3);
-	        long size4 = getFolderSize(targetFolder4);
+	                CompanyVO copy = new CompanyVO();
+	                copy.setCompanyCode(origin.getCompanyCode()); 
+	                copy.setCompanyName(origin.getCompanyName()); 
 
-	        String sizeMB1 = String.format("%.2f", size1 / (1024.0 * 1024.0));
-	        String sizeMB2 = String.format("%.2f", size2 / (1024.0 * 1024.0));
-	        String sizeMB3 = String.format("%.2f", size3 / (1024.0 * 1024.0));
-	        String sizeMB4 = String.format("%.2f", size4 / (1024.0 * 1024.0));
+	                // 디렉토리 크기
+	                File targetFolder = new File(basePath + origin.getCompanyCode());
+	                long size = getFolderSize(targetFolder);
+	                String sizeMB = String.format("%.2f", size / (1024.0 * 1024.0));
 
-	        // 디렉토리 생성일 포맷 설정
-	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	                // 생성일
+	                String created = getCreationTime(targetFolder, sdf);
 
-	        String created1 = getCreationTime(targetFolder1, sdf);
-	        String created2 = getCreationTime(targetFolder2, sdf);
-	        String created3 = getCreationTime(targetFolder3, sdf);
-	        String created4 = getCreationTime(targetFolder4, sdf);
+	                copy.setDirMb(sizeMB);
+	                copy.setDirRegDt(created);
 
-	        mav.addObject("HIVE", sizeMB1);
-	        mav.addObject("KONE", sizeMB2);
-	        mav.addObject("KREG", sizeMB3);
-	        mav.addObject("KREM", sizeMB4);
+	                firmUseList.add(copy);
+	            }
+	            
+	        	// 2. 회사별 금일 수신 데이터 가져오기 (회사별 데이터 개수 group)
+	            List<CompanyVO> currentList = chartService.currentList();
+	        
+	        	// 3. 회사별 RSRQ 금일 데이터 평균치 계산 가져오기
+	            List<CompanyVO> rsrqAvgList = chartService.rsrqAvgList();
+	        
+	        
+	        	
+	        // 화면으로 반환시킬 데이터
+	        Map<String, Object> result = new HashMap<>();
+	        result.put("x", companyList.stream().map(CompanyVO::getCompanyName).collect(Collectors.toList()));
 
-	        mav.addObject("hiveRegDt", created1);
-	        mav.addObject("koneRegDt", created2);
-	        mav.addObject("kregRegDt", created3);
-	        mav.addObject("kremRegDt", created4);
+	        result.put("사용량", firmUseList.stream().map(CompanyVO::getDirMb) .map(Double::valueOf).collect(Collectors.toList()));
+
+	        result.put("수신 데이터량", currentList.stream().map(CompanyVO::getTodayCnt).collect(Collectors.toList()));
+
+	        result.put("RSRQ", rsrqAvgList.stream().map(CompanyVO::getRsrqAvg).collect(Collectors.toList()));
+	        
+	        ObjectMapper mapper = new ObjectMapper();
+	        String resultJson = mapper.writeValueAsString(result);
+	        mav.addObject("resultJson", resultJson);
+	        
+	        
+	        // 디렉토리 크기 합계 값 구하기
+	        double firmUseCnt = firmUseList.stream().mapToDouble(vo -> Double.parseDouble(vo.getDirMb())).sum();
+	        
+	        mav.addObject("firmUseList", firmUseList);
+	        mav.addObject("firmUseCnt",firmUseCnt);
 	        
 	        mav.setViewName(url);
 
@@ -91,6 +129,27 @@ public class ChartController {
 	        mav.addObject("error", "에러 발생");
 	    }
 	    return mav;
+	}
+	
+	
+	
+	// 나중에 합칠 예정
+	@RequestMapping(value="/chart/routerList.ajax")
+	public @ResponseBody ModelAndView reqRouterList(HttpServletRequest request) throws Exception{
+		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		
+		ModelAndView mav = new ModelAndView("jsonView");
+		List<RouterVO> routerList = null;
+		
+		try {				
+	        // 회사별 단말기 현황
+	        routerList = chartService.routerList();
+	        mav.addObject("routerList", routerList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.debug("에러메시지 : "+e.toString());
+		}
+		return mav;
 	}
 	
 

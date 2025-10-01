@@ -42,7 +42,15 @@
                 {data:"deviceName"},
                 {data:"modelName"},
                 {data:"volteNum"},
-                {data:"keywords"},
+                {
+                    data:"keywords",
+                    "render": function (data, type, row, meta) {
+                        if (data === null || data === "") {
+                            return "정보 없음";
+                        }
+                        return data;
+                    }
+                },
                 {data:"carNum"},
                 {data:"companyName"},
             ],
