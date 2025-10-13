@@ -195,7 +195,7 @@ public class SearchController {
 		try {			
 			String carNum = inputVo.getCarNum();
 			
-			String filePath = "C:\\RemoteControll\\remoteControll.txt";
+			String filePath = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe";
 	        String cmd = "cmd /c start \"\" \"" + filePath + "\"";
 
 	        Process process = Runtime.getRuntime().exec(cmd);
