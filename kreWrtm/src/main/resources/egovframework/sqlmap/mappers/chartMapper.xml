@@ -60,25 +60,58 @@
 	<!-- AND b.company_code IS NOT NULL은 tbl_last_data와 tbl_router_info와 volteNum이 
 	일치 하지 않기 때문에 임시로 넣은 것임 -->
 	<select id="currentList" resultMap="CompanyInfoMap">  
-		SELECT b.company_code, COUNT(*) AS today_cnt
-		FROM tbl_last_data a
-		LEFT JOIN tbl_router_info b
-		  ON a.volte_num = b.volte_num
-		WHERE DATE(a.rcv_dt) = CURDATE()
-		  AND b.company_code IS NOT NULL  
-		GROUP BY b.company_code
-		ORDER BY b.company_code asc
+		SELECT 
+		    b.company_code,
+		    COALESCE(cnt.today_cnt, 0) AS today_cnt
+		FROM 
+		    tbl_router_info b
+		LEFT JOIN (
+		    SELECT 
+		        r.company_code, 
+		        COUNT(*) AS today_cnt
+		    FROM 
+		        tbl_last_data a
+		    LEFT JOIN 
+		        tbl_router_info r 
+		        ON a.volte_num = r.volte_num
+		    WHERE 
+		        DATE(a.rcv_dt) = CURDATE()
+		    GROUP BY 
+		        r.company_code
+		) cnt 
+		ON b.company_code = cnt.company_code
+		GROUP BY 
+		    b.company_code
+		    
+		ORDER BY 
+		    b.company_code ASC
 	</select>
 	
 	<select id="rsrqAvgList" resultMap="CompanyInfoMap">
-		SELECT b.company_code, AVG(a.rsrq) AS rsrq_avg
-		FROM tbl_last_data a
-		LEFT JOIN tbl_router_info b
-		  ON a.volte_num = b.volte_num
-		WHERE DATE(a.rcv_dt) = CURDATE()
-		  AND b.company_code IS NOT NULL
-		GROUP BY b.company_code
-		ORDER BY b.company_code asc
+		SELECT 
+		    b.company_code,
+		    COALESCE(avg_data.rsrq_avg, 0) AS rsrq_avg
+		FROM 
+		    tbl_router_info b
+		LEFT JOIN (
+		    SELECT 
+		        r.company_code, 
+		        AVG(a.rsrq) AS rsrq_avg
+		    FROM 
+		        tbl_last_data a
+		    LEFT JOIN 
+		        tbl_router_info r 
+		        ON a.volte_num = r.volte_num
+		    WHERE 
+		        DATE(a.rcv_dt) = CURDATE()
+		    GROUP BY 
+		        r.company_code
+		) avg_data 
+		ON b.company_code = avg_data.company_code
+		GROUP BY 
+		    b.company_code
+		ORDER BY 
+		    b.company_code ASC
 	</select>
 	
 </mapper>

@@ -143,7 +143,21 @@
 	    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
 	    	
 	    	if(chkRemote) {
-	    		ajaxMethod("/remote/remoteControll.ajax",{"carNum" : clickCar});
+	    		
+	    		// 숨긴 iframe 생성해서 커스텀 프로토콜 호출 (페이지 이동 없음)
+	    	    var iframe = document.createElement('iframe');
+	    	    iframe.style.display = 'none';
+	    	    iframe.id = 'protoCallFrame';
+	    	    iframe.src = "test://";
+	    	    document.body.appendChild(iframe);
+
+	    	    // 안전하게 제거 (시간은 환경에 따라 조정)
+	    	    setTimeout(function() {
+	    	        var f = document.getElementById('protoCallFrame');
+	    	        if (f) f.parentNode.removeChild(f);
+	    	    }, 1500);
+	            
+	    		/* ajaxMethod("/remote/remoteControll.ajax",{"carNum" : clickCar}); */
 	    	} else {
 	    		return false;
 	    	}	    	
