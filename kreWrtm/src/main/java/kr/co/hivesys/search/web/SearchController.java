@@ -187,25 +187,39 @@ public class SearchController {
 	
 	// 원격 제어 버튼 클릭 시 실행
 	@RequestMapping(value="/remote/remoteControll.ajax")
-	public @ResponseBody ModelAndView remoteController(HttpServletRequest request, @ModelAttribute("SearchVo") SearchVo inputVo) throws Exception{
+	public void remoteController(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("SearchVo") SearchVo inputVo) throws Exception{
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
 		
 		ModelAndView mav = new ModelAndView("jsonView");
 
 		try {			
 			String carNum = inputVo.getCarNum();
-			
-			String filePath = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe";
-	        String cmd = "cmd /c start \"\" \"" + filePath + "\"";
-
+			//이전 방식 -> vnc 뷰어만 실행
+			/*String filePath = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe";
+            String tt = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe\" -autoconnect -connect 10.245.225.173:19905 -password trcp -quickoption 4";
+	        String cmd = "cmd /c start \"\" \"" + tt + "\"";
 	        Process process = Runtime.getRuntime().exec(cmd);
+	        */
+			//수정 -> ip port pw 입력하여 로그인 처리
+			String ip = "10.245.225.173";
+	        String port = "19905";
+	        String pw = "trcp";
+
+	        // ---- 동적 파일 생성 (bat 예시) ----
+	        String fileName = "VNC_" + carNum + ".bat";
+	        String content = "@echo off\r\n" +
+	            "start \"\" \"C:\\\\Program Files\\\\uvnc bvba\\\\UltraVNC\\\\vncviewer.exe\" " +
+	            "-autoconnect -connect " + ip + ":" + port + " -password " + pw + " -quickoption 4\r\n" +
+	            "exit\r\n";
+
+	        // 응답 헤더 세팅
+	        response.setContentType("application/octet-stream");
+	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+	        response.getWriter().write(content);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug("에러메시지 : "+e.toString());
 		}
-		return mav;
 	}
-	
-	
 }

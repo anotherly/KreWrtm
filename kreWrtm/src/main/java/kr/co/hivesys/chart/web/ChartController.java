@@ -69,7 +69,7 @@ public class ChartController {
 	        	List<CompanyVO> firmUseList = new ArrayList<>();  // 사용량 반환 
 	        	
 		        // 회사코드 별 C 드라이브 내 디렉토리 크기 및 생성된 날짜 구하기
-	        	String basePath = "C:/FirmWare/";
+	        	String basePath = "C:/SFTP/";
 	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	            
 	            for (CompanyVO origin : companyList) {

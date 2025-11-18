@@ -145,7 +145,7 @@
 	    	if(chkRemote) {
 	    		
 	    		// 숨긴 iframe 생성해서 커스텀 프로토콜 호출 (페이지 이동 없음)
-	    	    var iframe = document.createElement('iframe');
+	    	    /* var iframe = document.createElement('iframe');
 	    	    iframe.style.display = 'none';
 	    	    iframe.id = 'protoCallFrame';
 	    	    iframe.src = "test://";
@@ -155,9 +155,8 @@
 	    	    setTimeout(function() {
 	    	        var f = document.getElementById('protoCallFrame');
 	    	        if (f) f.parentNode.removeChild(f);
-	    	    }, 1500);
-	            
-	    		/* ajaxMethod("/remote/remoteControll.ajax",{"carNum" : clickCar}); */
+	    	    }, 1500); */
+	    	    window.location.href = "/remote/remoteControll.ajax?carNum=" + clickCar;
 	    	} else {
 	    		return false;
 	    	}	    	
