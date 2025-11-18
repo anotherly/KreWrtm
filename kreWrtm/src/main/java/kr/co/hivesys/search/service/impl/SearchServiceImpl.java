@@ -54,6 +54,12 @@ public class SearchServiceImpl implements SearchService{
 	public SearchVo selectDetail(SearchVo inputVo) throws Exception {
 		return searchMapper.selectDetail(inputVo);
 	}
+
+	//받아온 voltenum 으로 ip port pw 조회
+	@Override
+	public SearchVo findVnc(SearchVo inputVo) throws Exception {
+		return searchMapper.findVnc(inputVo);
+	}
 	
 	
 }

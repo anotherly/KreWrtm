@@ -11,24 +11,64 @@
 ========= ======= =================================================
 2025.09.23 최다슬     검색&모니터링 검색 기능 생성
 ========= ======= =================================================
+2025.11.18 정다빈     검색조건에서 위치는 제외하나 결과는 위치가 표출되게 변경
+(기존 location 컬럼을 db에서 제거하고 tc로 대체 vo는 유지)
+========= ======= =================================================
 -->
 
+<resultMap id="searchVoMap" type="kr.co.hivesys.search.vo.SearchVo">
 
+    <!-- ================= tbl_last_data ================= -->
 
-	<!-- 검색&모니터링 검색 -->
-	<resultMap type="searchVo" id="searchDataList">
-		<result property="deviceId" column="DEVICE_ID"/>
-		<result property="deviceName" column="DEVICE_NAME"/>
-		<result property="modelName" column="MODEL_NAME"/>
-		<result property="carNum" column="CAR_NUM"/>
-		<result property="volteNum" column="VOLTE_NUM"/>
-		<result property="keywords" column="KEYWORDS"/>
-		<result property="version" column="VERSION"/>
-		<result property="location" column="LOCATION"/>
-		<result property="companyName" column="COMPANY_NAME"/>
-	</resultMap>
+    <result property="volteNum"              column="VoLTE_NUM"/>
+    <result property="version"               column="Version"/>
+    <result property="modelName"             column="Device_Model"/>
+    <result property="carNum"                column="CAR_NUM"/>
+    <result property="location"              column="TC"/> <!-- 특수 매핑 -->
+    <result property="usimSlot"              column="USIM_SLOT"/>
+    <result property="mobileIp"              column="MOBILE_IP"/>
+    <result property="localIp"               column="LOCAL_IP"/>
+    <result property="imei"                  column="IMEI"/>
+    <result property="imsi"                  column="IMSI"/>
+    <result property="mcpttNum"              column="MCPTT_NUM"/>
+    <result property="currentRadioType"      column="CurrentRadioType"/>
+    <result property="autoSwitchingRadio"    column="AutoSwitchingRadio"/>
+    <result property="rcvDt"                 column="RCV_DT"/>
+    <result property="rsrp"                  column="RSRP"/>
+    <result property="rsrq"                  column="RSRQ"/>
+    <result property="cellId"                column="CELL_ID"/>
+    <result property="gpsLat"                column="GPS_Lat"/>
+    <result property="gpsLon"                column="GPS_Lon"/>
+    <result property="keywords"              column="Keyword"/>
+    <result property="extraInfo"             column="Option_TXT"/>
+    <result property="vncIp"                 column="VNC_IP"/>
+    <result property="vncPort"               column="VNC_PORT"/>
+    <result property="vncPw"                 column="VNC_PW"/>
 
-	<select id="searchDataList" parameterType="searchVo" resultMap="searchDataList">
+    <!-- ================= tbl_router_info ================= -->
+
+    <!-- ★ deviceId는 무조건 device_id 기준만 사용 -->
+    <result property="deviceId"              column="device_id"/>
+
+    <result property="deviceName"            column="device_name"/>
+    <result property="modelName"             column="model_name"/>
+    <result property="volteNum"              column="volte_num"/>
+    <result property="keywords"              column="keywords"/>
+    <result property="companyCode"           column="company_code"/>
+    <result property="carNum"                column="car_num"/>
+    <result property="updateDate"            column="update_date"/>
+    <result property="makerPhone1"           column="maker_phone_1"/>
+    <result property="makerPhone2"           column="maker_phone_2"/>
+    <result property="regDate"               column="reg_date"/>
+    <result property="extraInfo"             column="extra_info"/>
+    <result property="createdAt"             column="created_at"/>
+    <result property="createdBy"             column="created_by"/>
+    <result property="updatedAt"             column="updated_at"/>
+    <result property="updatedBy"             column="updated_by"/>
+
+</resultMap>
+
+	<select id="searchDataList" parameterType="searchVo" resultMap="searchVoMap">
 	    SELECT 
 	        r.device_id,
 	        r.device_name,
@@ -37,7 +77,7 @@
 	        r.volte_num,
 	        r.keywords,
 	        l.version,
-	        l.location,
+	        concat('TC',l.tc) as location,
 	        c.company_name  
 	    FROM 
 	        tbl_router_info r
@@ -55,7 +95,6 @@
 	                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
 	                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
-	                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
 	                OR c.company_name LIKE CONCAT('%', #{searchVal}, '%') 
 	            )
 	        </if>
@@ -70,7 +109,7 @@
 	
 	
 	
-	<select id="searchRouterDataList" parameterType="searchVo" resultMap="searchDataList">
+	<select id="searchRouterDataList" parameterType="searchVo" resultMap="searchVoMap">
     SELECT 
         r.device_id,
         r.device_name,
@@ -79,7 +118,7 @@
         r.volte_num,
         r.keywords,
         l.version,
-        l.location
+        concat('TC',l.tc) as location
     FROM 
         tbl_router_info r
     LEFT JOIN 
@@ -93,7 +132,6 @@
                 OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
                 OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
                 OR l.version LIKE CONCAT('%', #{searchVal}, '%')
-                OR l.location LIKE CONCAT('%', #{searchVal}, '%')
             )
         </if>
         <if test="deviceName != 'all'">
@@ -105,39 +143,9 @@
     ORDER BY r.car_num DESC
 </select>
 	
-
-	
-	<resultMap type="searchVo" id="searchDetailList">
-		<result property="deviceId" column="DEVICE_ID"/>
-		<result property="deviceName" column="DEVICE_NAME"/>
-		<result property="modelName" column="MODEL_NAME"/>
-		<result property="carNum" column="CAR_NUM"/>
-		<result property="keywords" column="KEYWORDS"/>
-		<result property="version" column="VERSION"/>
-		<result property="location" column="LOCATION"/>
-		<result property="extraInfo" column="EXTRA_INFO" />
-		<result property="usimSlot" column="USIM_SLOT" />
-		<result property="mobileIp" column="MOBILE_IP" />
-		<result property="localIp" column="LOCAL_IP" />
-		<result property="imei" column="IMEI" />
-		<result property="imsi" column="IMSI" />
-		<result property="rsrp" column="RSRP" />
-		<result property="rsrq" column="RSRQ" />
-		<result property="mcpttNum" column="MCPTT_NUM" />
-		<result property="autoSwitchingRadio" column="AutoSwitchingRadio" />
-		<result property="currentRadioType" column="CurrentRadiotype" />
-		<result property="cellId" column="CELL_ID" />
-		<result property="gpsLat" column="GPS_LAT" />
-		<result property="gpsLon" column="GPS_LON" />
-		<result property="rcvDt" column="RCV_DT" />	
-		<result property="companyCode" column="COMPANY_CODE"/>
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="volteNum" column="VOLTE_NUM"/>
-	</resultMap>
-	
 	
 	<!-- 실시간 데이터 조회 - 단말기 검색 조건 옵션 셋팅 -->
-	<select id="companyTypeList" parameterType="searchVo" resultMap="searchDetailList">
+	<select id="companyTypeList" parameterType="searchVo" resultMap="searchVoMap">
 		SELECT COMPANY_NAME , COMPANY_CODE
 		FROM TBL_COMPANY_INFO
 		WHERE 1 = 1
@@ -146,7 +154,7 @@
 		</if>
 	</select>
 	
-	<select id="deviceNameTypeList" parameterType="searchVo" resultMap="searchDetailList">
+	<select id="deviceNameTypeList" parameterType="searchVo" resultMap="searchVoMap">
 		SELECT DEVICE_NAME
 		FROM TBL_ROUTER_INFO
 		WHERE 1=1
@@ -158,7 +166,7 @@
 	
 	
 	<!-- 장치 & 모니터링 장치 상세 정보 조회 -->
-	<select id="selectDetail" parameterType="searchVo" resultMap="searchDetailList">
+	<select id="selectDetail" parameterType="searchVo" resultMap="searchVoMap">
 		SELECT 
 		    r.device_id,
 		    r.device_name,
@@ -168,7 +176,7 @@
 		    r.keywords,
 			 r.extra_info,
 		    l.version,
-		    l.location,
+		    concat('TC',l.tc) as location,
 		    l.USIM_SLOT,
 		    l.MOBILE_IP,
 		    l.LOCAL_IP,
@@ -191,4 +199,9 @@
 		WHERE r.device_id = #{deviceId}	
 	</select>
 
+	<!-- 받아온 voltenum 으로 ip port pw 조회 -->
+	<select id="findVnc" parameterType="searchVo" resultMap="searchVoMap">
+	    SELECT vnc_ip,vnc_port,vnc_pw from tbl_last_data
+	    WHERE VoLTE_NUM = #{volteNum}	
+	</select>
 </mapper>

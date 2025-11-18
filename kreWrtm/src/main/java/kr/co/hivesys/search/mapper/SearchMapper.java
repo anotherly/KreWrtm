@@ -35,5 +35,8 @@ public interface SearchMapper {
 	
 	// 장치 상세 정보 검색
 	public SearchVo selectDetail(SearchVo inputVo) throws Exception;
+
+	//받아온 voltenum 으로 ip port pw 조회
+	public SearchVo findVnc(SearchVo inputVo) throws Exception;
 	
 }

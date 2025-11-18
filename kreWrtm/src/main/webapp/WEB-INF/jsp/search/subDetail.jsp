@@ -4,7 +4,9 @@
 <!DOCTYPE html>
 <html>
 <script>
+	var volteNum = '${data.volteNum}';
 	$(document).ready(function () {
+		console.log("subdetail");
 		// 원격제어 버튼
 	    $('.custom-btn').on('click', function() {
 	    	var clickCar = $(this).attr('id');
@@ -14,7 +16,7 @@
 	    	
 	    	if(chkRemote) {
 	    		// 숨긴 iframe 생성해서 커스텀 프로토콜 호출 (페이지 이동 없음)
-	    	    var iframe = document.createElement('iframe');
+	    	    /* var iframe = document.createElement('iframe');
 	    	    iframe.style.display = 'none';
 	    	    iframe.id = 'protoCallFrame';
 	    	    iframe.src = "test://";
@@ -25,10 +27,8 @@
 	    	        var f = document.getElementById('protoCallFrame');
 	    	        if (f) f.parentNode.removeChild(f);
 	    	    }, 1500);
-	    	    
-	    	    
-	    	    // 현재는 사용하지 않음
-	    		/* ajaxMethod("/remote/remoteControll.ajax",{"carNum" : clickCar}); */
+	    	     */
+	    	    window.location.href = "/remote/remoteControll.ajax?volteNum=" + volteNum;
 	    	} else {
 	    		return false;
 	    	}	    	

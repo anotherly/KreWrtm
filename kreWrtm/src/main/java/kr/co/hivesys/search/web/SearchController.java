@@ -193,29 +193,37 @@ public class SearchController {
 		ModelAndView mav = new ModelAndView("jsonView");
 
 		try {			
-			String carNum = inputVo.getCarNum();
-			//이전 방식 -> vnc 뷰어만 실행
-			/*String filePath = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe";
-            String tt = "C:\\Program Files\\uvnc bvba\\UltraVNC\\vncviewer.exe\" -autoconnect -connect 10.245.225.173:19905 -password trcp -quickoption 4";
-	        String cmd = "cmd /c start \"\" \"" + tt + "\"";
-	        Process process = Runtime.getRuntime().exec(cmd);
-	        */
 			//수정 -> ip port pw 입력하여 로그인 처리
-			String ip = "10.245.225.173";
-	        String port = "19905";
-	        String pw = "trcp";
+			SearchVo rvo = new SearchVo();
+			rvo=searchService.findVnc(inputVo);
+			
+			if (rvo != null && rvo.getVncIp()!=null && rvo.getVncPort()!=null&& rvo.getVncPw()!=null
+			) {
+				
+				String ip = rvo.getVncIp();
+		        String port = rvo.getVncPort();
+		        String pw = rvo.getVncPw();
 
-	        // ---- 동적 파일 생성 (bat 예시) ----
-	        String fileName = "VNC_" + carNum + ".bat";
-	        String content = "@echo off\r\n" +
-	            "start \"\" \"C:\\\\Program Files\\\\uvnc bvba\\\\UltraVNC\\\\vncviewer.exe\" " +
-	            "-autoconnect -connect " + ip + ":" + port + " -password " + pw + " -quickoption 4\r\n" +
-	            "exit\r\n";
+		        // ---- 동적 파일 생성 (bat) ----
+		        String fileName = "VNC_" + inputVo.getVolteNum() + ".bat";
+		        String content = "@echo off\r\n" +
+		            "start \"\" \"C:\\\\Program Files\\\\uvnc bvba\\\\UltraVNC\\\\vncviewer.exe\" " +
+		            "-autoconnect -connect " + ip + ":" + port + " -password " + pw + " -quickoption 4\r\n" +
+		            "exit\r\n";
 
-	        // 응답 헤더 세팅
-	        response.setContentType("application/octet-stream");
-	        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-	        response.getWriter().write(content);
+		        // 응답 헤더 세팅
+		        response.setContentType("application/octet-stream");
+		        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+		        response.getWriter().write(content);
+				
+		    }else {
+		    	response.setContentType("text/html; charset=UTF-8");
+		        response.getWriter().write(
+		            "<script>alert('선택한 단말기 원격접속에 대한 IP/PORT/PW 정보가 없습니다.'); history.back();</script>"
+		        );
+		        response.getWriter().flush();
+		        return;   // 중단
+		    }
 
 		} catch (Exception e) {
 			e.printStackTrace();

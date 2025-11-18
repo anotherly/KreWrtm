@@ -12,7 +12,7 @@ public class SearchVo extends RouterVO{
 	private String volteNum;
 	private String keywords;
 	private String version;
-	private String location;
+	private String location;//DB에는 컬렴명 TC에 저장
 	
 	private String extraInfo;
 	private String usimSlot;
@@ -29,8 +29,29 @@ public class SearchVo extends RouterVO{
 	private String gpsLat;
 	private String gpsLon;
 	private String rcvDt;
+	// 25.11.18 신규추가
+	private String vncIp;
+	private String vncPort;
+	private String vncPw;
 	
-	
+	public String getVncIp() {
+		return vncIp;
+	}
+	public void setVncIp(String vncIp) {
+		this.vncIp = vncIp;
+	}
+	public String getVncPort() {
+		return vncPort;
+	}
+	public void setVncPort(String vncPort) {
+		this.vncPort = vncPort;
+	}
+	public String getVncPw() {
+		return vncPw;
+	}
+	public void setVncPw(String vncPw) {
+		this.vncPw = vncPw;
+	}
 	public String getSearchVal() {
 		return searchVal;
 	}

@@ -11,13 +11,14 @@
 <script>
 	var nowTagId = '${data.deviceId}';	
 	var chkTerId='${data.deviceId}';
+	var volteNum = '${data.volteNum}';
 	var nowPage = 0; // 현재 단말기 테이블 페이지 카운트
 	var nextPage = 1;
 	var startNum=0;
 	var endNum=1;
 	
 	$(document).ready(function(){	
-
+		console.log("모니터링");
 		// 첫 진입 시 단말기 테이블 띄우기
 		var alData = ajaxMethod("/search/list.ajax");		
 		var len = alData.data.length;
@@ -72,12 +73,9 @@
         	$(".left-container").load("/search/subDetail.do",{"deviceId":chkTerId});
         });
     	
-    	
     	$('#companyCode').change(function() {
     		var selectedValue = $(this).val();
-    		
     		var dataList = ajaxMethod("/search/list.ajax",{"companyCode":selectedValue});
-    		
     		changeOption(dataList.dnData);
         });
     	
@@ -156,7 +154,7 @@
 	    	        var f = document.getElementById('protoCallFrame');
 	    	        if (f) f.parentNode.removeChild(f);
 	    	    }, 1500); */
-	    	    window.location.href = "/remote/remoteControll.ajax?carNum=" + clickCar;
+	    	    window.location.href = "/remote/remoteControll.ajax?volteNum=" + volteNum;
 	    	} else {
 	    		return false;
 	    	}	    	
