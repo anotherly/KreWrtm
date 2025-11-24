@@ -1,0 +1,71 @@
+############################################
+# 기본 Git Ignore - eGovFramework 3.9 / Eclipse / Maven
+############################################
+
+# ----------------------------
+# Maven 빌드 산출물
+# ----------------------------
+/target/
+/*/target/
+**/target/
+
+# WAR 파일 등 산출물 제외
+*.war
+*.ear
+*.jar
+
+# ----------------------------
+# Eclipse / WTP / eGovFramework
+# ----------------------------
+.classpath
+.project
+.settings/
+.metadata/
+.recommenders/
+loadtest/
+Servers/
+wtpwebapps/
+
+# Web Tools Platform (WTP) 임시 리소스
+.myeclipse/
+.factorypath
+
+# eGovFramework temp
+.egovframework.temp/
+.egov-temp/
+.egovcache/
+
+# ----------------------------
+# IntelliJ 생성 파일 (혹시 IDE 혼용 시)
+# ----------------------------
+.idea/
+*.iml
+*.ipr
+
+# ----------------------------
+# 로그 / 백업 / OS 파일
+# ----------------------------
+*.log
+*.bak
+*.tmp
+*.old
+.DS_Store
+Thumbs.db
+
+# ----------------------------
+# STS / Gradle 흔적 (혹시 포함될 경우 대비)
+# ----------------------------
+.gradle/
+build/
+
+# ----------------------------
+# Maven Wrapper(필요한 파일만 유지)
+# ----------------------------
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+!mvnw
+!mvnw.cmd
+
+############################################
+# 끝
+############################################

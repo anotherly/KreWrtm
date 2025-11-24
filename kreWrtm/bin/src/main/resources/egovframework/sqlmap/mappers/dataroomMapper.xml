@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hivesys.dataroom.mapper.DataroomMapper">
+<!-- 
+수정일           수정자         수정내용 
+========= ======= ================================================= 
+2025.09.05 최다슬     최초 생성 
+-->
+
+	<!-- 자료실 데이터 조회 -->
+	<resultMap type="dataVo" id="selectDataList">
+		<result property="fileId" column="FILE_ID"/>
+		<result property="fileTitle" column="FILE_TITLE"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="fileDir" column="FILE_DIR"/>
+		<result property="regDt" column="REG_DT"/>
+	</resultMap>
+	
+	<select id="selectDataList" parameterType="dataVo" resultMap="selectDataList">
+		SELECT * FROM DATAROOM_INFO
+		WHERE 1=1
+		<if test="fileTitle !=null and fileTitle neq ''"> 
+			AND FILE_TITLE LIKE CONCAT('%',#{fileTitle},'%')
+		</if> 
+		<if test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' ">
+			AND <![CDATA[ REG_DT >= #{sDate} AND REG_DT <= #{eDate} ]]>
+		</if>
+		ORDER BY REG_DT DESC
+	</select>
+	
+	
+	<!-- 자료실 게시판 데이터 조회 -->
+	<resultMap type="dataVo" id="selectDataBoardList">
+		<result property="fileId" column="FILE_ID"/>
+		<result property="fileTitle" column="FILE_TITLE"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="fileDir" column="FILE_DIR"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="writerId" column="WRITER_ID"/>
+		<result property="writerName" column="USER_NAME"/>
+		<result property="boardContent" column="BOARD_CONTENT"/>
+	</resultMap>
+	
+	<select id="selectDataBoardList" parameterType="dataVo" resultMap="selectDataBoardList">
+		SELECT 
+		    D.*,          
+		    U.USER_NAME     
+		FROM 
+		    DATABOARD_INFO D
+		JOIN 
+		    TBL_USER_INFO U
+		    ON D.WRITER_ID = U.USER_ID
+		WHERE 1 = 1
+		<if test="fileTitle != null and fileTitle != ''"> 
+			AND D.FILE_TITLE LIKE CONCAT('%', #{fileTitle}, '%')
+		</if>
+		<if test="writerName != null and writerName != ''">
+			AND U.USER_NAME LIKE CONCAT('%', #{writerName}, '%')
+		</if>
+		<if test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' ">
+			AND <![CDATA[ REG_DT >= #{sDate} AND REG_DT <= #{eDate} ]]>
+		</if>	
+	</select>
+	
+	
+	
+	<!-- 자료실 상세 정보 조회 -->
+	<resultMap type="dataVo" id="selectData">
+		<result property="fileId" column="FILE_ID"/>
+		<result property="fileTitle" column="FILE_TITLE"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="fileDir" column="FILE_DIR"/>
+		<result property="regDt" column="REG_DT"/>
+	</resultMap>
+	
+	<select id="selectData" parameterType="dataVo" resultMap="selectData">
+		 SELECT * FROM DATAROOM_INFO
+		 WHERE FILE_ID = #{fileId}
+	</select>
+	
+	
+	
+	<!-- 자료실 게시판 상세 정보 조회 -->
+	<resultMap type="dataVo" id="selectDataBoard">
+		<result property="fileId" column="FILE_ID"/>
+		<result property="fileTitle" column="FILE_TITLE"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="fileDir" column="FILE_DIR"/>
+		<result property="regDt" column="REG_DT"/>
+		<result property="writerId" column="WRITER_ID"/>
+		<result property="writerName" column="USER_NAME"/>
+		<result property="boardContent" column="BOARD_CONTENT"/>
+	</resultMap>
+	
+	<select id="selectDataBoard" parameterType="dataVo" resultMap="selectDataBoard">
+		SELECT 
+		    D.*,          
+		    U.USER_NAME     
+		FROM 
+		    DATABOARD_INFO D
+		JOIN 
+		    TBL_USER_INFO U
+		    ON D.WRITER_ID = U.USER_ID
+		WHERE FILE_ID = #{fileId}
+	</select>
+	
+	
+	<!-- 자료실 자료 등록 -->
+	<insert id="insertFile" parameterType="fileVo">
+		INSERT INTO DATAROOM_INFO(FILE_ID,FILE_TITLE,FILE_NAME,FILE_DIR,REG_DT)
+		VALUES(#{fileId}, #{fileTitle}, #{fileName}, #{fileDir} ,NOW())
+	</insert>
+	
+	
+	<!-- 자료실 게시판 등록 -->
+	<insert id="insertFileBoard" parameterType="fileVo">
+		INSERT INTO DATABOARD_INFO(FILE_ID,FILE_TITLE,FILE_NAME,FILE_DIR,REG_DT,BOARD_CONTENT,WRITER_ID)
+		VALUES(#{fileId}, #{fileTitle}, #{fileName}, #{fileDir} ,NOW(), #{boardContent}, #{writerId})
+	</insert>
+	
+	
+	<!-- 자료실 자료 수정 -->
+	<update id="updateFile" parameterType="fileVo">
+		UPDATE DATAROOM_INFO
+		SET FILE_TITLE = #{fileTitle}
+		<if test="fileName != null and fileName != ''">
+			,FILE_NAME = #{fileName}
+		</if>
+		WHERE FILE_ID = #{fileId}	
+	</update>
+	
+	
+	<!-- 게시판 수정 -->
+	<update id="updateFileBoard" parameterType="fileVo">
+		UPDATE DATABOARD_INFO
+		SET FILE_TITLE = #{fileTitle}
+		<if test="fileName != null and fileName != ''">
+			,FILE_NAME = #{fileName}
+		</if>
+		, BOARD_CONTENT = #{boardContent}
+		WHERE FILE_ID = #{fileId}	
+	</update>
+
+
+	<!-- 자료실 자료 삭제 -->
+	<delete id="deleteData" parameterType="dataVo">
+		DELETE FROM DATAROOM_INFO 
+		WHERE FILE_ID IN
+		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+	</delete> 
+	
+	
+	<!-- 게시판 자료 삭제 -->
+	<delete id="deleteDataBaord" parameterType="dataVo">
+		DELETE FROM DATABOARD_INFO
+		WHERE FILE_ID IN
+		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hivesys.chart.mapper.ChartMapper">
+<!-- 
+수정일           수정자         수정내용 
+========= ======= ================================================= 
+2020.07.23 정다빈     최초 생성 
+-->
+
+
+	<!-- 펌웨어 실시간 사용률 현황 회사 테이블 조회 -->
+	<resultMap type="kr.co.hivesys.chart.vo.ChartVo" id="selectDataList">
+		<result property="companyName" column="COMPANY_NAME"/>
+		<result property="firmUse" column="FIRM_USE"/>
+		<result property="etc" column="ETC"/>
+	</resultMap>
+	
+	<resultMap type="kr.co.hivesys.router.vo.RouterVO" id="selectRouterList">
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="routerCount" column="ROUTER_COUNT"/>
+	</resultMap>
+	
+	<select id="selectDataList" parameterType="kr.co.hivesys.chart.vo.ChartVo" resultMap="selectDataList">
+		select * from tbl_use_info
+	
+	</select>
+
+	<select id="routerList" parameterType="kr.co.hivesys.router.vo.RouterVO" resultMap="selectRouterList">
+		SELECT 
+		    B.COMPANY_NAME, 
+		    COUNT(*) AS ROUTER_COUNT
+		FROM 
+		    TBL_ROUTER_INFO A
+		LEFT JOIN 
+		    TBL_COMPANY_INFO B
+		    ON A.COMPANY_CODE = B.COMPANY_CODE
+		GROUP BY 
+		    A.COMPANY_CODE, B.COMPANY_NAME
+	</select>
+
+
+	<resultMap id="CompanyInfoMap" type="companyVo">
+	    <id     property="companyCode" column="company_code"/>
+	    <result property="companyName" column="company_name"/>
+	    <result property="userType"    column="user_type"/>
+	    <result property="regDate"     column="reg_date"/>
+	    <result property="createdAt"   column="created_at"/>
+	    <result property="updatedAt"   column="updated_at"/>
+	    <result property="rsrqAvg" column="rsrq_avg"/>
+	    <result property="todayCnt" column="today_cnt"/>
+	  </resultMap>
+  
+	<select id="getComCode" resultMap="CompanyInfoMap">
+		SELECT COMPANY_CODE, COMPANY_NAME FROM TBL_COMPANY_INFO
+		ORDER BY COMPANY_CODE ASC
+	</select>
+	
+	<!-- AND b.company_code IS NOT NULL은 tbl_last_data와 tbl_router_info와 volteNum이 
+	일치 하지 않기 때문에 임시로 넣은 것임 -->
+	<select id="currentList" resultMap="CompanyInfoMap">  
+		SELECT 
+		    b.company_code,
+		    COALESCE(cnt.today_cnt, 0) AS today_cnt
+		FROM 
+		    tbl_router_info b
+		LEFT JOIN (
+		    SELECT 
+		        r.company_code, 
+		        COUNT(*) AS today_cnt
+		    FROM 
+		        tbl_last_data a
+		    LEFT JOIN 
+		        tbl_router_info r 
+		        ON a.volte_num = r.volte_num
+		    WHERE 
+		        DATE(a.rcv_dt) = CURDATE()
+		    GROUP BY 
+		        r.company_code
+		) cnt 
+		ON b.company_code = cnt.company_code
+		GROUP BY 
+		    b.company_code
+		    
+		ORDER BY 
+		    b.company_code ASC
+	</select>
+	
+	<select id="rsrqAvgList" resultMap="CompanyInfoMap">
+		SELECT 
+		    b.company_code,
+		    COALESCE(avg_data.rsrq_avg, 0) AS rsrq_avg
+		FROM 
+		    tbl_router_info b
+		LEFT JOIN (
+		    SELECT 
+		        r.company_code, 
+		        AVG(a.rsrq) AS rsrq_avg
+		    FROM 
+		        tbl_last_data a
+		    LEFT JOIN 
+		        tbl_router_info r 
+		        ON a.volte_num = r.volte_num
+		    WHERE 
+		        DATE(a.rcv_dt) = CURDATE()
+		    GROUP BY 
+		        r.company_code
+		) avg_data 
+		ON b.company_code = avg_data.company_code
+		GROUP BY 
+		    b.company_code
+		ORDER BY 
+		    b.company_code ASC
+	</select>
+	
+</mapper>
