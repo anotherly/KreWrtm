@@ -12,7 +12,11 @@
 2025.09.23 최다슬     검색&모니터링 검색 기능 생성
 ========= ======= =================================================
 2025.11.18 정다빈     검색조건에서 위치는 제외하나 결과는 위치가 표출되게 변경
-(기존 location 컬럼을 db에서 제거하고 tc로 대체 vo는 유지)
+                  (기존 location 컬럼을 db에서 제거하고 tc로 대체 vo는 유지)
+========= ======= =================================================
+========= ======= =================================================
+2025.11.24 정다빈     장치 모니터링에서 car_num & extra_info 값은 
+				    단말기에서 실시간으로 송신하는 데이터를 표출
 ========= ======= =================================================
 -->
 
@@ -24,7 +28,7 @@
     <result property="version"               column="Version"/>
     <result property="modelName"             column="Device_Model"/>
     <result property="carNum"                column="CAR_NUM"/>
-    <result property="location"              column="TC"/> <!-- 특수 매핑 -->
+    <result property="location"              column="location"/>
     <result property="usimSlot"              column="USIM_SLOT"/>
     <result property="mobileIp"              column="MOBILE_IP"/>
     <result property="localIp"               column="LOCAL_IP"/>
@@ -73,11 +77,11 @@
 	        r.device_id,
 	        r.device_name,
 	        r.model_name,
-	        r.car_num,
+	        IFNULL(l.car_num,r.car_num) as car_num,
 	        r.volte_num,
 	        r.keywords,
 	        l.version,
-	        concat('TC',l.tc) as location,
+	        l.tc as location,
 	        c.company_name  
 	    FROM 
 	        tbl_router_info r
@@ -91,7 +95,7 @@
 	            (
 	                r.device_name LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.model_name LIKE CONCAT('%', #{searchVal}, '%')
-	                OR r.car_num LIKE CONCAT('%', #{searchVal}, '%')
+	                OR l.car_num LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
 	                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
 	                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
@@ -114,11 +118,11 @@
         r.device_id,
         r.device_name,
         r.model_name,
-        r.car_num,
+        IFNULL(l.car_num,r.car_num) as car_num,
         r.volte_num,
         r.keywords,
         l.version,
-        concat('TC',l.tc) as location
+        l.tc as location
     FROM 
         tbl_router_info r
     LEFT JOIN 
@@ -128,7 +132,7 @@
         <if test="searchVal != null and searchVal != ''">
             AND (
                 r.model_name LIKE CONCAT('%', #{searchVal}, '%')
-                OR r.car_num LIKE CONCAT('%', #{searchVal}, '%')
+                OR l.car_num LIKE CONCAT('%', #{searchVal}, '%')
                 OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
                 OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
                 OR l.version LIKE CONCAT('%', #{searchVal}, '%')
@@ -171,12 +175,12 @@
 		    r.device_id,
 		    r.device_name,
 		    r.model_name,
-		    r.car_num,
+		    IFNULL(l.car_num,r.car_num) as car_num,
 		    r.volte_num,
 		    r.keywords,
-			 r.extra_info,
+			l.etc as extra_info,
 		    l.version,
-		    concat('TC',l.tc) as location,
+		    l.tc as location,
 		    l.USIM_SLOT,
 		    l.MOBILE_IP,
 		    l.LOCAL_IP,
