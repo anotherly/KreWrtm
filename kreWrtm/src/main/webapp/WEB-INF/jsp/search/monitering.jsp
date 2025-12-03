@@ -8,6 +8,31 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <jsp:include page="../cmn/top.jsp" flush="false" />
 </head>
+<style>
+	@media (max-width: 1919px) {
+	    html, body {
+	        overflow-x: auto !important;
+	        overflow-y: auto !important;
+	    }
+	    
+	    .left-container {
+	    	width : 1100px;
+	    }
+	    
+	    .right-container {
+	    	width : 785px;
+	    }
+	    
+	    .contents-wrap {
+	    	width : 1920px;
+	    	height : 919px;
+	    }
+	    
+	    .td-div span {
+	    	font-size : 12px;
+	    }
+	}
+</style>
 <script>
 	var nowTagId = '${data.deviceId}';	
 	var chkTerId='${data.deviceId}';
@@ -337,9 +362,9 @@
 						    </div>
 						</div>				
 						<div class="table_row">
-						    <div class="table_th tbl_cc">모바일 IP</div>
+						    <div class="table_th tbl_cc">VNC IP</div>
 						    <div class="table_td tbl_cc">
-						        ${empty data.mobileIp ? '정보 없음' : data.mobileIp}
+						        ${empty data.vncIp ? '정보 없음' : data.vncIp}
 						    </div>
 						    
 						    <div class="table_th tbl_cc">(GPS)위도</div>
@@ -424,11 +449,21 @@
 						</div>
 						
 
-						<div class="searchBox">
+						<!-- <div class="searchBox">
 							<input type="text" class="searchText" id="searchVal" name="searchVal" title="차량번호, 제조사 등을 입력하세요." placeholder="검색어를 입력하세요." style="width:300px; padding-left:25px;">
 							<div class="search_btn" style="position: absolute; right: 20px; top: 110px;">
 		                        <button class="btn btn_sch btn_primary" onclick="search()" style="width:auto; background : none; box-shadow : none; "><div class="ico_sch_search"></div></button>
 		                    </div>
+						</div> -->
+						<div class="searchBox" style="display: flex;flex-direction: row;align-items: center;">
+						    <input type="text" class="searchText" id="searchVal" name="searchVal" 
+						        title="차량번호, 제조사 등을 입력하세요." 
+						        placeholder="검색어를 입력하세요." 
+						        style="width:300px; padding-left:25px;">
+						
+						    <button class="btn_sch" onclick="search()" style="border:none;">
+						        <div class="ico_sch_search"></div>
+						    </button>
 						</div>
 					</form>			
 				</div>

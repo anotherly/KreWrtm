@@ -14,6 +14,7 @@
 			
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
+				let validChk = true;
 				
 				$(".input_base_require").each(function(i,list){
 					console.log("필수값체크");
@@ -25,8 +26,13 @@
 					}
 				});
 				
-				let queryString = $("#insertForm").serialize();
-				ajaxMethod('/company/companyInsert.ajax',queryString,'/company/companyList.do','저장되었습니다');
+				if(!validChk) {
+					return false;
+				} else {
+					let queryString = $("#insertForm").serialize();
+					ajaxMethod('/company/companyInsert.ajax',queryString,'/company/companyList.do','저장되었습니다');
+				}
+
 			}); 
 			
 			//y면 체크 아니면 비체크인데 비체크값을 n으로 변경
@@ -95,7 +101,6 @@
 									<input type="text" 
 										id="companyName" 
 										name ="companyName" 
-										placeholder="" 
 										class="form-control input_base_require"
 										maxLength="20"
 									>

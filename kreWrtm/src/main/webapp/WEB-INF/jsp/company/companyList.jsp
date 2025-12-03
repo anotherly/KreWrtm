@@ -140,10 +140,26 @@
 	
 	/* 검색 */
 	 function search(){
-		 console.log("검색");
-		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/company/companyList.ajax";
-		 tbSearch("tableList",tagUrl,frm);
+		
+		console.log("검색");
+		 
+		 var sDate = $('#sDate').val();
+		 var eDate = $('#eDate').val();
+		 // 등록일의 시작일과 종료일 유효성 검사
+		 if ($('#dateChk').is(':checked')) {
+		    console.log("체크됨");		    
+		    var sDateObj = new Date(sDate);
+		    var eDateObj = new Date(eDate);
+
+		    if (eDateObj < sDateObj) {
+		    	alert("등록일의 종료일이 시작일보다 먼저일 수 없습니다.");
+		    	return false;
+		    } else {
+		    	let frm = $("#searchFrm").serialize();
+		    	var tagUrl="/company/companyList.ajax";
+				tbSearch("tableList",tagUrl,frm);
+		    }
+		 }
 	 }
     
 </script>

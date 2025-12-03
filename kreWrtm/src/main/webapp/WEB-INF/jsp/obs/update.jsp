@@ -49,12 +49,25 @@
 				var prcComment = $('#prcComment').val();
 				var reason = $('#reason').val();
 				
+				var status = $('#status').val();
+				
 				if(carNum == "") {
 					alert("호차를 입력해 주세요.");
 					validChk = false;
 					return false;
-				} else if(prcDateObj < rptDateObj) {
-					alert("처리 일시가 신고 일시보다 먼저일 수 없습니다. 다시 확인해 주세요.");
+				} else if (status == 2) {
+					if (prcDate == "") {
+						alert("처리 일시를 입력해 주세요.");
+						validChk = false;
+						return false;
+					} else if(prcDateObj < rptDateObj) {
+						alert("처리 일시가 신고 일시보다 먼저일 수 없습니다. 다시 확인해 주세요.");
+						validChk = false;
+						return false;
+					}
+				}
+				else if (rptDate == "") {
+					alert("신고 일시를 입력해 주세요.");
 					validChk = false;
 					return false;
 				} else if(obsName == "") {

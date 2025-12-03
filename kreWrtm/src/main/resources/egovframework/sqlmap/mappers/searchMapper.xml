@@ -190,7 +190,7 @@
 		    l.version,
 		    l.tc as location,
 		    l.USIM_SLOT,
-		    l.MOBILE_IP,
+		    l.VNC_IP,
 		    l.LOCAL_IP,
 		    l.IMEI,
 		    l.IMSI,

@@ -54,7 +54,8 @@
 			
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
-
+				let validChk = true;
+	
 				$(".input_base_require").each(function(i,list){
 					console.log("필수값체크");
 					if($(this).val()==null||$(this).val()==''){
@@ -66,12 +67,26 @@
 						
 					}
 				});
- 				if(dupChkFlag){
-					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/router/routerInsert.ajax',queryString,'/router/routerList.do','저장되었습니다');
-				}else{
-					alert("volte 중복 체크를 확인하세요");
+				
+				
+				if(!validChk) {
+					return false;
+				} else {
+					if(dupChkFlag){
+	 					
+						// 업데이트 전 VoLTE 번호 포맷팅
+						var phoneCell = $('#phoneCell').val();
+						var fmtPhoneCell = phoneCell.replaceAll('-', '');
+						$('#phoneCell').val(fmtPhoneCell);
+						
+						let queryString = $("#insertForm").serialize();
+						
+						ajaxMethod('/router/routerInsert.ajax',queryString,'/router/routerList.do','저장되었습니다');
+					}else{
+						alert("volte 중복 체크를 확인하세요");
+					}
 				}
+				
 			}); 
 			
 			$("#btnCancel").on('click',function(){

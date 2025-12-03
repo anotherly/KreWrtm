@@ -39,7 +39,9 @@
 			}); 
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/user/userList.do';
+				/* location.href='/user/userList.do'; */
+				
+				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 		});
 	</script>
@@ -119,6 +121,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td" style="padding: 0;font-size: 12px;" >허용 특수문자 : ~, !, @, #, $, %, ^, &, *, (, ), _, +, |, [, ] </div>
@@ -139,6 +142,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td"></div>

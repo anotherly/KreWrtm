@@ -1468,7 +1468,7 @@ input:focus{
 }
 
 
-.searchText {
+/* .searchText {
 	width: 700px;
     height: 50px;
     font-size: 17px;
@@ -1479,7 +1479,7 @@ input:focus{
 }
 
 
-/* input 클릭(focus) 시 테두리 제거 */
+input 클릭(focus) 시 테두리 제거
 .searchText:focus {
   outline: none;
   border: none;
@@ -1492,10 +1492,51 @@ input:focus{
     height: 24px;
     display: inline-block;
     background-size: contain;
+} */
+
+
+.searchText {
+    width: 700px;
+    height: 50px;
+    font-size: 17px;
+    border: none;
+    border-radius: 30px;
+    padding-left: 40px;
+    box-shadow: 1px 2px 10px #B5B5B5;
 }
 
+/* input 클릭(focus) 시 테두리 제거 */
+.searchText:focus {
+    outline: none;
+    border: none;
+}
 
+/* 검색 아이콘 */
+.ico_sch_search {
+    background: url(../images/icons/searchIcon.svg) center center no-repeat;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-size: contain;
+}
 
+/* 검색창 전체 박스 */
+.searchBox {
+    position: relative;
+    display: inline-block;
+}
+
+/* 검색 버튼을 input 안 오른쪽에 맞추기 */
+.search_btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
 
 /* 장치 & 모니터링 관련 스타일 */
 

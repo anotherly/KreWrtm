@@ -66,7 +66,7 @@
 						            <div class="status_0">조치 진행중</div>
 						        </c:when>
 						        <c:when test="${data.status == '1'}">
-						            <div class="status_1">조치 대기중</div>
+						            <div class="status_1">조치 미완료</div>
 						        </c:when>
 						        <c:when test="${data.status == '2'}">
 						            <div class="status_2">조치 완료</div>
