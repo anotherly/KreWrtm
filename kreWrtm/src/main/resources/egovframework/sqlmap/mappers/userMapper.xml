@@ -36,6 +36,10 @@
 		LEFT JOIN TBL_ORG_INFO C
 		ON J1.ORG_ID=C.ORG_ID
 		WHERE 1=1 	
+		<if test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
+	        and reg_date between #{sDate} and  #{eDate} 
+	    </if>
+    
 	   	<!-- 검색조건 타입/검색어 -->
 		<if test="searchType!=null and searchType neq ''">
 	        <choose>
@@ -60,7 +64,7 @@
 			    </otherwise>  
 	        </choose>
 	    </if>
-		ORDER BY reg_date ASC
+		ORDER BY reg_date desc
 	</select>
 
 	<!-- 특정 사용자 조회 -->

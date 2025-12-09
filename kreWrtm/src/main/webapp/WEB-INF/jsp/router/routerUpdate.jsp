@@ -95,14 +95,22 @@
 					return false;
 				} else {
 					if(dupChkFlag){
+	 					
+						var phoneChk = phoneCellChk();
 						
-						// 업데이트 전 VoLTE 번호 포맷팅
-						var phoneCell = $('#phoneCell').val();
-						var fmtPhoneCell = phoneCell.replaceAll('-', '');
-						$('#phoneCell').val(fmtPhoneCell);
+						if(phoneChk) {
+							// 업데이트 전 VoLTE 번호 포맷팅
+							var phoneCell = $('#phoneCell').val();
+							var fmtPhoneCell = phoneCell.replaceAll('-', '');
+							$('#phoneCell').val(fmtPhoneCell);
+							
+							let queryString = $("#insertForm").serialize();
+							
+							ajaxMethod('/router/routerUpdate.ajax',queryString,'/router/routerList.do','저장되었습니다');
+						} else {
+							alert("제조사 연락처가 올바르지 않습니다. 다시 확인하세요.");
+						}
 						
-						let queryString = $("#insertForm").serialize();
-						ajaxMethod('/router/routerUpdate.ajax',queryString,'/router/routerList.do','저장되었습니다');
 					}else{
 						alert("volte 중복 체크를 확인하세요");
 					}
@@ -123,7 +131,49 @@
 			});
 		});
 		
-		
+		function phoneCellChk() {
+		    var makeVal1 = $('input[name="makerPhone1"]').val().trim(); 
+		    var makeVal2 = $('input[name="makerPhone2"]').val().trim(); 
+
+		    var reg = /^(010|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)$/;
+
+		    if (makeVal1.length === 13) {
+		        var onlyNum1 = makeVal1.replace(/[^0-9]/g, "");
+		        var front3_1 = onlyNum1.substring(0, 3);
+		        var front2_1 = onlyNum1.substring(0, 2);
+
+		        if (reg.test(front3_1) || reg.test(front2_1)) {
+		            console.log("makeVal1 정상");
+		        } else {
+		            console.log("makeVal1 패턴 불일치");
+		            return false;
+		        }
+		    } else {
+		        console.log("makeVal1 길이 불일치");
+		        return false;
+		    }
+
+		    if (makeVal2 !== "") {
+		        if (makeVal2.length !== 13) {
+		            console.log("makeVal2 길이 불일치");
+		            return false;
+		        }
+
+		        var onlyNum2 = makeVal2.replace(/[^0-9]/g, "");
+		        var front3_2 = onlyNum2.substring(0, 3);
+		        var front2_2 = onlyNum2.substring(0, 2);
+
+		        if (reg.test(front3_2) || reg.test(front2_2)) {
+		            console.log("makeVal2 정상");
+		        } else {
+		            console.log("makeVal2 패턴 불일치");
+		            return false;
+		        }
+		    }
+
+		    console.log("검증 완료");
+		    return true;
+		}
 		
 		// ajax 요청하는 함수
 		function changeSelect(userType) {

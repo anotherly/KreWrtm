@@ -192,7 +192,6 @@
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group" >
                             <select class="table_sel"  style="width: 164px; height:100%;"  name="searchType">
-                            	<option value="">전체</option>
                             	<option value="companyName">회사명</option>
                             	<option value="companyCode">회사코드</option>
 							</select>

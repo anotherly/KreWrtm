@@ -11,6 +11,8 @@
 	var delUrl="/user/userDelete.ajax";
 	var delbak="/user/userList.do";
 	
+	
+	var sendFleg = true;
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
 	var selectlang;
@@ -147,6 +149,7 @@
 		 
 		 var sDate = $('#sDate').val();
 		 var eDate = $('#eDate').val();
+		 
 		 // 등록일의 시작일과 종료일 유효성 검사
 		 if ($('#dateChk').is(':checked')) {
 		    console.log("체크됨");		    
@@ -155,12 +158,21 @@
 
 		    if (eDateObj < sDateObj) {
 		    	alert("등록일의 종료일이 시작일보다 먼저일 수 없습니다.");
+		    	sendFleg = false;
 		    	return false;
 		    } else {
-		    	let frm = $("#searchFrm").serialize();
-				var tagUrl="/user/userList.ajax";
-				tbSearch("tableList",tagUrl,frm);
+		    	sendFleg = true;
 		    }
+		 } 
+		 
+		 
+		 if(sendFleg) {
+			let frm = $("#searchFrm").serialize();
+			var tagUrl="/user/userList.ajax";
+			tbSearch("tableList",tagUrl,frm);
+		 } else {
+			 sendFleg = true;
+			 return false;
 		 }
 		 
 	 }
@@ -196,7 +208,6 @@
                         
                         <div class="form-group" >
                             <select class="table_sel"  style="width: 164px; height:100%;"  name="searchType">
-                            	<option value="">전체</option>
                             	<option value="companyName">제조사</option>
                             	<option value="orgName">소속</option>
                             	<option value="userName">사용자명</option>
