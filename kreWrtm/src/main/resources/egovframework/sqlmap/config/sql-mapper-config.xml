@@ -25,6 +25,9 @@
 		<typeAlias alias="searchVo" type="kr.co.hivesys.search.vo.SearchVo"/>		
 		
 		<typeAlias alias="fileVo" type="kr.co.hivesys.comm.file.vo.FileVo" />
+		
+		<typeAlias alias="chartVo" type="kr.co.hivesys.chart.vo.ChartVo" />
+		
 	</typeAliases>
 	<!-- jdb : 사용하려는 *mapper.xml 등록 -->
 	<!-- jdb ※중요 ! : 여기서 매퍼위치 설정하거나 context mapper 에서 위치설정 해줘야함 그동안 이중설정했던건 

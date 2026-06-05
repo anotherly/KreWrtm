@@ -12,15 +12,48 @@
 
 	<!-- 펌웨어 실시간 사용률 현황 회사 테이블 조회 -->
 	<resultMap type="kr.co.hivesys.chart.vo.ChartVo" id="selectDataList">
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="firmUse" column="FIRM_USE"/>
-		<result property="etc" column="ETC"/>
-	</resultMap>
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="firmUse" column="FIRM_USE"/>
+    <result property="etc" column="ETC"/>
+</resultMap>
 	
-	<resultMap type="kr.co.hivesys.router.vo.RouterVO" id="selectRouterList">
-		<result property="companyName" column="COMPANY_NAME" />
-		<result property="routerCount" column="ROUTER_COUNT"/>
-	</resultMap>
+	<resultMap type="routerVo" id="selectRouterList">
+    <id property="deviceId" column="DEVICE_ID"/>
+    <!-- BaseVO -->
+    <result property="regDate" column="REG_DATE"/>
+    <result property="createdAt" column="CREATED_AT"/>
+    <result property="updatedAt" column="UPDATED_AT"/>
+    <result property="tagId" column="TAG_ID"/>
+    <result property="searchType" column="SEARCH_TYPE"/>
+    <result property="searchValue" column="SEARCH_VALUE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <!-- CompanyVO -->
+    <result property="companyCode" column="COMPANY_CODE"/>
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="dirMb" column="DIR_MB"/>
+    <result property="dirRegDt" column="DIR_REG_DT"/>
+    <result property="todayCnt" column="TODAY_CNT"/>
+    <result property="rsrqAvg" column="RSRQ_AVG"/>
+    <!-- OrgVO -->
+    <result property="orgId" column="ORG_ID"/>
+    <result property="orgName" column="ORG_NAME"/>
+    <!-- RouterVO -->
+    
+    <result property="deviceName" column="DEVICE_NAME"/>
+    <result property="modelName" column="MODEL_NAME"/>
+    <result property="volteNum" column="VOLTE_NUM"/>
+    <result property="keywords" column="KEYWORDS"/>
+    <result property="carNum" column="CAR_NUM"/>
+    <result property="updateDate" column="UPDATE_DATE"/>
+    <result property="makerPhone1" column="MAKER_PHONE_1"/>
+    <result property="makerPhone2" column="MAKER_PHONE_2"/>
+    <result property="extraInfo" column="EXTRA_INFO"/>
+    <result property="createdBy" column="CREATED_BY"/>
+    <result property="updatedBy" column="UPDATED_BY"/>
+    <result property="routerCount" column="ROUTER_COUNT"/>
+</resultMap>
 	
 	<select id="selectDataList" parameterType="kr.co.hivesys.chart.vo.ChartVo" resultMap="selectDataList">
 		select * from tbl_use_info
@@ -42,15 +75,25 @@
 
 
 	<resultMap id="CompanyInfoMap" type="companyVo">
-	    <id     property="companyCode" column="company_code"/>
-	    <result property="companyName" column="company_name"/>
-	    <result property="userType"    column="user_type"/>
-	    <result property="regDate"     column="reg_date"/>
-	    <result property="createdAt"   column="created_at"/>
-	    <result property="updatedAt"   column="updated_at"/>
-	    <result property="rsrqAvg" column="rsrq_avg"/>
-	    <result property="todayCnt" column="today_cnt"/>
-	  </resultMap>
+    <id property="companyCode" column="COMPANY_CODE"/>
+    <!-- BaseVO -->
+    <result property="regDate" column="REG_DATE"/>
+    <result property="createdAt" column="CREATED_AT"/>
+    <result property="updatedAt" column="UPDATED_AT"/>
+    <result property="tagId" column="TAG_ID"/>
+    <result property="searchType" column="SEARCH_TYPE"/>
+    <result property="searchValue" column="SEARCH_VALUE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <!-- CompanyVO -->
+    
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="dirMb" column="DIR_MB"/>
+    <result property="dirRegDt" column="DIR_REG_DT"/>
+    <result property="todayCnt" column="TODAY_CNT"/>
+    <result property="rsrqAvg" column="RSRQ_AVG"/>
+</resultMap>
   
 	<select id="getComCode" resultMap="CompanyInfoMap">
 		SELECT COMPANY_CODE, COMPANY_NAME FROM TBL_COMPANY_INFO

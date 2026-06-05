@@ -119,7 +119,7 @@
 				</otherwise>
 			</choose>
 		</if>
-		ORDER BY reg_date ASC
+		ORDER BY reg_date DESC
 	</select> 
 
 	<!-- INSERT: AUTO_INCREMENT 키 반환 -->

@@ -1859,3 +1859,178 @@ input 클릭(focus) 시 테두리 제거
     font-size : 15px;
     text-align : center;
 }
+
+/* =========================================================
+   목록 화면 검색영역 개선
+   - 적용 대상: userList.jsp / companyList.jsp / routerList.jsp
+   - 검색 박스 높이 통일, 날짜 박스 정렬, 체크박스 간격 보정
+   ========================================================= */
+.search_box.list_search_box {
+    padding: 20px 32px;
+    min-height: 82px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-top: calc(10px + 5vh);
+    margin-bottom: calc(10px + 5vh);
+}
+
+.search_form.list_search_form {
+    width: auto;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 14px 38px;
+}
+
+.search_form.list_search_form .form-group {
+    width: auto;
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+.search_form.list_search_form .search_keyword_group {
+    min-width: 405px;
+}
+
+.search_form.list_search_form .search_date_group {
+    min-width: 635px;
+}
+
+.search_form.list_search_form select.table_sel,
+.search_form.list_search_form input.form-control,
+.search_form.list_search_form input.form-cont {
+    height: 38px;
+    box-sizing: border-box;
+    border: 1px solid #cfd4da;
+    border-radius: 2px;
+    padding: 6px 10px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #444;
+    background-color: #fff;
+    vertical-align: middle;
+}
+
+.search_form.list_search_form select.table_sel {
+    width: 170px;
+    min-width: 170px;
+    flex: 0 0 170px;
+}
+
+.search_form.list_search_form #searchValue {
+    width: 220px;
+    min-width: 220px;
+    flex: 0 0 220px;
+}
+
+.search_form.list_search_form .form-control-label {
+    min-width: auto;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 7px;
+    padding-left: 0;
+    margin: 0 8px 0 0;
+    font-size: 16px;
+    line-height: 38px;
+    font-weight: 600;
+    color: #222;
+    white-space: nowrap;
+}
+
+.search_form.list_search_form .form-control-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    flex: 0 0 auto;
+    vertical-align: middle;
+}
+
+.search_form.list_search_form .input-group.date,
+.search_form.list_search_form .search_date_picker {
+    width: 265px;
+    height: 38px;
+    display: inline-flex;
+    align-items: stretch;
+    flex: 0 0 265px;
+    vertical-align: middle;
+}
+
+.search_form.list_search_form .input-group.date input.form-control,
+.search_form.list_search_form .input-group.date input.form-cont {
+    width: 225px;
+    min-width: 225px;
+    height: 38px;
+    flex: 0 0 225px;
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.search_form.list_search_form .input-group-addon {
+    width: 40px;
+    min-width: 40px;
+    height: 38px;
+    box-sizing: border-box;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cfd4da;
+    border-left: 0;
+    border-radius: 0 2px 2px 0;
+    background-color: #f2f3f5;
+}
+
+.search_form.list_search_form .date-range-separator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 2px;
+    color: #555;
+}
+
+.search_form.list_search_form input:disabled {
+    background-color: #f5f6f7;
+    color: #555;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.search_box.list_search_box .search_btn,
+.search_box.list_search_box .list_search_btn {
+    position: static;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.search_box.list_search_box .btn_sch {
+    min-width: 112px;
+    height: 42px;
+}
+
+@media (max-width: 1500px) {
+    .search_box.list_search_box {
+        flex-wrap: wrap;
+    }
+
+    .search_box.list_search_box .search_btn,
+    .search_box.list_search_box .list_search_btn {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

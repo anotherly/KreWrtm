@@ -5,16 +5,9 @@ import kr.co.hivesys.router.vo.RouterVO;
 
 public class SearchVo extends RouterVO{
 	private String searchVal;
-	private String deviceId;
-	private String deviceName;
-	private String modelName;
-	private String carNum;
-	private String volteNum;
-	private String keywords;
 	private String version;
 	private String location;//DB에는 컬렴명 TC에 저장
 	
-	private String extraInfo;
 	private String usimSlot;
 	private String mobileIp;
 	private String localIp;
@@ -58,42 +51,6 @@ public class SearchVo extends RouterVO{
 	public void setSearchVal(String searchVal) {
 		this.searchVal = searchVal;
 	}
-	public String getDeviceId() {
-		return deviceId;
-	}
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
-	}
-	public String getDeviceName() {
-		return deviceName;
-	}
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
-	}
-	public String getModelName() {
-		return modelName;
-	}
-	public void setModelName(String modelName) {
-		this.modelName = modelName;
-	}
-	public String getCarNum() {
-		return carNum;
-	}
-	public void setCarNum(String carNum) {
-		this.carNum = carNum;
-	}
-	public String getVolteNum() {
-		return volteNum;
-	}
-	public void setVolteNum(String volteNum) {
-		this.volteNum = volteNum;
-	}
-	public String getKeywords() {
-		return keywords;
-	}
-	public void setKeywords(String keywords) {
-		this.keywords = keywords;
-	}
 	public String getVersion() {
 		return version;
 	}
@@ -105,12 +62,6 @@ public class SearchVo extends RouterVO{
 	}
 	public void setLocation(String location) {
 		this.location = location;
-	}
-	public String getExtraInfo() {
-		return extraInfo;
-	}
-	public void setExtraInfo(String extraInfo) {
-		this.extraInfo = extraInfo;
 	}
 	public String getUsimSlot() {
 		return usimSlot;
@@ -196,41 +147,15 @@ public class SearchVo extends RouterVO{
 	public void setRcvDt(String rcvDt) {
 		this.rcvDt = rcvDt;
 	}
-	
-	
-	
 	@Override
 	public String toString() {
-		return "SearchVo [searchVal=" + searchVal + ", deviceId=" + deviceId + ", deviceName=" + deviceName
-				+ ", modelName=" + modelName + ", carNum=" + carNum + ", volteNum=" + volteNum + ", keywords="
-				+ keywords + ", version=" + version + ", location=" + location + ", extraInfo=" + extraInfo
-				+ ", usimSlot=" + usimSlot + ", mobileIp=" + mobileIp + ", localIp=" + localIp + ", imei=" + imei
-				+ ", imsi=" + imsi + ", rsrp=" + rsrp + ", rsrq=" + rsrq + ", mcpptNum=" + mcpttNum
-				+ ", autoSwitchingRadio=" + autoSwitchingRadio + ", cellId=" + cellId + ", currentRadioType="
-				+ currentRadioType + ", gpsLat=" + gpsLat + ", gpsLon=" + gpsLon + ", rcvDt=" + rcvDt + ", tagId="
-				+ tagId + ", searchType=" + searchType + ", searchValue=" + searchValue + ", sDate=" + sDate
-				+ ", eDate=" + eDate + ", getSearchVal()=" + getSearchVal() + ", getDeviceId()=" + getDeviceId()
-				+ ", getDeviceName()=" + getDeviceName() + ", getModelName()=" + getModelName() + ", getCarNum()="
-				+ getCarNum() + ", getVolteNum()=" + getVolteNum() + ", getKeywords()=" + getKeywords()
-				+ ", getVersion()=" + getVersion() + ", getLocation()=" + getLocation() + ", getExtraInfo()="
-				+ getExtraInfo() + ", getUsimSlot()=" + getUsimSlot() + ", getMobileIp()=" + getMobileIp()
-				+ ", getLocalIp()=" + getLocalIp() + ", getImei()=" + getImei() + ", getImsi()=" + getImsi()
-				+ ", getRsrp()=" + getRsrp() + ", getRsrq()=" + getRsrq() + ", getMcpptNum()=" + getMcpttNum()
-				+ ", getAutoSwitchingRadio()=" + getAutoSwitchingRadio() + ", getCellId()=" + getCellId()
-				+ ", getCurrentRadioType()=" + getCurrentRadioType() + ", getGpsLat()=" + getGpsLat() + ", getGpsLon()="
-				+ getGpsLon() + ", getRcvDt()=" + getRcvDt() + ", getUpdateDate()=" + getUpdateDate()
-				+ ", getMakerPhone1()=" + getMakerPhone1() + ", getMakerPhone2()=" + getMakerPhone2() + ", getOrgId()="
-				+ getOrgId() + ", getOrgName()=" + getOrgName() + ", toString()=" + super.toString()
-				+ ", getCompanyCode()=" + getCompanyCode() + ", getCompanyName()=" + getCompanyName()
-				+ ", getUserType()=" + getUserType() + ", getRegDate()=" + getRegDate() + ", getCreatedAt()="
-				+ getCreatedAt() + ", getUpdatedAt()=" + getUpdatedAt() + ", getTagId()=" + getTagId()
-				+ ", getSearchType()=" + getSearchType() + ", getSearchValue()=" + getSearchValue() + ", getsDate()="
-				+ getsDate() + ", geteDate()=" + geteDate() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + "]";
+		return "SearchVo [searchVal=" + searchVal + ", version=" + version + ", location=" + location + ", usimSlot="
+				+ usimSlot + ", mobileIp=" + mobileIp + ", localIp=" + localIp + ", imei=" + imei + ", imsi=" + imsi
+				+ ", rsrp=" + rsrp + ", rsrq=" + rsrq + ", mcpttNum=" + mcpttNum + ", autoSwitchingRadio="
+				+ autoSwitchingRadio + ", cellId=" + cellId + ", currentRadioType=" + currentRadioType + ", gpsLat="
+				+ gpsLat + ", gpsLon=" + gpsLon + ", rcvDt=" + rcvDt + ", vncIp=" + vncIp + ", vncPort=" + vncPort
+				+ ", vncPw=" + vncPw + "]";
 	}
-	
-	
-	
 
 	
 }

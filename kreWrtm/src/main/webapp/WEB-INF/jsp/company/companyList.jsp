@@ -140,26 +140,26 @@
 	
 	/* 검색 */
 	 function search(){
-		
 		console.log("검색");
-		 
-		 var sDate = $('#sDate').val();
-		 var eDate = $('#eDate').val();
-		 // 등록일의 시작일과 종료일 유효성 검사
-		 if ($('#dateChk').is(':checked')) {
-		    console.log("체크됨");		    
-		    var sDateObj = new Date(sDate);
-		    var eDateObj = new Date(eDate);
 
-		    if (eDateObj < sDateObj) {
-		    	alert("등록일의 종료일이 시작일보다 먼저일 수 없습니다.");
-		    	return false;
-		    } else {
-		    	let frm = $("#searchFrm").serialize();
-		    	var tagUrl="/company/companyList.ajax";
-				tbSearch("tableList",tagUrl,frm);
-		    }
-		 }
+		var sDate = $('#sDate').val();
+		var eDate = $('#eDate').val();
+
+		// 날짜검색이 체크된 경우에만 시작일 종료일 비교
+		if ($('#dateChk').is(':checked')) {
+			console.log("체크됨");
+			var sDateObj = new Date(sDate);
+			var eDateObj = new Date(eDate);
+
+			if (eDateObj < sDateObj) {
+				alert("등록일의 종료일이 시작일보다 먼저일 수 없습니다.");
+				return false;
+			}
+		}
+
+		let frm = $("#searchFrm").serialize();
+		var tagUrl="/company/companyList.ajax";
+		tbSearch("tableList",tagUrl,frm);
 	 }
     
 </script>
@@ -188,38 +188,44 @@
 					<div class="ttl_ctn">회사코드 목록</div>
 				</div>
                 <!-- search_box Start -->
-                <div class="search_box">
-                	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
-                        <div class="form-group" >
-                            <select class="table_sel"  style="width: 164px; height:100%;"  name="searchType">
-                            	<option value="companyName">회사명</option>
-                            	<option value="companyCode">회사코드</option>
-							</select>
-                            <input type="text" id="searchValue" name="searchValue" maxlength="20" placeholder="" class="form-control">
+                <div class="search_box list_search_box">
+                    <form id="searchFrm" name="searchFrm" class="search_form list_search_form" method="post" enctype="multipart/form-data">
+                        <div class="form-group search_keyword_group">
+                            <select class="table_sel" name="searchType">
+                                <option value="companyName">회사명</option>
+                                <option value="companyCode">회사코드</option>
+                            </select>
+                            <input type="text"
+                                   id="searchValue"
+                                   name="searchValue"
+                                   maxlength="20"
+                                   placeholder=""
+                                   onkeydown="if(event.key === 'Enter'){ event.preventDefault(); search(); }"
+                                   class="form-control">
                         </div>
-                        <div class="form-group">
-                        
-                            <label for="sch_text_01" class="form-control-label">
-                            	<input type="checkbox" id="dateChk" name="dateChk" value="">
-                            	등록일
+
+                        <div class="form-group search_date_group">
+                            <label for="dateChk" class="form-control-label">
+                                <input type="checkbox" id="dateChk" name="dateChk" value="">
+                                등록일
                             </label>
-                            	<div class='input-group date' id='datetimepicker1'>
-									<input type='text' class="form-cont" name="sDate" id="sDate" required/>
-									<span class="input-group-addon">
-										<span class="glyphicon glyphicon-calendar"></span>
-									</span>
-								</div>
-								 ~ 
-								<div class='input-group date' id='datetimepicker2'>
-									<input type="text" class="form-cont" id="eDate" name="eDate"  required/>
-									<span class="input-group-addon">
-										<span class="glyphicon glyphicon-calendar"></span>
-									</span>
-								</div>
+                            <div class="input-group date search_date_picker" id="datetimepicker1">
+                                <input type="text" class="form-control" name="sDate" id="sDate" required disabled>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <span class="date-range-separator">~</span>
+                            <div class="input-group date search_date_picker" id="datetimepicker2">
+                                <input type="text" class="form-control" id="eDate" name="eDate" required disabled>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
                     </form>
-                    <div class="search_btn" style="position: absolute;right: 98px;top: 19px;">
-                        <button class="btn btn_sch btn_primary" onclick="search()"><i class="ico_sch"></i>조회</button>
+                    <div class="search_btn list_search_btn">
+                        <button type="button" class="btn btn_sch btn_primary" onclick="search()"><i class="ico_sch"></i>조회</button>
                     </div>
                 </div>
                 <!-- search_box End -->

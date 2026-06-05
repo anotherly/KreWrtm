@@ -172,7 +172,7 @@ function onlyNumber(event,that,min,max) {
 }
 
 /************************************************************************
-함수명 : telChk
+함수명 : phoneCellChk
 설 명 : 전화번호 체크
 인 자 : 
 사용법 : 
@@ -180,8 +180,52 @@ function onlyNumber(event,that,min,max) {
 작성자 : 솔루션사업팀 정다빈
 수정일        수정자       수정내용
 ----------- ------ -------------------
-2020.08.25   정다빈       최초작성
+2025.08.25   정다빈       최초작성
 ************************************************************************/
+
+function phoneCellChk(phone1,phone2) {
+    var makeVal1 = $('input[name="'+phone1+'"]').val().trim();
+    var makeVal2 = $('input[name="'+phone2+'"]').val().trim();
+
+    function isValidPhone(value) {
+        if (value === "") {
+            return false;
+        }
+
+        // 숫자만 추출
+        var onlyNum = value.replace(/[^0-9]/g, "");
+
+        /*
+         * 허용 형식
+         * 010-1234-5678
+         * 02-123-4567
+         * 02-1234-5678
+         * 031-123-4567
+         * 031-1234-5678
+         */
+        var reg = /^(010\d{8}|02\d{7,8}|0(31|32|33|41|42|43|44|51|52|53|54|55|61|62|63|64)\d{7,8})$/;
+
+        return reg.test(onlyNum);
+    }
+
+    if (!isValidPhone(makeVal1)) {
+        console.log("userPhone 전화번호 형식 불일치");
+        alert("연락처1 형식이 올바르지 않습니다.");
+        $('input[name="userPhone"]').focus();
+        return false;
+    }
+
+    // 연락처2는 선택값이면 입력한 경우에만 검사
+    if (makeVal2 !== "" && !isValidPhone(makeVal2)) {
+        console.log("userPhone2 전화번호 형식 불일치");
+        alert("연락처2 형식이 올바르지 않습니다.");
+        $('input[name="userPhone2"]').focus();
+        return false;
+    }
+
+    return true;
+}
+
 /**
  * 전화번호 자동 하이픈 처리 함수
  * @param {HTMLInputElement} input - 이벤트가 발생한 input

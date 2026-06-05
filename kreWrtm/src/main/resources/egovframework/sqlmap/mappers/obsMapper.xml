@@ -12,15 +12,21 @@
 
 
 	<resultMap type="obsVo" id="selectDataList">
-		<result property="obsId" column="OBS_ID"/>
-		<result property="carNum" column="CAR_NUM"/>
-		<result property="rptDate" column="RPT_DATE"/>
-		<result property="obsName" column="OBS_NAME"/>
-		<result property="prcDate" column="PRC_DATE"/>
-		<result property="prcComment" column="PRC_COMMENT"/>
-		<result property="reason" column="REASON"/>
-		<result property="etc" column="ETC"/>
-	</resultMap>
+    <id property="obsId" column="OBS_ID"/>
+    <result property="carNum" column="CAR_NUM"/>
+    <result property="rptDate" column="RPT_DATE"/>
+    <result property="obsName" column="OBS_NAME"/>
+    <result property="prcDate" column="PRC_DATE"/>
+    <result property="prcComment" column="PRC_COMMENT"/>
+    <result property="reason" column="REASON"/>
+    <result property="etc" column="ETC"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <result property="ssDate" column="SS_DATE"/>
+    <result property="eeDate" column="EE_DATE"/>
+    <result property="delCode" column="DEL_CODE"/>
+    <result property="status" column="STATUS"/>
+</resultMap>
 	
 	<!-- 장애이력 관리 목록 조회 -->
 	<select id="selectDataList" parameterType="obsVo" resultMap="selectDataList">	

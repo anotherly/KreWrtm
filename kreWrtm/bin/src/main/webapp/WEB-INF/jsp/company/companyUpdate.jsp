@@ -14,6 +14,7 @@
 			
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
+				let validChk = true;
 				
 				$(".input_base_require").each(function(i,list){
 					console.log("필수값체크");
@@ -23,10 +24,15 @@
 						validChk=false;
 						return false;
 					}
-				});
+				});				
 				
-				let queryString = $("#insertForm").serialize();
-				ajaxMethod('/company/companyUpdate.ajax',queryString,'/company/companyList.do','저장되었습니다');
+				if(!validChk) {
+					return false;
+				} else {
+					let queryString = $("#insertForm").serialize();
+					ajaxMethod('/company/companyUpdate.ajax',queryString,'/company/companyList.do','저장되었습니다');
+				}
+				
 			}); 
 			
 			//y면 체크 아니면 비체크인데 비체크값을 n으로 변경
@@ -49,8 +55,11 @@
 				}
 			});
 			
+			
 			$("#btnCancel").on('click',function(){
-				location.href='/company/companyList.do';
+				/* llocation.href='/company/companyList.do'; */
+				
+				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 		});
 	</script>
@@ -94,8 +103,7 @@
 								<div class="ctn_tbl_td">
 									<input type="text" 
 										id="companyName" 
-										name ="companyName" 
-										placeholder="4자리 영문 대문자"  
+										name ="companyName"  
 										class="form-control input_base_require"
 										maxLength="20"
 										value="${data.companyName}"
@@ -108,7 +116,7 @@
 										id="companyCode" 
 										name ="companyCode" 
 										placeholder="" 
-										class="form-control input_base_require"
+										class="form-control"
 										oninput="valComCode(event)"
 										maxLength="4"
 										value="${data.companyCode}"

@@ -10,7 +10,7 @@
 -->
 	
 	<!-- 로그인 이력 저장(로그인 시) -->
-	<insert id="insertLogin" parameterType="userVO">
+	<insert id="insertLogin" parameterType="userVo">
 		INSERT INTO LOGIN_HISTORY(
 			USER_ID
 			,ST_TIME
@@ -22,7 +22,7 @@
 	</insert>
 	
 	<!-- 로그아웃 시 로그아웃 시간 기록-->
-	<update id="logoutUpdate" parameterType="userVO">
+	<update id="logoutUpdate" parameterType="userVo">
 		UPDATE LOGIN_HISTORY
 		SET FN_TIME = to_char(sysdate,'YYYY-MM-DD HH24:MI:SS')
 		WHERE USER_ID=#{USER_ID}
@@ -36,14 +36,23 @@
 	</update>
 	
 	<!-- 서버 비정상 종료로 인한 누적 기록 삭제-->
-	<delete id="errloginDelete" parameterType="userVO">
+	<delete id="errloginDelete" parameterType="userVo">
 		delete from login_history
 		where user_id =#{USER_ID}
 		and fn_time is null
 	</delete>
 	
+    <resultMap id="loginHistoryMap" type="userVo">
+        <id property="userId" column="USER_ID"/>
+        <result property="userName" column="USER_NAME"/>
+        <result property="stDt" column="ST_TIME"/>
+        <result property="fnDt" column="FN_TIME"/>
+        <result property="companyName" column="COMPANY_NAME"/>
+        <result property="userType" column="USER_TYPE"/>
+    </resultMap>
+
 	<!-- 사용자 사용이력 조회 -->
-	<select id="loginHistory" parameterType="userVO" resultType="userVO">
+	<select id="loginHistory" parameterType="userVo" resultMap="loginHistoryMap">
 	   SELECT A.*
 		,B.USER_NAME 
 		,C.AREA_NAME REGION_NAME

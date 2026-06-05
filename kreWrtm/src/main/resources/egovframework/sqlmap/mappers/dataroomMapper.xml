@@ -12,12 +12,20 @@
 
 	<!-- 자료실 데이터 조회 -->
 	<resultMap type="dataVo" id="selectDataList">
-		<result property="fileId" column="FILE_ID"/>
-		<result property="fileTitle" column="FILE_TITLE"/>
-		<result property="fileName" column="FILE_NAME"/>
-		<result property="fileDir" column="FILE_DIR"/>
-		<result property="regDt" column="REG_DT"/>
-	</resultMap>
+    <id property="fileId" column="FILE_ID"/>
+    <result property="fileTitle" column="FILE_TITLE"/>
+    <result property="fileName" column="FILE_NAME"/>
+    <result property="fileDir" column="FILE_DIR"/>
+    <result property="regDt" column="REG_DT"/>
+    <result property="fileVersion" column="FILE_VERSION"/>
+    <result property="filePath" column="FILE_PATH"/>
+    <result property="fileType" column="FILE_TYPE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <result property="writerName" column="USER_NAME"/>
+    <result property="writerId" column="WRITER_ID"/>
+    <result property="boardContent" column="BOARD_CONTENT"/>
+</resultMap>
 	
 	<select id="selectDataList" parameterType="dataVo" resultMap="selectDataList">
 		SELECT * FROM DATAROOM_INFO
@@ -34,15 +42,20 @@
 	
 	<!-- 자료실 게시판 데이터 조회 -->
 	<resultMap type="dataVo" id="selectDataBoardList">
-		<result property="fileId" column="FILE_ID"/>
-		<result property="fileTitle" column="FILE_TITLE"/>
-		<result property="fileName" column="FILE_NAME"/>
-		<result property="fileDir" column="FILE_DIR"/>
-		<result property="regDt" column="REG_DT"/>
-		<result property="writerId" column="WRITER_ID"/>
-		<result property="writerName" column="USER_NAME"/>
-		<result property="boardContent" column="BOARD_CONTENT"/>
-	</resultMap>
+    <id property="fileId" column="FILE_ID"/>
+    <result property="fileTitle" column="FILE_TITLE"/>
+    <result property="fileName" column="FILE_NAME"/>
+    <result property="fileDir" column="FILE_DIR"/>
+    <result property="regDt" column="REG_DT"/>
+    <result property="fileVersion" column="FILE_VERSION"/>
+    <result property="filePath" column="FILE_PATH"/>
+    <result property="fileType" column="FILE_TYPE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <result property="writerName" column="USER_NAME"/>
+    <result property="writerId" column="WRITER_ID"/>
+    <result property="boardContent" column="BOARD_CONTENT"/>
+</resultMap>
 	
 	<select id="selectDataBoardList" parameterType="dataVo" resultMap="selectDataBoardList">
 		SELECT 
@@ -69,12 +82,20 @@
 	
 	<!-- 자료실 상세 정보 조회 -->
 	<resultMap type="dataVo" id="selectData">
-		<result property="fileId" column="FILE_ID"/>
-		<result property="fileTitle" column="FILE_TITLE"/>
-		<result property="fileName" column="FILE_NAME"/>
-		<result property="fileDir" column="FILE_DIR"/>
-		<result property="regDt" column="REG_DT"/>
-	</resultMap>
+    <id property="fileId" column="FILE_ID"/>
+    <result property="fileTitle" column="FILE_TITLE"/>
+    <result property="fileName" column="FILE_NAME"/>
+    <result property="fileDir" column="FILE_DIR"/>
+    <result property="regDt" column="REG_DT"/>
+    <result property="fileVersion" column="FILE_VERSION"/>
+    <result property="filePath" column="FILE_PATH"/>
+    <result property="fileType" column="FILE_TYPE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <result property="writerName" column="USER_NAME"/>
+    <result property="writerId" column="WRITER_ID"/>
+    <result property="boardContent" column="BOARD_CONTENT"/>
+</resultMap>
 	
 	<select id="selectData" parameterType="dataVo" resultMap="selectData">
 		 SELECT * FROM DATAROOM_INFO
@@ -85,15 +106,20 @@
 	
 	<!-- 자료실 게시판 상세 정보 조회 -->
 	<resultMap type="dataVo" id="selectDataBoard">
-		<result property="fileId" column="FILE_ID"/>
-		<result property="fileTitle" column="FILE_TITLE"/>
-		<result property="fileName" column="FILE_NAME"/>
-		<result property="fileDir" column="FILE_DIR"/>
-		<result property="regDt" column="REG_DT"/>
-		<result property="writerId" column="WRITER_ID"/>
-		<result property="writerName" column="USER_NAME"/>
-		<result property="boardContent" column="BOARD_CONTENT"/>
-	</resultMap>
+    <id property="fileId" column="FILE_ID"/>
+    <result property="fileTitle" column="FILE_TITLE"/>
+    <result property="fileName" column="FILE_NAME"/>
+    <result property="fileDir" column="FILE_DIR"/>
+    <result property="regDt" column="REG_DT"/>
+    <result property="fileVersion" column="FILE_VERSION"/>
+    <result property="filePath" column="FILE_PATH"/>
+    <result property="fileType" column="FILE_TYPE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <result property="writerName" column="USER_NAME"/>
+    <result property="writerId" column="WRITER_ID"/>
+    <result property="boardContent" column="BOARD_CONTENT"/>
+</resultMap>
 	
 	<select id="selectDataBoard" parameterType="dataVo" resultMap="selectDataBoard">
 		SELECT 

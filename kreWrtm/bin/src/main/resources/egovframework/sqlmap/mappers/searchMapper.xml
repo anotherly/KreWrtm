@@ -22,6 +22,10 @@
 2025.11.24 정다빈     git commit test 
 15:02				    
 ========= ======= =================================================
+========= ======= =================================================
+2025.11.24 최다슬     git commit test 2
+15:11				    
+========= ======= =================================================
 -->
 
 <resultMap id="searchVoMap" type="kr.co.hivesys.search.vo.SearchVo">
@@ -186,7 +190,7 @@
 		    l.version,
 		    l.tc as location,
 		    l.USIM_SLOT,
-		    l.MOBILE_IP,
+		    l.VNC_IP,
 		    l.LOCAL_IP,
 		    l.IMEI,
 		    l.IMSI,

@@ -30,9 +30,18 @@
 			$("#modelName").val(modNm);
 			
 			//장치명 치환
-			devNm=devNm.replaceAll(comcode+'_','');
+/* 			devNm=devNm.replaceAll(comcode+'_','');
+			$("#deviceName").val(devNm);
+			$("#modelNameDisplay").text(devNm); */
+			
+			// 장치명 치환이 올바르지 않아 수정 시 회사코드가 중복되어 저장됨
+			var devNmFront = devNm.substring(0, devNm.lastIndexOf("_") + 1);
+			var devNm = devNm.substring(devNm.lastIndexOf("_") + 1);
+			console.log("앞:" + devNmFront);
+			console.log(devNm);
 			$("#deviceName").val(devNm);
 			$("#modelNameDisplay").text(devNm);
+			$("#deviceNameCompany").text(devNmFront);
 			
 			 /** 1. 장치명 입력 시 모델명 옆에 표시 */
 			  $("#deviceName").on("input", function(){
@@ -70,6 +79,7 @@
 			
 			$("#btnSave").on('click',function(){
 				console.log("정보 저장");
+				let validChk = true;
 				
 				$(".input_base_require").each(function(i,list){
 					console.log("필수값체크");
@@ -80,16 +90,38 @@
 						return false;
 					}
 				});
-				if(dupChkFlag){
-					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/router/routerUpdate.ajax',queryString,'/router/routerList.do','저장되었습니다');
-				}else{
-					alert("volte 중복 체크를 확인하세요");
+				
+				if(!validChk) {
+					return false;
+				} else {
+					if(dupChkFlag){
+	 					
+						var phoneChk = phoneCellChk();
+						
+						if(phoneChk) {
+							// 업데이트 전 VoLTE 번호 포맷팅
+							var phoneCell = $('#phoneCell').val();
+							var fmtPhoneCell = phoneCell.replaceAll('-', '');
+							$('#phoneCell').val(fmtPhoneCell);
+							
+							let queryString = $("#insertForm").serialize();
+							
+							ajaxMethod('/router/routerUpdate.ajax',queryString,'/router/routerList.do','저장되었습니다');
+						} else {
+							alert("제조사 연락처가 올바르지 않습니다. 다시 확인하세요.");
+						}
+						
+					}else{
+						alert("volte 중복 체크를 확인하세요");
+					}
 				}
+				
 			}); 
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/router/routerList.do';
+				/* location.href='/router/routerList.do'; */
+				
+				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 			
 			//select 변경할 때 마다 실행하는 함수
@@ -99,7 +131,49 @@
 			});
 		});
 		
-		
+		function phoneCellChk() {
+		    var makeVal1 = $('input[name="makerPhone1"]').val().trim(); 
+		    var makeVal2 = $('input[name="makerPhone2"]').val().trim(); 
+
+		    var reg = /^(010|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)$/;
+
+		    if (makeVal1.length === 13) {
+		        var onlyNum1 = makeVal1.replace(/[^0-9]/g, "");
+		        var front3_1 = onlyNum1.substring(0, 3);
+		        var front2_1 = onlyNum1.substring(0, 2);
+
+		        if (reg.test(front3_1) || reg.test(front2_1)) {
+		            console.log("makeVal1 정상");
+		        } else {
+		            console.log("makeVal1 패턴 불일치");
+		            return false;
+		        }
+		    } else {
+		        console.log("makeVal1 길이 불일치");
+		        return false;
+		    }
+
+		    if (makeVal2 !== "") {
+		        if (makeVal2.length !== 13) {
+		            console.log("makeVal2 길이 불일치");
+		            return false;
+		        }
+
+		        var onlyNum2 = makeVal2.replace(/[^0-9]/g, "");
+		        var front3_2 = onlyNum2.substring(0, 3);
+		        var front2_2 = onlyNum2.substring(0, 2);
+
+		        if (reg.test(front3_2) || reg.test(front2_2)) {
+		            console.log("makeVal2 정상");
+		        } else {
+		            console.log("makeVal2 패턴 불일치");
+		            return false;
+		        }
+		    }
+
+		    console.log("검증 완료");
+		    return true;
+		}
 		
 		// ajax 요청하는 함수
 		function changeSelect(userType) {
@@ -175,7 +249,7 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">장치명</div>
 								<div class="ctn_tbl_td">
-									${login.companyCode}_
+									<p id="deviceNameCompany"></p>
 									<input type="text" 
 										id="deviceName" 
 										name ="deviceName" 

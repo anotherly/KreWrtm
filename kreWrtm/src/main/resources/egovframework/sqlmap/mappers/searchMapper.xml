@@ -28,56 +28,68 @@
 ========= ======= =================================================
 -->
 
-<resultMap id="searchVoMap" type="kr.co.hivesys.search.vo.SearchVo">
-
-    <!-- ================= tbl_last_data ================= -->
-
-    <result property="volteNum"              column="VoLTE_NUM"/>
-    <result property="version"               column="Version"/>
-    <result property="modelName"             column="Device_Model"/>
-    <result property="carNum"                column="CAR_NUM"/>
-    <result property="location"              column="location"/>
-    <result property="usimSlot"              column="USIM_SLOT"/>
-    <result property="mobileIp"              column="MOBILE_IP"/>
-    <result property="localIp"               column="LOCAL_IP"/>
-    <result property="imei"                  column="IMEI"/>
-    <result property="imsi"                  column="IMSI"/>
-    <result property="mcpttNum"              column="MCPTT_NUM"/>
-    <result property="currentRadioType"      column="CurrentRadioType"/>
-    <result property="autoSwitchingRadio"    column="AutoSwitchingRadio"/>
-    <result property="rcvDt"                 column="RCV_DT"/>
-    <result property="rsrp"                  column="RSRP"/>
-    <result property="rsrq"                  column="RSRQ"/>
-    <result property="cellId"                column="CELL_ID"/>
-    <result property="gpsLat"                column="GPS_Lat"/>
-    <result property="gpsLon"                column="GPS_Lon"/>
-    <result property="keywords"              column="Keyword"/>
-    <result property="extraInfo"             column="Option_TXT"/>
-    <result property="vncIp"                 column="VNC_IP"/>
-    <result property="vncPort"               column="VNC_PORT"/>
-    <result property="vncPw"                 column="VNC_PW"/>
-
-    <!-- ================= tbl_router_info ================= -->
-
-    <!-- ★ deviceId는 무조건 device_id 기준만 사용 -->
-    <result property="deviceId"              column="device_id"/>
-
-    <result property="deviceName"            column="device_name"/>
-    <result property="modelName"             column="model_name"/>
-    <result property="volteNum"              column="volte_num"/>
-    <result property="keywords"              column="keywords"/>
-    <result property="companyCode"           column="company_code"/>
-    <result property="carNum"                column="car_num"/>
-    <result property="updateDate"            column="update_date"/>
-    <result property="makerPhone1"           column="maker_phone_1"/>
-    <result property="makerPhone2"           column="maker_phone_2"/>
-    <result property="regDate"               column="reg_date"/>
-    <result property="extraInfo"             column="extra_info"/>
-    <result property="createdAt"             column="created_at"/>
-    <result property="createdBy"             column="created_by"/>
-    <result property="updatedAt"             column="updated_at"/>
-    <result property="updatedBy"             column="updated_by"/>
-
+<resultMap id="searchVoMap" type="searchVo">
+    <id property="deviceId" column="device_id"/>
+    <!-- BaseVO -->
+    <result property="regDate" column="REG_DATE"/>
+    <result property="createdAt" column="CREATED_AT"/>
+    <result property="updatedAt" column="UPDATED_AT"/>
+    <result property="tagId" column="TAG_ID"/>
+    <result property="searchType" column="SEARCH_TYPE"/>
+    <result property="searchValue" column="SEARCH_VALUE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <!-- CompanyVO -->
+    <result property="companyCode" column="COMPANY_CODE"/>
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="dirMb" column="DIR_MB"/>
+    <result property="dirRegDt" column="DIR_REG_DT"/>
+    <result property="todayCnt" column="TODAY_CNT"/>
+    <result property="rsrqAvg" column="RSRQ_AVG"/>
+    <!-- OrgVO -->
+    <result property="orgId" column="ORG_ID"/>
+    <result property="orgName" column="ORG_NAME"/>
+    <!-- RouterVO -->
+        <result property="deviceId" column="DEVICE_ID"/>
+    <result property="deviceName" column="DEVICE_NAME"/>
+    <result property="modelName" column="MODEL_NAME"/>
+    <result property="volteNum" column="VOLTE_NUM"/>
+    <result property="keywords" column="KEYWORDS"/>
+    <result property="carNum" column="CAR_NUM"/>
+    <result property="updateDate" column="UPDATE_DATE"/>
+    <result property="makerPhone1" column="MAKER_PHONE_1"/>
+    <result property="makerPhone2" column="MAKER_PHONE_2"/>
+    <result property="extraInfo" column="EXTRA_INFO"/>
+    <result property="createdBy" column="CREATED_BY"/>
+    <result property="updatedBy" column="UPDATED_BY"/>
+    <result property="routerCount" column="ROUTER_COUNT"/>
+    <!-- SearchVo -->
+    <result property="searchVal" column="SEARCH_VAL"/>
+    <result property="version" column="VERSION"/>
+    <result property="location" column="LOCATION"/>
+    <result property="location" column="location"/>
+    <result property="usimSlot" column="USIM_SLOT"/>
+    <result property="mobileIp" column="MOBILE_IP"/>
+    <result property="localIp" column="LOCAL_IP"/>
+    <result property="imei" column="IMEI"/>
+    <result property="imsi" column="IMSI"/>
+    <result property="rsrp" column="RSRP"/>
+    <result property="rsrq" column="RSRQ"/>
+    <result property="mcpttNum" column="MCPTT_NUM"/>
+    <result property="autoSwitchingRadio" column="AUTO_SWITCHING_RADIO"/>
+    <result property="autoSwitchingRadio" column="AutoSwitchingRadio"/>
+    <result property="cellId" column="CELL_ID"/>
+    <result property="currentRadioType" column="CURRENT_RADIO_TYPE"/>
+    <result property="currentRadioType" column="CurrentRadioType"/>
+    <result property="gpsLat" column="GPS_LAT"/>
+    <result property="gpsLat" column="GPS_Lat"/>
+    <result property="gpsLon" column="GPS_LON"/>
+    <result property="gpsLon" column="GPS_Lon"/>
+    <result property="rcvDt" column="RCV_DT"/>
+    <result property="vncIp" column="VNC_IP"/>
+    <result property="vncPort" column="VNC_PORT"/>
+    <result property="vncPw" column="VNC_PW"/>
 </resultMap>
 
 	<select id="searchDataList" parameterType="searchVo" resultMap="searchVoMap">
@@ -122,38 +134,38 @@
 	
 	
 	<select id="searchRouterDataList" parameterType="searchVo" resultMap="searchVoMap">
-    SELECT 
-        r.device_id,
-        r.device_name,
-        r.model_name,
-        IFNULL(l.car_num,r.car_num) as car_num,
-        r.volte_num,
-        r.keywords,
-        l.version,
-        l.tc as location
-    FROM 
-        tbl_router_info r
-    LEFT JOIN 
-        tbl_last_data l
-        ON r.volte_num = l.volte_num
-    WHERE 1=1
-        <if test="searchVal != null and searchVal != ''">
-            AND (
-                r.model_name LIKE CONCAT('%', #{searchVal}, '%')
-                OR l.car_num LIKE CONCAT('%', #{searchVal}, '%')
-                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
-                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
-                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
-            )
-        </if>
-        <if test="deviceName != 'all'">
-            AND r.device_name = #{deviceName}
-        </if>
-        <if test="companyCode != 'all'">
-            AND r.company_code = #{companyCode}
-        </if>
-    ORDER BY r.car_num DESC
-</select>
+	    SELECT 
+	        r.device_id,
+	        r.device_name,
+	        r.model_name,
+	        IFNULL(l.car_num,r.car_num) as car_num,
+	        r.volte_num,
+	        r.keywords,
+	        l.version,
+	        l.tc as location
+	    FROM 
+	        tbl_router_info r
+	    LEFT JOIN 
+	        tbl_last_data l
+	        ON r.volte_num = l.volte_num
+	    WHERE 1=1
+	        <if test="searchVal != null and searchVal != ''">
+	            AND (
+	                r.model_name LIKE CONCAT('%', #{searchVal}, '%')
+	                OR l.car_num LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.volte_num LIKE CONCAT('%', #{searchVal}, '%')
+	                OR r.keywords LIKE CONCAT('%', #{searchVal}, '%')
+	                OR l.version LIKE CONCAT('%', #{searchVal}, '%')
+	            )
+	        </if>
+	        <if test="deviceName != 'all'">
+	            AND r.device_name = #{deviceName}
+	        </if>
+	        <if test="companyCode != 'all'">
+	            AND r.company_code = #{companyCode}
+	        </if>
+	    ORDER BY r.car_num DESC
+	</select>
 	
 	
 	<!-- 실시간 데이터 조회 - 단말기 검색 조건 옵션 셋팅 -->

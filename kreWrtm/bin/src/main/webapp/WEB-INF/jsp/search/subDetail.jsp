@@ -143,9 +143,9 @@
 						    </div>
 						</div>				
 						<div class="table_row">
-						    <div class="table_th tbl_cc">모바일 IP</div>
+						    <div class="table_th tbl_cc">VNC IP</div>
 						    <div class="table_td tbl_cc">
-						        ${empty data.mobileIp ? '정보 없음' : data.mobileIp}
+						        ${empty data.vncIp ? '정보 없음' : data.vncIp}
 						    </div>
 						    
 						    <div class="table_th tbl_cc">(GPS)위도</div>

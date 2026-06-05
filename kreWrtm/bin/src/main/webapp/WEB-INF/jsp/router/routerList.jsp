@@ -146,10 +146,20 @@
 	
 	/* 검색 */
 	 function search(){
-		 console.log("검색");
-		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/router/routerList.ajax";
-		 tbSearch("tableList",tagUrl,frm);
+		console.log("검색");
+		 // 등록일의 시작일과 종료일 유효성 검사
+	    var sDateObj = new Date($('#sDate').val());
+	    var eDateObj = new Date($('#eDate').val());
+		// 날짜검색이 체크된 경우에만 시작일 종료일 비교
+		 if ($('#dateChk').is(':checked') 
+				 && eDateObj < sDateObj) {
+	    	alert("등록일의 종료일이 시작일보다 먼저일 수 없습니다.");
+	    	return false;
+	    } else {
+			 let frm = $("#searchFrm").serialize();
+			 var tagUrl="/router/routerList.ajax";
+			 tbSearch("tableList",tagUrl,frm);
+	    }
 	 }
     
 </script>
@@ -182,7 +192,6 @@
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group" >
                             <select class="table_sel"  style="width: 164px; height:100%;"  name="searchType">
-                            	<option value="">전체</option>
                             	<option value="deviceName">장치명</option>
                             	<option value="modelName">모델명</option>
                             	<option value="companyName">제조사</option>

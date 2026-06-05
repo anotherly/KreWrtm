@@ -12,10 +12,10 @@
     $(document).ready(function(){
 
     	// 가져온 데이터 분할
-    	var hiveMB = '${HIVE}';
+    	/* var hiveMB = '${HIVE}';
     	var koneMB = '${KONE}';
     	var kregMB = '${KREG}';
-    	var kremMB = '${KREM}';
+    	var kremMB = '${KREM}'; */
     	
     	
     	// 회사별 단말기 현황 

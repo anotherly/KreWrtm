@@ -27,19 +27,75 @@
 			
 			//save
 			$("#btnSave").on('click',function(){
+				
 				console.log("정보 저장");
 				if(!dupChkFlag){
 				    alert("ID 중복 체크를 확인하세요");
 				}else{
 				    if(boardWriteCheck($("#insertForm"))){
-				        let queryString = $("#insertForm").serialize();
-				        ajaxMethod('/user/userUpdate.ajax', queryString, '/user/userList.do', '저장되었습니다');
+				    	
+						var phoneChk = phoneCellChk();
+						
+						if(phoneChk) {
+							let queryString = $("#insertForm").serialize();
+							
+							ajaxMethod('/user/userUpdate.ajax', queryString, '/user/userList.do', '저장되었습니다');
+						} else {
+							alert("연락처가 올바르지 않습니다. 다시 확인하세요.");
+						}
+
 				    }
 				}
 			}); 
 			
+			function phoneCellChk() {
+			    var makeVal1 = $('input[name="userPhone"]').val().trim(); 
+			    var makeVal2 = $('input[name="userPhone2"]').val().trim(); 
+
+			    var reg = /^(010|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)$/;
+
+			    if (makeVal1.length === 13) {
+			        var onlyNum1 = makeVal1.replace(/[^0-9]/g, "");
+			        var front3_1 = onlyNum1.substring(0, 3);
+			        var front2_1 = onlyNum1.substring(0, 2);
+
+			        if (reg.test(front3_1) || reg.test(front2_1)) {
+			            console.log("makeVal1 정상");
+			        } else {
+			            console.log("makeVal1 패턴 불일치");
+			            return false;
+			        }
+			    } else {
+			        console.log("makeVal1 길이 불일치");
+			        return false;
+			    }
+
+			    if (makeVal2 !== "") {
+			        if (makeVal2.length !== 13) {
+			            console.log("makeVal2 길이 불일치");
+			            return false;
+			        }
+
+			        var onlyNum2 = makeVal2.replace(/[^0-9]/g, "");
+			        var front3_2 = onlyNum2.substring(0, 3);
+			        var front2_2 = onlyNum2.substring(0, 2);
+
+			        if (reg.test(front3_2) || reg.test(front2_2)) {
+			            console.log("makeVal2 정상");
+			        } else {
+			            console.log("makeVal2 패턴 불일치");
+			            return false;
+			        }
+			    }
+
+			    console.log("검증 완료");
+			    return true;
+			}
+			
 			$("#btnCancel").on('click',function(){
-				location.href='/user/userList.do';
+				/* location.href='/user/userList.do'; */
+				
+				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 		});
 	</script>
@@ -119,6 +175,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td" style="padding: 0;font-size: 12px;" >허용 특수문자 : ~, !, @, #, $, %, ^, &, *, (, ), _, +, |, [, ] </div>
@@ -139,6 +196,7 @@
 									placeholder="6~20자리  영문,숫자,특수문자 조합" 
 									class="form-control"
 									maxLength="20"
+									oninput="checkPw(this)"
 									>
 								</div>
 								<div class="ctn_tbl_td"></div>

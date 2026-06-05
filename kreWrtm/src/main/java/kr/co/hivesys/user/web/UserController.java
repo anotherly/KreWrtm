@@ -100,7 +100,10 @@ public class UserController {
 		UserVO nlvo = (UserVO) request.getSession().getAttribute("login");
 		CompanyVO ovo = nlvo;
 		inputVo.setUserType(ovo.getUserType());
-		inputVo.setCompanyCode(ovo.getCompanyCode());
+		//코레일만 전 사용자 조회 , 제조사는 제조사만 조회
+		if(!nlvo.getCompanyCode().equals("KREG")) {
+			inputVo.setCompanyCode(ovo.getCompanyCode());
+		}
 		try {
 			sList = userService.selectList(inputVo);
 			mav.addObject("data", sList);

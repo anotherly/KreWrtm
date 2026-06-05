@@ -10,25 +10,53 @@
 -->
 
 	<!-- 전체 사용자 조회 -->
-	<resultMap type="userVO" id="selectUserList">
-		<result property="userId" column="USER_ID"/>
-		<result property="userPw" column="USER_PW"/>
-		<result property="userName" column="USER_NAME"/>
-		<result property="userPhone" column="USER_PHONE"/>
-		<result property="userPhone2" column="USER_PHONE2"/>
-		<result property="companyCode" column="COMPANY_CODE"/>
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="orgId" column="ORG_ID"/>
-		<result property="orgName" column="ORG_NAME"/>
-		<result property="userType" column="USER_TYPE"/>
-		<result property="regDate" column="reg_date"/>
-	</resultMap>	
-	<select id="selectList" parameterType="userVO" resultMap="selectUserList">
+	<resultMap type="userVo" id="selectUserList">
+    <id property="userId" column="USER_ID"/>
+    <!-- BaseVO -->
+    <result property="regDate" column="REG_DATE"/>
+    <result property="createdAt" column="CREATED_AT"/>
+    <result property="updatedAt" column="UPDATED_AT"/>
+    <result property="tagId" column="TAG_ID"/>
+    <result property="searchType" column="SEARCH_TYPE"/>
+    <result property="searchValue" column="SEARCH_VALUE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <!-- CompanyVO -->
+    <result property="companyCode" column="COMPANY_CODE"/>
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="dirMb" column="DIR_MB"/>
+    <result property="dirRegDt" column="DIR_REG_DT"/>
+    <result property="todayCnt" column="TODAY_CNT"/>
+    <result property="rsrqAvg" column="RSRQ_AVG"/>
+    <!-- OrgVO -->
+    <result property="orgId" column="ORG_ID"/>
+    <result property="orgName" column="ORG_NAME"/>
+
+    <!-- UserVO -->
+    <result property="userPw" column="USER_PW"/>
+    <result property="userPw2" column="USER_PW2"/>
+    <result property="userName" column="USER_NAME"/>
+    <result property="userRank" column="USER_RANK"/>
+    <result property="userPhone" column="USER_PHONE"/>
+    <result property="userPhone2" column="USER_PHONE2"/>
+    <result property="userEmail" column="USER_EMAIL"/>
+    <result property="usedYn" column="USED_YN"/>
+    <result property="stDt" column="ST_DT"/>
+    <result property="fnDt" column="FN_DT"/>
+    <result property="cnYn" column="CN_YN"/>
+</resultMap>	
+	<select id="selectList" parameterType="userVo" resultMap="selectUserList">
 		SELECT J1.*,C.ORG_NAME FROM
 		(
 			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE 
 			FROM
-			tbl_user_info A
+			(
+				select * from tbl_user_info where 1=1
+				<if test="companyCode !=null and companyCode neq ''">
+	    			and company_code = #{companyCode}
+	    		</if> 
+			)A
 			INNER JOIN 
 			tbl_company_info B
 			ON A.COMPANY_CODE=B.COMPANY_CODE
@@ -39,7 +67,6 @@
 		<if test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
 	        and reg_date between #{sDate} and  #{eDate} 
 	    </if>
-    
 	   	<!-- 검색조건 타입/검색어 -->
 		<if test="searchType!=null and searchType neq ''">
 	        <choose>
@@ -68,7 +95,7 @@
 	</select>
 
 	<!-- 특정 사용자 조회 -->
-	<select id="select" parameterType="userVO" resultMap="selectUserList">
+	<select id="select" parameterType="userVo" resultMap="selectUserList">
 		SELECT J1.*,C.ORG_NAME FROM
 		(
 			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE  
@@ -84,7 +111,7 @@
 	</select>
 	
 	<!-- 사용자 등록 -->
-	<insert id="insert" parameterType="userVO">
+	<insert id="insert" parameterType="userVo">
 		INSERT INTO TBL_USER_INFO
 		(
 			 user_id
@@ -108,7 +135,7 @@
 	</insert>
 	
 	<!-- 사용자 정보 수정-->
-	<update id="update" parameterType="userVO">
+	<update id="update" parameterType="userVo">
 		UPDATE TBL_USER_INFO
 		SET
 			USER_NAME=#{userName}
@@ -125,7 +152,7 @@
 	</update>
 	
 	<!-- 사용자 삭제 -->
-	<delete id="deleteChk" parameterType="userVO">
+	<delete id="deleteChk" parameterType="userVo">
 		DELETE FROM TBL_USER_INFO 
 		WHERE USER_ID IN
 		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">

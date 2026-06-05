@@ -10,13 +10,17 @@
 -->
 
 	<resultMap type="fileVo" id="selectFileList">
-		<result property="fileId" column="FILE_ID"/>
-		<result property="fileDir" column="FILE_DIR"/>
-		<result property="fileName" column="FILE_NAME"/>
-		<result property="regDt" column="REG_DT"/>
-		<result property="fileVersion" column="FILE_VERSION"/>
-		<result property="fileType" column="FILE_TYPE"/>
-	</resultMap>
+    <id property="fileId" column="FILE_ID"/>
+    <result property="fileDir" column="FILE_DIR"/>
+    <result property="fileName" column="FILE_NAME"/>
+    <result property="regDt" column="REG_DT"/>
+    <result property="fileVersion" column="FILE_VERSION"/>
+    <result property="filePath" column="FILE_PATH"/>
+    <result property="fileType" column="FILE_TYPE"/>
+    <result property="fileTitle" column="FILE_TITLE"/>
+    <result property="writerId" column="WRITER_ID"/>
+    <result property="boardContent" column="BOARD_CONTENT"/>
+</resultMap>
 	<select id="selectFileList" parameterType="fileVo" resultMap="selectFileList">
 		SELECT * FROM FILE_INFO
 		WHERE 1=1 

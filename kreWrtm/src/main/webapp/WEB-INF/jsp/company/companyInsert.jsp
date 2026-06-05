@@ -127,6 +127,15 @@
 									</select>
 								</div>
 							</div>
+							<div class="ctn_tbl_row  fm_rep">
+								<div class="ctn_tbl_th ">사용자 구분</div>
+								<div class="ctn_tbl_td">
+									<select name ="userType">
+										<option value='코레일'>코레일</option>
+										<option value='제조사'>제조사</option>
+									</select>
+								</div>
+							</div>
 						</div>
 						<!-- btn_box Start -->
 						<div class="btn_box">

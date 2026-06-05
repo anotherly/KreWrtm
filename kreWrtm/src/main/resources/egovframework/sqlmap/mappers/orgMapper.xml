@@ -6,13 +6,29 @@
 <mapper namespace="kr.co.hivesys.company.mapper.OrgMapper">
 
   <!-- OrgInfoVO 매핑 -->
-  <resultMap id="OrgInfoMap" type="orgVO">
-    <id     property="orgId"       column="org_id"/>
-    <result property="companyCode" column="company_code"/>
-    <result property="orgName"     column="org_name"/>
-    <result property="createdAt"   column="created_at"/>
-    <result property="updatedAt"   column="updated_at"/>
-  </resultMap>
+  <resultMap id="OrgInfoMap" type="orgVo">
+    <id property="orgId" column="ORG_ID"/>
+    <!-- BaseVO -->
+    <result property="regDate" column="REG_DATE"/>
+    <result property="createdAt" column="CREATED_AT"/>
+    <result property="updatedAt" column="UPDATED_AT"/>
+    <result property="tagId" column="TAG_ID"/>
+    <result property="searchType" column="SEARCH_TYPE"/>
+    <result property="searchValue" column="SEARCH_VALUE"/>
+    <result property="sDate" column="S_DATE"/>
+    <result property="eDate" column="E_DATE"/>
+    <!-- CompanyVO -->
+    <result property="companyCode" column="COMPANY_CODE"/>
+    <result property="companyName" column="COMPANY_NAME"/>
+    <result property="userType" column="USER_TYPE"/>
+    <result property="dirMb" column="DIR_MB"/>
+    <result property="dirRegDt" column="DIR_REG_DT"/>
+    <result property="todayCnt" column="TODAY_CNT"/>
+    <result property="rsrqAvg" column="RSRQ_AVG"/>
+    <!-- OrgVO -->
+    
+    <result property="orgName" column="ORG_NAME"/>
+</resultMap>
 
   <!-- SELECT: PK 단건 -->
   <select id="select" parameterType="orgVO" resultMap="OrgInfoMap">
