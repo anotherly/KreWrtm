@@ -6,9 +6,11 @@
     <meta charset="UTF-8">
     <title>무선장치 관리시스템 - 대시보드 프로토타입</title>
 
+    <%-- 기존 공통 상단 include가 필요하면 주석 해제
     <jsp:include page="../cmn/top.jsp" flush="false" />
+    --%>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dashboard-prototype-v3.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dashboard-prototype-v2.css">
 
     <%--
         Chart.js 레이더 차트 사용.
@@ -18,27 +20,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 
-<body class="open dashboard-v6-body">
-    <!-- lnb Start -->
-    <aside id="lnb" class="lnb">
-        <a class="lnb-control" title="메뉴 펼침/닫침"><span class="menu-toggle">메뉴 펼침/닫침</span></a>
-        <nav class="navbar navbar-expand-sm navbar-default">
-            <ul class="menu-inner"></ul>
-        </nav>
-    </aside>
-    <!-- lnb End -->
+<body class="open dashboard-v2-body">
+    <%-- 기존 LNB/Header를 프로젝트 공통으로 쓰는 경우 이 영역은 기존 구조에 맞춰 조정 --%>
+    <div id="container" class="dashboard-container">
+        <div id="contents" class="dashboard-contents">
 
-    <!-- container Start -->
-    <div id="container" class="container-wrap" style="margin-top: 0px;">
-        <!-- header Start -->
-        <div id="header" class="header-wrap"></div>
-        <!-- header End -->
-
-        <!-- contents Start -->
-        <div id="contents" class="contents-wrap">
-            <div id="work" class="work-wrap dashboard-work">
-                <div id="contents_box" class="contents_box dashboard-page">
-<%-- 상단 소개 문구와 금일 기준/새로고침은 요청에 따라 제거/주석 처리
+            <%-- 상단 소개 문구와 금일 기준/새로고침은 요청에 따라 제거/주석 처리
             <div class="dashboard-hero">
                 <div>
                     <span class="eyebrow">WIRELESS DEVICE MANAGEMENT</span>
@@ -215,12 +202,6 @@
             </section>
         </div>
     </div>
-                </div>
-            </div>
-        </div>
-        <!-- contents End -->
-    </div>
-    <!-- container End -->
 
 <script>
 (function () {
@@ -350,14 +331,6 @@
                     }
                 }
             },
-            layout: {
-                padding: {
-                    top: 8,
-                    right: 8,
-                    bottom: 8,
-                    left: 8
-                }
-            },
             scales: {
                 r: {
                     min: 0,
@@ -365,14 +338,13 @@
                     ticks: {
                         stepSize: 30,
                         backdropColor: "transparent",
-                        font: { size: 9 }
+                        font: { size: 10 }
                     },
                     grid: { color: "rgba(83,100,122,0.22)" },
                     angleLines: { color: "rgba(83,100,122,0.22)" },
                     pointLabels: {
-                        font: { size: 11, weight: "bold" },
-                        color: "#34465d",
-                        padding: 4
+                        font: { size: 13, weight: "bold" },
+                        color: "#34465d"
                     }
                 }
             }

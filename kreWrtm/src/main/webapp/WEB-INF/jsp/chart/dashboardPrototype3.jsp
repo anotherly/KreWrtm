@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 
-<body class="open dashboard-v6-body">
+<body class="open dashboard-v5-body">
     <!-- lnb Start -->
     <aside id="lnb" class="lnb">
         <a class="lnb-control" title="메뉴 펼침/닫침"><span class="menu-toggle">메뉴 펼침/닫침</span></a>
@@ -350,14 +350,6 @@
                     }
                 }
             },
-            layout: {
-                padding: {
-                    top: 8,
-                    right: 8,
-                    bottom: 8,
-                    left: 8
-                }
-            },
             scales: {
                 r: {
                     min: 0,
@@ -365,14 +357,13 @@
                     ticks: {
                         stepSize: 30,
                         backdropColor: "transparent",
-                        font: { size: 9 }
+                        font: { size: 10 }
                     },
                     grid: { color: "rgba(83,100,122,0.22)" },
                     angleLines: { color: "rgba(83,100,122,0.22)" },
                     pointLabels: {
-                        font: { size: 11, weight: "bold" },
-                        color: "#34465d",
-                        padding: 4
+                        font: { size: 13, weight: "bold" },
+                        color: "#34465d"
                     }
                 }
             }

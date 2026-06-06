@@ -17,4 +17,8 @@ public interface OrgMapper {
 	void update(OrgVO thvo);
 	
 	void deleteChk(HashMap<String, Object> map);
+	
+	void deleteByCompanyCode(String companyCode);
+	
+	void deleteByCompanyChk(HashMap<String, Object> map);
 }

@@ -185,15 +185,15 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<div class="ttl_ctn">회사코드 목록</div>
+					<div class="ttl_ctn">소속기관코드 목록</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box list_search_box">
                     <form id="searchFrm" name="searchFrm" class="search_form list_search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group search_keyword_group">
                             <select class="table_sel" name="searchType">
-                                <option value="companyName">회사명</option>
-                                <option value="companyCode">회사코드</option>
+                                <option value="companyName">소속기관명</option>
+                                <option value="companyCode">소속기관코드</option>
                             </select>
                             <input type="text"
                                    id="searchValue"
@@ -238,8 +238,8 @@
 								<thead>
 									<tr>
 										<th><input type="checkbox" id="chkAll" class="chk"></th>
-										<th>회사명</th>
-										<th>회사코드</th>
+										<th>소속기관명</th>
+										<th>소속기관코드</th>
 										<th>사용자 구분</th>
 										<th>등록일</th>
 									</tr>

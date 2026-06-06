@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+]<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
@@ -7,6 +7,14 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <meta charset="UTF-8">
 <jsp:include page="../cmn/top.jsp" flush="false" />
+
+<style>
+	.org_tbl { width: 100%; border-collapse: collapse; }
+	.org_tbl th, .org_tbl td { padding: 8px 10px; border-bottom: 1px solid #e5e5e5; }
+	.org_tbl th { background: #f7f8fa; text-align: center; font-weight: 600; }
+	.org_tbl td { text-align: left; }
+	.empty_org { padding: 10px 0; color: #777; }
+</style>
 
 <script>
 
@@ -48,27 +56,60 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<div class="ttl_ctn">사용자 상세정보</div>
+						<div class="ttl_ctn">소속기관 상세정보</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
 								<input type="hidden" id="departCode" name ="departCode" class="form-control">
-								<div class="ctn_tbl_th fm_rep">회사명</div>
+								<div class="ctn_tbl_th fm_rep">소속기관명</div>
 								<div class="ctn_tbl_td">
 									${data.companyName}
 								</div>
-								<div class="ctn_tbl_th fm_rep">회사코드</div>
+								<div class="ctn_tbl_th fm_rep">소속기관 코드</div>
 								<div class="ctn_tbl_td">
 									${data.companyCode} 
 								</div>
 							</div>
 						
-							<div class="ctn_tbl_row  fm_rep">
-								<div class="ctn_tbl_th ">사용자 구분</div>
+							<div class="ctn_tbl_row fm_rep">
+								<div class="ctn_tbl_th">사용자 구분</div>
 								<div class="ctn_tbl_td">
 									${data.userType}
+								</div>
+							</div>
+							
+							<div class="ctn_tbl_row fm_rep">
+								<div class="ctn_tbl_th">본부/처/실</div>
+								<div class="ctn_tbl_td" style="width: calc(100% - 160px);">
+									<c:choose>
+										<c:when test="${empty orgList}">
+											<div class="empty_org">등록된 본부/처/실 정보가 없습니다.</div>
+										</c:when>
+										<c:otherwise>
+											<table class="org_tbl">
+												<colgroup>
+													<col style="width:40%;">
+													<col style="width:60%;">
+												</colgroup>
+												<thead>
+													<tr>
+														<th>본부/처/실 코드</th>
+														<th>본부/처/실명</th>
+													</tr>
+												</thead>
+												<tbody>
+													<c:forEach var="org" items="${orgList}">
+														<tr>
+															<td>${org.orgId}</td>
+															<td>${org.orgName}</td>
+														</tr>
+													</c:forEach>
+												</tbody>
+											</table>
+										</c:otherwise>
+									</c:choose>
 								</div>
 							</div>
 						</div>

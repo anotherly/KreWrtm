@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.hivesys.company.service.CompanyService;
+import kr.co.hivesys.company.service.OrgService;
 import kr.co.hivesys.company.vo.CompanyVO;
 import kr.co.hivesys.company.vo.OrgVO;
 import kr.co.hivesys.user.vo.UserVO;
@@ -22,6 +23,9 @@ import kr.co.hivesys.user.vo.UserVO;
 public class CompanyController{
 	@Resource(name = "companyService")
 	private CompanyService companyService;
+	
+	@Resource(name = "orgService")
+	private OrgService orgService;
 
 	public static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 	
@@ -110,7 +114,14 @@ public class CompanyController{
 		CompanyVO data= null;
 		try {
 			data = companyService.selectList(inputVo).get(0);
+			
+			OrgVO orgVo = new OrgVO();
+			orgVo.setCompanyCode(data.getCompanyCode());
+			List<OrgVO> orgList = orgService.select(orgVo);
+			data.setOrgList(orgList);
+			
 			mav.addObject("data", data);
+			mav.addObject("orgList", orgList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
@@ -128,7 +139,6 @@ public class CompanyController{
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
 		
 		ModelAndView mav = new ModelAndView("jsonView");
-		CompanyVO thvo= null;
 		try {
 			companyService.update(inputVo);
 		} catch (Exception e) {

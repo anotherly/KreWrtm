@@ -7,6 +7,14 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <meta charset="UTF-8">
 <jsp:include page="../cmn/top.jsp" flush="false" />
+
+<style>
+	.org_tbl { width: 100%; border-collapse: collapse; }
+	.org_tbl th, .org_tbl td { padding: 6px 8px; border-bottom: 1px solid #e5e5e5; }
+	.org_tbl th { background: #f7f8fa; text-align: center; font-weight: 600; }
+	.org_tbl input { width: 100%; }
+	.org_btn_area { margin-bottom: 8px; text-align: right; }
+</style>
  	 
 	<script>
 		$(document).ready(function() {
@@ -29,11 +37,29 @@
 				if(!validChk) {
 					return false;
 				} else {
+					reindexOrgRows();
 					let queryString = $("#insertForm").serialize();
 					ajaxMethod('/company/companyUpdate.ajax',queryString,'/company/companyList.do','저장되었습니다');
 				}
 				
 			}); 
+			
+			$("#btnAddOrg").on('click', function(){
+				addOrgRow('', '');
+			});
+			
+			$(document).on('click', '.btnRemoveOrg', function(){
+				if($("#orgTbody tr").length <= 1){
+					$(this).closest('tr').find('input').val('');
+					return false;
+				}
+				$(this).closest('tr').remove();
+				reindexOrgRows();
+			});
+			
+			$(document).on('input', '.org-id-input', function(){
+				this.value = this.value.replace(/[^A-Za-z0-9_]/g, '').toUpperCase();
+			});
 			
 			//y면 체크 아니면 비체크인데 비체크값을 n으로 변경
 			$('input[type="checkbox"]').each(function(i,list){
@@ -62,6 +88,24 @@
 				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 		});
+		
+		function addOrgRow(orgId, orgName){
+			let idx = $("#orgTbody tr").length;
+			let html = '';
+			html += '<tr>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control input_base_require org-id-input" maxlength="20" value="'+orgId+'" placeholder="예: SAFE_CTRL"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control input_base_require" maxlength="100" value="'+orgName+'" placeholder="예: 관제실"></td>';
+			html += '  <td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>';
+			html += '</tr>';
+			$("#orgTbody").append(html);
+		}
+		
+		function reindexOrgRows(){
+			$("#orgTbody tr").each(function(index){
+				$(this).find('input[name$=".orgId"]').attr('name', 'orgList['+index+'].orgId');
+				$(this).find('input[name$=".orgName"]').attr('name', 'orgList['+index+'].orgName');
+			});
+		}
 	</script>
 
 </head>
@@ -89,7 +133,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<div class="ttl_ctn">사용자 수정</div>
+						<div class="ttl_ctn">소속기관 수정</div>
 						<!-- 설명글 -->
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
@@ -99,7 +143,7 @@
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
 								<input type="hidden" id="departCode" name ="departCode" class="form-control">
-								<div class="ctn_tbl_th fm_rep">회사명</div>
+								<div class="ctn_tbl_th fm_rep">소속기관명</div>
 								<div class="ctn_tbl_td">
 									<input type="text" 
 										id="companyName" 
@@ -109,7 +153,7 @@
 										value="${data.companyName}"
 									>
 								</div>
-								<div class="ctn_tbl_th fm_rep">회사코드</div>
+								<div class="ctn_tbl_th fm_rep">소속기관 코드</div>
 								<div class="ctn_tbl_td">
 								
 								<input type="hidden" 
@@ -125,17 +169,60 @@
 								</div>
 							</div>
 						
-							<div class="ctn_tbl_row  fm_rep">
-								<div class="ctn_tbl_th ">사용자 구분</div>
+							<div class="ctn_tbl_row fm_rep">
+								<div class="ctn_tbl_th">사용자 구분</div>
 								<div class="ctn_tbl_td">
-									<select name ="userType">
-										<option value='코레일'<c:if test="${data.userType eq '코레일'}">selected</c:if>>
+									<select name ="userType" class="form-control input_base_require">
+										<option value='코레일' <c:if test="${data.userType eq '코레일'}">selected</c:if>>
 											코레일
 										</option>
-										<option value='제조사'<c:if test="${data.userType eq '제조사'}">selected</c:if>>
+										<option value='제조사' <c:if test="${data.userType eq '제조사'}">selected</c:if>>
 											제조사
 										</option>
 									</select>
+								</div>
+							</div>
+							
+							<div class="ctn_tbl_row fm_rep">
+								<div class="ctn_tbl_th">본부/처/실</div>
+								<div class="ctn_tbl_td" style="width: calc(100% - 160px);">
+									<div class="org_btn_area">
+										<input type="button" class="btn" id="btnAddOrg" value="추가" />
+									</div>
+									<table class="org_tbl">
+										<colgroup>
+											<col style="width:35%;">
+											<col style="width:50%;">
+											<col style="width:15%;">
+										</colgroup>
+										<thead>
+											<tr>
+												<th>본부/처/실 코드</th>
+												<th>본부/처/실명</th>
+												<th>삭제</th>
+											</tr>
+										</thead>
+										<tbody id="orgTbody">
+											<c:choose>
+												<c:when test="${empty orgList}">
+													<tr>
+														<td><input type="text" name="orgList[0].orgId" class="form-control input_base_require org-id-input" maxlength="20" placeholder="예: SAFE_CTRL"></td>
+														<td><input type="text" name="orgList[0].orgName" class="form-control input_base_require" maxlength="100" placeholder="예: 관제실"></td>
+														<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
+													</tr>
+												</c:when>
+												<c:otherwise>
+													<c:forEach var="org" items="${orgList}" varStatus="st">
+														<tr>
+															<td><input type="text" name="orgList[${st.index}].orgId" class="form-control input_base_require org-id-input" maxlength="20" value="${org.orgId}"></td>
+															<td><input type="text" name="orgList[${st.index}].orgName" class="form-control input_base_require" maxlength="100" value="${org.orgName}"></td>
+															<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
+														</tr>
+													</c:forEach>
+												</c:otherwise>
+											</c:choose>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</div>

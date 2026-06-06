@@ -1,5 +1,8 @@
 package kr.co.hivesys.company.vo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kr.co.hivesys.comm.BaseVO;
 
 public class CompanyVO extends BaseVO {
@@ -13,6 +16,8 @@ public class CompanyVO extends BaseVO {
 	/** 사용자 구분 (코레일 / 제조사) */
 	private String userType;
 	
+	/** 회사별 본부/처/실 목록 */
+	private List<OrgVO> orgList = new ArrayList<OrgVO>();
 	
 	// 차트 그리기용 추가 컬럼(DB에는 X)
 	private String dirMb;
@@ -44,6 +49,14 @@ public class CompanyVO extends BaseVO {
 
 	public void setUserType(String userType) {
 		this.userType = userType;
+	}
+	
+	public List<OrgVO> getOrgList() {
+		return orgList;
+	}
+
+	public void setOrgList(List<OrgVO> orgList) {
+		this.orgList = orgList;
 	}
 	
 	public String getDirMb() {

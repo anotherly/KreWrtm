@@ -200,7 +200,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<div class="ttl_ctn">사용자 목록</div>
+					<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 목록</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box list_search_box">
