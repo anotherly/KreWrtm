@@ -18,7 +18,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 
-<body class="open dashboard-v6-body">
+<body class="open">
     <!-- lnb Start -->
     <aside id="lnb" class="lnb">
         <a class="lnb-control" title="메뉴 펼침/닫침"><span class="menu-toggle">메뉴 펼침/닫침</span></a>
@@ -37,7 +37,7 @@
         <!-- contents Start -->
         <div id="contents" class="contents-wrap">
             <div id="work" class="work-wrap dashboard-work">
-                <div id="contents_box" class="contents_box dashboard-page">
+                <div id="contents_box" class="contents_box dashboard-page dashboard-v7-page">
 <%-- 상단 소개 문구와 금일 기준/새로고침은 요청에 따라 제거/주석 처리
             <div class="dashboard-hero">
                 <div>

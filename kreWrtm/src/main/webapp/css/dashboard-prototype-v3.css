@@ -1,4 +1,4 @@
-body.dashboard-v6-body {
+.dashboard-v7-page {
     background: #edf3f8;
     color: #243244;
     font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
@@ -356,9 +356,7 @@ body.dashboard-v6-body {
 }
 
 /* 대시보드 전용 화면에서는 기존 contents-wrap의 과도한 여백을 줄입니다. */
-.dashboard-v6-body .contents-wrap {
-    background: #edf3f8;
-}
+
 
 /* =========================
    v5 project-layout scoped patch
@@ -366,11 +364,11 @@ body.dashboard-v6-body {
    기존 프로젝트의 .container-wrap / .contents-wrap / .work-wrap 배치를 그대로 사용합니다.
    따라서 .contents-wrap 자체에 width, margin-left, padding-top을 강제로 주지 않습니다.
 */
-body.dashboard-v6-body {
+.dashboard-v7-page {
     overflow-x: hidden;
 }
 
-body.dashboard-v6-body .dashboard-work {
+.dashboard-v7-page .dashboard-work {
     width: 100%;
     min-height: auto;
     padding: 0;
@@ -378,7 +376,7 @@ body.dashboard-v6-body .dashboard-work {
     background: transparent;
 }
 
-body.dashboard-v6-body .dashboard-page.contents_box {
+.dashboard-v7-page .dashboard-page.contents_box {
     max-width: none;
     width: 100%;
     min-height: auto;
@@ -391,122 +389,122 @@ body.dashboard-v6-body .dashboard-page.contents_box {
 }
 
 /* 기존 contents_box가 내부에 여백/테두리를 강제할 경우 차단 */
-body.dashboard-v6-body .dashboard-page::before,
-body.dashboard-v6-body .dashboard-page::after {
+.dashboard-v7-page .dashboard-page::before,
+.dashboard-v7-page .dashboard-page::after {
     display: none;
 }
 
 /* 한 화면 수납 */
-body.dashboard-v6-body .kpi-grid {
+.dashboard-v7-page .kpi-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px;
     margin-bottom: 14px;
 }
 
-body.dashboard-v6-body .kpi-card {
+.dashboard-v7-page .kpi-card {
     min-height: 102px;
     padding: 16px 18px 14px;
     border-radius: 18px;
 }
 
-body.dashboard-v6-body .kpi-card::after {
+.dashboard-v7-page .kpi-card::after {
     top: 16px;
     right: 16px;
     width: 38px;
     height: 38px;
 }
 
-body.dashboard-v6-body .kpi-label {
+.dashboard-v7-page .kpi-label {
     margin-bottom: 12px;
     font-size: 13px;
     white-space: nowrap;
 }
 
-body.dashboard-v6-body .kpi-value {
+.dashboard-v7-page .kpi-value {
     font-size: 30px;
 }
 
-body.dashboard-v6-body .kpi-desc {
+.dashboard-v7-page .kpi-desc {
     margin-top: 8px;
     font-size: 12px;
     white-space: nowrap;
 }
 
-body.dashboard-v6-body .dashboard-grid {
+.dashboard-v7-page .dashboard-grid {
     grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr);
     grid-template-rows: 320px 320px;
     gap: 14px;
 }
 
-body.dashboard-v6-body .dash-card {
+.dashboard-v7-page .dash-card {
     min-width: 0;
     border-radius: 18px;
 }
 
-body.dashboard-v6-body .card-header {
+.dashboard-v7-page .card-header {
     height: 50px;
 }
 
-body.dashboard-v6-body .chart-box,
-body.dashboard-v6-body .radio-layout,
-body.dashboard-v6-body .radar-layout,
-body.dashboard-v6-body .table-wrap {
+.dashboard-v7-page .chart-box,
+.dashboard-v7-page .radio-layout,
+.dashboard-v7-page .radar-layout,
+.dashboard-v7-page .table-wrap {
     height: calc(100% - 50px);
 }
 
-body.dashboard-v6-body .radio-layout {
+.dashboard-v7-page .radio-layout {
     grid-template-columns: .92fr 1.08fr;
     padding: 16px 18px;
 }
 
-body.dashboard-v6-body .donut-box {
+.dashboard-v7-page .donut-box {
     min-height: 0;
 }
 
-body.dashboard-v6-body .table-wrap {
+.dashboard-v7-page .table-wrap {
     padding: 12px 16px;
 }
 
-body.dashboard-v6-body .table-wrap table {
+.dashboard-v7-page .table-wrap table {
     font-size: 11px;
 }
 
-body.dashboard-v6-body .table-wrap thead th {
+.dashboard-v7-page .table-wrap thead th {
     height: 38px;
 }
 
-body.dashboard-v6-body .table-wrap tbody td {
+.dashboard-v7-page .table-wrap tbody td {
     height: 38px;
 }
 
 /* 기존 chart/main.do의 오래된 SVG/C3 영역이 남아 있거나 기존 canvas와 충돌할 때 방지 */
-body.dashboard-v6-body .dashboard-page > svg,
-body.dashboard-v6-body .dashboard-page > .c3,
-body.dashboard-v6-body .dashboard-page > .c3-tooltip-container {
+.dashboard-v7-page .dashboard-page > svg,
+.dashboard-v7-page .dashboard-page > .c3,
+.dashboard-v7-page .dashboard-page > .c3-tooltip-container {
     display: none !important;
 }
 
 @media (max-width: 1500px) {
-    body.dashboard-v6-body .dashboard-page.contents_box {
+    .dashboard-v7-page .dashboard-page.contents_box {
         padding: 12px;
     }
 
-    body.dashboard-v6-body .dashboard-grid {
+    .dashboard-v7-page .dashboard-grid {
         grid-template-rows: 300px 300px;
     }
 
-    body.dashboard-v6-body .kpi-value {
+    .dashboard-v7-page .kpi-value {
         font-size: 26px;
     }
 
-    body.dashboard-v6-body .kpi-card {
+    .dashboard-v7-page .kpi-card {
         padding: 14px 14px 12px;
     }
 }
 
 
 /* =========================
-   v6 one-screen fit patch
+   v7 one-screen fit patch
    =========================
    목표:
    - overflow/스크롤 없이 1920x1080 기준 한 화면 수납
@@ -514,33 +512,29 @@ body.dashboard-v6-body .dashboard-page > .c3-tooltip-container {
    - 레이더 차트 내부 요소/상태 리스트 잘림 방지
    - 요소 크기를 과하게 찌그러뜨리지 않고 간격과 높이를 균일하게 축소
 */
-body.dashboard-v6-body {
-    overflow: hidden;
-}
 
-body.dashboard-v6-body .contents-wrap {
-    overflow: hidden !important;
-}
 
-body.dashboard-v6-body .dashboard-page.contents_box {
+
+
+.dashboard-v7-page .dashboard-page.contents_box {
     height: calc(100vh - 58px);
     padding: 12px 12px 12px;
     overflow: hidden;
 }
 
 /* 상단 KPI 높이 축소 */
-body.dashboard-v6-body .kpi-grid {
+.dashboard-v7-page .kpi-grid {
     gap: 10px !important;
     margin-bottom: 10px !important;
 }
 
-body.dashboard-v6-body .kpi-card {
+.dashboard-v7-page .kpi-card {
     min-height: 88px !important;
     padding: 13px 16px 11px !important;
     border-radius: 16px !important;
 }
 
-body.dashboard-v6-body .kpi-card::after {
+.dashboard-v7-page .kpi-card::after {
     width: 34px !important;
     height: 34px !important;
     top: 14px !important;
@@ -548,116 +542,116 @@ body.dashboard-v6-body .kpi-card::after {
     border-radius: 13px !important;
 }
 
-body.dashboard-v6-body .kpi-label {
+.dashboard-v7-page .kpi-label {
     margin-bottom: 8px !important;
     font-size: 12px !important;
 }
 
-body.dashboard-v6-body .kpi-value {
+.dashboard-v7-page .kpi-value {
     font-size: 26px !important;
     letter-spacing: -0.6px;
 }
 
-body.dashboard-v6-body .kpi-value span {
+.dashboard-v7-page .kpi-value span {
     font-size: 13px !important;
 }
 
-body.dashboard-v6-body .kpi-desc {
+.dashboard-v7-page .kpi-desc {
     margin-top: 6px !important;
     font-size: 11px !important;
 }
 
 /* 전체 차트 영역 높이 재산정: KPI 88 + gap 10 + grid 2행 */
-body.dashboard-v6-body .dashboard-grid {
+.dashboard-v7-page .dashboard-grid {
     grid-template-columns: minmax(0, 1.28fr) minmax(0, .72fr) !important;
     grid-template-rows: 292px 292px !important;
     gap: 10px !important;
 }
 
-body.dashboard-v6-body .dash-card {
+.dashboard-v7-page .dash-card {
     border-radius: 16px !important;
 }
 
-body.dashboard-v6-body .card-header {
+.dashboard-v7-page .card-header {
     height: 44px !important;
     padding: 0 16px !important;
 }
 
-body.dashboard-v6-body .card-header .bar {
+.dashboard-v7-page .card-header .bar {
     width: 5px !important;
     height: 22px !important;
 }
 
-body.dashboard-v6-body .card-header strong {
+.dashboard-v7-page .card-header strong {
     font-size: 13px !important;
 }
 
-body.dashboard-v6-body .card-header em {
+.dashboard-v7-page .card-header em {
     font-size: 11px !important;
 }
 
-body.dashboard-v6-body .chart-box,
-body.dashboard-v6-body .radio-layout,
-body.dashboard-v6-body .radar-layout,
-body.dashboard-v6-body .table-wrap {
+.dashboard-v7-page .chart-box,
+.dashboard-v7-page .radio-layout,
+.dashboard-v7-page .radar-layout,
+.dashboard-v7-page .table-wrap {
     height: calc(100% - 44px) !important;
 }
 
 /* 라인 차트 하단 legend가 잘리지 않게 내부 여백 최소화 */
-body.dashboard-v6-body .chart-line {
+.dashboard-v7-page .chart-line {
     padding: 6px 16px 2px !important;
 }
 
 /* 도넛 차트 카드 */
-body.dashboard-v6-body .radio-layout {
+.dashboard-v7-page .radio-layout {
     grid-template-columns: .95fr 1.05fr !important;
     gap: 12px !important;
     padding: 12px 14px !important;
 }
 
-body.dashboard-v6-body .radio-summary {
+.dashboard-v7-page .radio-summary {
     gap: 8px !important;
 }
 
-body.dashboard-v6-body .radio-row {
+.dashboard-v7-page .radio-row {
     padding: 10px 12px !important;
     border-radius: 12px !important;
 }
 
-body.dashboard-v6-body .radio-row > div:first-child {
+.dashboard-v7-page .radio-row > div:first-child {
     margin-bottom: 7px !important;
     font-size: 13px !important;
 }
 
-body.dashboard-v6-body .progress {
+.dashboard-v7-page .progress {
     height: 7px !important;
 }
 
 /* 레이더 차트 카드 내부 잘림 보정 */
-body.dashboard-v6-body .radar-layout {
+.dashboard-v7-page .radar-layout {
     grid-template-columns: minmax(0, 1fr) 205px !important;
     gap: 8px !important;
     padding: 8px 12px 8px !important;
     align-items: stretch;
 }
 
-body.dashboard-v6-body .radar-box {
+.dashboard-v7-page .radar-box {
     height: 100% !important;
     min-height: 0 !important;
     padding: 0 !important;
 }
 
-body.dashboard-v6-body .radar-box canvas {
+.dashboard-v7-page .radar-box canvas {
     max-height: 238px !important;
 }
 
-body.dashboard-v6-body .status-summary {
+.dashboard-v7-page .status-summary {
     gap: 6px !important;
     justify-content: center !important;
     min-height: 0 !important;
 }
 
-body.dashboard-v6-body .status-row {
+.dashboard-v7-page .status-row {
     min-height: 49px !important;
     padding: 7px 9px !important;
     border-left-width: 5px !important;
@@ -665,38 +659,38 @@ body.dashboard-v6-body .status-row {
     gap: 2px 6px !important;
 }
 
-body.dashboard-v6-body .status-row b {
+.dashboard-v7-page .status-row b {
     font-size: 13px !important;
 }
 
-body.dashboard-v6-body .status-row span {
+.dashboard-v7-page .status-row span {
     font-size: 15px !important;
 }
 
-body.dashboard-v6-body .status-row small {
+.dashboard-v7-page .status-row small {
     font-size: 9.5px !important;
     line-height: 1.2 !important;
 }
 
 /* 표 영역 축소 */
-body.dashboard-v6-body .table-wrap {
+.dashboard-v7-page .table-wrap {
     padding: 10px 12px !important;
 }
 
-body.dashboard-v6-body .table-wrap table {
+.dashboard-v7-page .table-wrap table {
     font-size: 10.5px !important;
 }
 
-body.dashboard-v6-body .table-wrap thead th {
+.dashboard-v7-page .table-wrap thead th {
     height: 32px !important;
 }
 
-body.dashboard-v6-body .table-wrap tbody td {
+.dashboard-v7-page .table-wrap tbody td {
     height: 32px !important;
 }
 
-body.dashboard-v6-body .chip,
-body.dashboard-v6-body .state {
+.dashboard-v7-page .chip,
+.dashboard-v7-page .state {
     min-width: 44px !important;
     height: 21px !important;
     padding: 0 8px !important;
@@ -705,26 +699,277 @@ body.dashboard-v6-body .state {
 
 /* 브라우저 줌 80~90% 또는 높이 작은 환경 보정 */
 @media (max-height: 900px) {
-    body.dashboard-v6-body .dashboard-page.contents_box {
+    .dashboard-v7-page .dashboard-page.contents_box {
         height: calc(100vh - 54px);
         padding: 10px;
     }
 
-    body.dashboard-v6-body .kpi-card {
+    .dashboard-v7-page .kpi-card {
         min-height: 80px !important;
         padding: 11px 14px 9px !important;
     }
 
-    body.dashboard-v6-body .kpi-value {
+    .dashboard-v7-page .kpi-value {
         font-size: 23px !important;
     }
 
-    body.dashboard-v6-body .dashboard-grid {
+    .dashboard-v7-page .dashboard-grid {
         grid-template-rows: 268px 268px !important;
     }
 
-    body.dashboard-v6-body .status-row {
+    .dashboard-v7-page .status-row {
         min-height: 45px !important;
         padding: 6px 8px !important;
+    }
+}
+
+
+/* =========================
+   v7 menu-safe layout patch
+   =========================
+   원인:
+   기존 menu/top 스크립트가 body class를 "open" 기준으로 판단하는 구조일 가능성이 큽니다.
+   body에 dashboard-v6-body 같은 추가 class를 붙이면 메뉴 텍스트 표시 조건이 깨질 수 있습니다.
+   따라서 v7은 body class를 기존처럼 "open"만 유지하고,
+   대시보드 스타일은 내부 .dashboard-v7-page에만 적용합니다.
+*/
+.dashboard-v7-page {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: calc(100vh - 58px) !important;
+    margin: 0 !important;
+    padding: 12px 12px 12px !important;
+    overflow: hidden !important;
+    background: #edf3f8 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #243244;
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+}
+
+.dashboard-v7-page *,
+.dashboard-v7-page *::before,
+.dashboard-v7-page *::after {
+    box-sizing: border-box;
+}
+
+/* 기존 contents_box 기본 여백/테두리 차단 */
+.dashboard-v7-page.contents_box {
+    max-width: none !important;
+    min-height: auto !important;
+}
+
+/* 한 화면 수납 */
+.dashboard-v7-page .kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    margin: 0 0 10px 0 !important;
+}
+
+.dashboard-v7-page .kpi-card {
+    min-height: 86px !important;
+    padding: 12px 15px 10px !important;
+    border-radius: 16px !important;
+}
+
+.dashboard-v7-page .kpi-card::after {
+    width: 34px !important;
+    height: 34px !important;
+    top: 13px !important;
+    right: 13px !important;
+    border-radius: 13px !important;
+}
+
+.dashboard-v7-page .kpi-label {
+    margin-bottom: 7px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+}
+
+.dashboard-v7-page .kpi-value {
+    font-size: 25px !important;
+    letter-spacing: -0.6px;
+}
+
+.dashboard-v7-page .kpi-value span {
+    font-size: 13px !important;
+}
+
+.dashboard-v7-page .kpi-desc {
+    margin-top: 5px !important;
+    font-size: 11px !important;
+    white-space: nowrap;
+}
+
+.dashboard-v7-page .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.28fr) minmax(0, .72fr) !important;
+    grid-template-rows: 286px 286px !important;
+    gap: 10px !important;
+}
+
+.dashboard-v7-page .dash-card {
+    min-width: 0 !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+}
+
+.dashboard-v7-page .card-header {
+    height: 42px !important;
+    padding: 0 16px !important;
+}
+
+.dashboard-v7-page .card-header .bar {
+    width: 5px !important;
+    height: 22px !important;
+}
+
+.dashboard-v7-page .card-header strong {
+    font-size: 13px !important;
+}
+
+.dashboard-v7-page .card-header em {
+    font-size: 11px !important;
+}
+
+.dashboard-v7-page .chart-box,
+.dashboard-v7-page .radio-layout,
+.dashboard-v7-page .radar-layout,
+.dashboard-v7-page .table-wrap {
+    height: calc(100% - 42px) !important;
+}
+
+.dashboard-v7-page .chart-line {
+    padding: 6px 16px 2px !important;
+}
+
+.dashboard-v7-page .radio-layout {
+    grid-template-columns: .95fr 1.05fr !important;
+    gap: 12px !important;
+    padding: 12px 14px !important;
+}
+
+.dashboard-v7-page .donut-box {
+    min-height: 0 !important;
+    padding: 0 !important;
+}
+
+.dashboard-v7-page .radio-summary {
+    gap: 8px !important;
+}
+
+.dashboard-v7-page .radio-row {
+    padding: 9px 12px !important;
+    border-radius: 12px !important;
+}
+
+.dashboard-v7-page .radio-row > div:first-child {
+    margin-bottom: 6px !important;
+    font-size: 13px !important;
+}
+
+.dashboard-v7-page .progress {
+    height: 7px !important;
+}
+
+/* 레이더 차트 내부 요소 잘림 방지 */
+.dashboard-v7-page .radar-layout {
+    grid-template-columns: minmax(0, 1fr) 202px !important;
+    gap: 8px !important;
+    padding: 7px 12px !important;
+}
+
+.dashboard-v7-page .radar-box {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+}
+
+.dashboard-v7-page .radar-box canvas {
+    max-height: 232px !important;
+}
+
+.dashboard-v7-page .status-summary {
+    gap: 5px !important;
+    justify-content: center !important;
+    min-height: 0 !important;
+}
+
+.dashboard-v7-page .status-row {
+    min-height: 47px !important;
+    padding: 6px 9px !important;
+    border-left-width: 5px !important;
+    border-radius: 11px !important;
+    gap: 2px 6px !important;
+}
+
+.dashboard-v7-page .status-row b {
+    font-size: 13px !important;
+}
+
+.dashboard-v7-page .status-row span {
+    font-size: 15px !important;
+}
+
+.dashboard-v7-page .status-row small {
+    font-size: 9.5px !important;
+    line-height: 1.2 !important;
+}
+
+/* 표 영역 */
+.dashboard-v7-page .table-wrap {
+    padding: 10px 12px !important;
+}
+
+.dashboard-v7-page .table-wrap table {
+    font-size: 10.5px !important;
+}
+
+.dashboard-v7-page .table-wrap thead th {
+    height: 31px !important;
+}
+
+.dashboard-v7-page .table-wrap tbody td {
+    height: 31px !important;
+}
+
+.dashboard-v7-page .chip,
+.dashboard-v7-page .state {
+    min-width: 44px !important;
+    height: 21px !important;
+    padding: 0 8px !important;
+    font-size: 10.5px !important;
+}
+
+/* 기존 chart/main.do 잔여 c3/svg가 이 내부에 남는 경우 방지 */
+.dashboard-v7-page > svg,
+.dashboard-v7-page > .c3,
+.dashboard-v7-page > .c3-tooltip-container {
+    display: none !important;
+}
+
+@media (max-height: 900px) {
+    .dashboard-v7-page {
+        height: calc(100vh - 54px) !important;
+        padding: 10px !important;
+    }
+
+    .dashboard-v7-page .kpi-card {
+        min-height: 78px !important;
+        padding: 10px 13px 8px !important;
+    }
+
+    .dashboard-v7-page .kpi-value {
+        font-size: 23px !important;
+    }
+
+    .dashboard-v7-page .dashboard-grid {
+        grid-template-rows: 262px 262px !important;
+    }
+
+    .dashboard-v7-page .status-row {
+        min-height: 44px !important;
+        padding: 5px 8px !important;
     }
 }
