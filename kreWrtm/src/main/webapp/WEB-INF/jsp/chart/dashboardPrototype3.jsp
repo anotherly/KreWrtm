@@ -8,17 +8,13 @@
 
     <jsp:include page="../cmn/top.jsp" flush="false" />
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/dashboard-prototype-v3.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard-prototype-v3.css">
 
-    <%--
-        Chart.js 레이더 차트 사용.
-        운영망이 외부 CDN 차단 환경이면 chart.umd.min.js를 내려받아
-        /js/chart/chart.umd.min.js 같은 내부 경로로 변경하면 됩니다.
-    --%>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <%--Chart.js 레이더 차트 사용.--%>
+	<script src="<%=request.getContextPath()%>/js/chartJS/chart.min.js" type="text/javascript"></script>
 </head>
 
-<body class="open dashboard-v5-body">
+<body class="open">
     <!-- lnb Start -->
     <aside id="lnb" class="lnb">
         <a class="lnb-control" title="메뉴 펼침/닫침"><span class="menu-toggle">메뉴 펼침/닫침</span></a>
@@ -37,7 +33,7 @@
         <!-- contents Start -->
         <div id="contents" class="contents-wrap">
             <div id="work" class="work-wrap dashboard-work">
-                <div id="contents_box" class="contents_box dashboard-page">
+                <div id="contents_box" class="contents_box dashboard-page dashboard-v7-page">
 <%-- 상단 소개 문구와 금일 기준/새로고침은 요청에 따라 제거/주석 처리
             <div class="dashboard-hero">
                 <div>
@@ -350,6 +346,14 @@
                     }
                 }
             },
+            layout: {
+                padding: {
+                    top: 8,
+                    right: 8,
+                    bottom: 8,
+                    left: 8
+                }
+            },
             scales: {
                 r: {
                     min: 0,
@@ -357,13 +361,14 @@
                     ticks: {
                         stepSize: 30,
                         backdropColor: "transparent",
-                        font: { size: 10 }
+                        font: { size: 9 }
                     },
                     grid: { color: "rgba(83,100,122,0.22)" },
                     angleLines: { color: "rgba(83,100,122,0.22)" },
                     pointLabels: {
-                        font: { size: 13, weight: "bold" },
-                        color: "#34465d"
+                        font: { size: 11, weight: "bold" },
+                        color: "#34465d",
+                        padding: 4
                     }
                 }
             }

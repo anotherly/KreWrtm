@@ -18,7 +18,6 @@
 	<script>
 		var rkFlag = false;//로드/언로드 플래그
 		$(document).ready(function() {
-			//location.href="/chart/main.do";
 			console.log("최초 화면0");
 			var sessionVo = '${login.userId}';
 			console.log("세션체크 : "+sessionVo);
