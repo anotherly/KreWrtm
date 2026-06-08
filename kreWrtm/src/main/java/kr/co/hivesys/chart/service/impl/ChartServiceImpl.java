@@ -18,21 +18,6 @@ public class ChartServiceImpl implements ChartService{
 
 	@Resource(name="chartMapper")
 	private ChartMapper chartMapper;
-	
-	@Override
-	public List<ChartVo> selectDataList() throws Exception { return chartMapper.selectDataList(); }
-	
-	@Override
-	public List<RouterVO> routerList() throws Exception { return chartMapper.routerList(); }
-	
-	@Override
-	public List<CompanyVO> getComCode() throws Exception { return chartMapper.getComCode(); }
-	
-	@Override
-	public List<CompanyVO> currentList() throws Exception { return chartMapper.currentList(); }
-	
-	@Override
-	public List<CompanyVO> rsrqAvgList() throws Exception { return chartMapper.rsrqAvgList(); }
 
 	@Override
 	public Map<String, Object> selectDashboardKpi() throws Exception { return chartMapper.selectDashboardKpi(); }

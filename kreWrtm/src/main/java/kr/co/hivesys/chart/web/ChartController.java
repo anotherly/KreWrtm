@@ -135,23 +135,6 @@ public class ChartController {
 		dashboardData.put("receiveList", java.util.Collections.emptyList());
 		return dashboardData;
 	}
-	
-	// 나중에 합칠 예정
-	@RequestMapping(value="/chart/routerList.ajax")
-	public @ResponseBody ModelAndView reqRouterList(HttpServletRequest request) throws Exception{
-		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
-		ModelAndView mav = new ModelAndView("jsonView");
-		List<RouterVO> routerList = null;
-		try {
-	        routerList = chartService.routerList();
-	        mav.addObject("routerList", routerList);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug("에러메시지 : "+e.toString());
-		}
-		return mav;
-	}
-	
 
 	private List<Map<String, Object>> normalizeStatusList(List<Map<String, Object>> list) {
 		List<Map<String, Object>> result = new java.util.ArrayList<Map<String, Object>>();

@@ -32,51 +32,6 @@
 		<result property="rsrqAvg" column="RSRQ_AVG"/>
 	</resultMap>
 
-	<select id="selectDataList" parameterType="kr.co.hivesys.chart.vo.ChartVo" resultMap="selectDataList">
-		SELECT * FROM tbl_use_info
-	</select>
-
-	<select id="routerList" parameterType="kr.co.hivesys.router.vo.RouterVO" resultMap="selectRouterList">
-		SELECT B.COMPANY_NAME, COUNT(*) AS ROUTER_COUNT
-		FROM TBL_ROUTER_INFO A
-		LEFT JOIN TBL_COMPANY_INFO B ON A.COMPANY_CODE = B.COMPANY_CODE
-		GROUP BY A.COMPANY_CODE, B.COMPANY_NAME
-	</select>
-
-	<select id="getComCode" resultMap="CompanyInfoMap">
-		SELECT COMPANY_CODE, COMPANY_NAME
-		FROM TBL_COMPANY_INFO
-		ORDER BY COMPANY_CODE ASC
-	</select>
-	
-	<select id="currentList" resultMap="CompanyInfoMap">
-		SELECT b.company_code, COALESCE(cnt.today_cnt, 0) AS today_cnt
-		FROM tbl_router_info b
-		LEFT JOIN (
-			SELECT r.company_code, COUNT(*) AS today_cnt
-			FROM tbl_last_data a
-			LEFT JOIN tbl_router_info r ON a.volte_num = r.volte_num
-			WHERE DATE(a.rcv_dt) = CURDATE()
-			GROUP BY r.company_code
-		) cnt ON b.company_code = cnt.company_code
-		GROUP BY b.company_code
-		ORDER BY b.company_code ASC
-	</select>
-	
-	<select id="rsrqAvgList" resultMap="CompanyInfoMap">
-		SELECT b.company_code, COALESCE(avg_data.rsrq_avg, 0) AS rsrq_avg
-		FROM tbl_router_info b
-		LEFT JOIN (
-			SELECT r.company_code, AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(a.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED)) AS rsrq_avg
-			FROM tbl_last_data a
-			LEFT JOIN tbl_router_info r ON a.volte_num = r.volte_num
-			WHERE DATE(a.rcv_dt) = CURDATE()
-			GROUP BY r.company_code
-		) avg_data ON b.company_code = avg_data.company_code
-		GROUP BY b.company_code
-		ORDER BY b.company_code ASC
-	</select>
-
 	<!-- 대시보드 KPI: tbl_last_data 최신 상태 기준 -->
 	<select id="selectDashboardKpi" resultType="java.util.HashMap">
 		<![CDATA[

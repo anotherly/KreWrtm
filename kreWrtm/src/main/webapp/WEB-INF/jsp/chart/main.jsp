@@ -7,7 +7,7 @@
     <title>무선장치 관리시스템 - 대시보드</title>
     <jsp:include page="../cmn/top.jsp" flush="false" />
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/dashboard-db-ajax.css">
-    <script src="<%=request.getContextPath()%>/js/chartJS/chart.min.js"></script>
+    <script src="<%=request.getContextPath()%>/js/chartJS/chart.umd.readable.js"></script>
 </head>
 <body class="open">
     <aside id="lnb" class="lnb">
@@ -233,6 +233,25 @@
     function drawRsrqRsrpStatusSummary(rsrpList, rsrqList) {
         var labels = ["정상", "주의", "경고", "심각"];
         var classes = {"정상":"normal", "주의":"caution", "경고":"warning", "심각":"critical"};
+
+        /*
+         * 상태 기준
+         * - RSRP: 수신 전력. 0에 가까울수록 양호합니다.
+         * - RSRQ: 수신 품질. 0에 가까울수록 양호합니다.
+         */
+        var rsrpRange = {
+            "정상": "RSRP ≥ -90 dBm",
+            "주의": "-100 ≤ RSRP < -90 dBm",
+            "경고": "-110 ≤ RSRP < -100 dBm",
+            "심각": "RSRP < -110 dBm"
+        };
+        var rsrqRange = {
+            "정상": "RSRQ ≥ -10 dB",
+            "주의": "-15 ≤ RSRQ < -10 dB",
+            "경고": "-18 ≤ RSRQ < -15 dB",
+            "심각": "RSRQ < -18 dB"
+        };
+
         var rsrpMap = listToStatusMap(rsrpList);
         var rsrqMap = listToStatusMap(rsrqList);
 
@@ -241,19 +260,24 @@
 
         for (var i=0; i<labels.length; i++) {
             var label = labels[i];
-            rsrqHtml += '<div class="status-row ' + classes[label] + '">';
-            rsrqHtml += '<b>' + label + '</b>';
-            rsrqHtml += '<span>' + n(rsrqMap[label]) + '대</span>';
-            rsrqHtml += '</div>';
-
-            rsrpHtml += '<div class="status-row ' + classes[label] + '">';
-            rsrpHtml += '<b>' + label + '</b>';
-            rsrpHtml += '<span>' + n(rsrpMap[label]) + '대</span>';
-            rsrpHtml += '</div>';
+            rsrqHtml += makeStatusSummaryRow(classes[label], label, rsrqRange[label], n(rsrqMap[label]));
+            rsrpHtml += makeStatusSummaryRow(classes[label], label, rsrpRange[label], n(rsrpMap[label]));
         }
 
         $("#rsrqStatusSummary").html(rsrqHtml || '<div class="status-empty">RSRQ 상태 데이터 없음</div>');
         $("#rsrpStatusSummary").html(rsrpHtml || '<div class="status-empty">RSRP 상태 데이터 없음</div>');
+    }
+
+    function makeStatusSummaryRow(className, label, rangeText, count) {
+        var html = "";
+        html += '<div class="status-row ' + className + '">';
+        html += '    <div class="status-label-box">';
+        html += '        <b>' + esc(label) + '</b>';
+        html += '        <small>' + esc(rangeText) + '</small>';
+        html += '    </div>';
+        html += '    <span>' + n(count) + '대</span>';
+        html += '</div>';
+        return html;
     }
 
     function drawReceiveTable(list) {

@@ -1345,3 +1345,67 @@
         max-height: 230px !important;
     }
 }
+
+
+/* =========================
+   v6 status range text fix
+   =========================
+   RSRQ/RSRP 상태 카드에 임계치 범위값을 함께 표기합니다.
+   기존 중복 CSS보다 아래에 배치하여 우선 적용합니다.
+*/
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row {
+    min-height: 46px !important;
+    padding: 7px 10px 7px 12px !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    column-gap: 8px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 2px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box b {
+    display: block !important;
+    font-size: 13px !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    color: #14243a !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box small {
+    display: block !important;
+    grid-column: auto !important;
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
+    color: #6f8197 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row > span {
+    align-self: center !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    color: #122033 !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 1500px) {
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row {
+        min-height: 42px !important;
+        padding: 6px 8px 6px 10px !important;
+    }
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box small {
+        font-size: 9px !important;
+    }
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row > span {
+        font-size: 14px !important;
+    }
+}

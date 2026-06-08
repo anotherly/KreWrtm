@@ -8,11 +8,6 @@ import kr.co.hivesys.company.vo.CompanyVO;
 import kr.co.hivesys.router.vo.RouterVO;
 
 public interface ChartService {
-	public List<ChartVo> selectDataList() throws Exception;
-	public List<RouterVO> routerList() throws Exception;
-	public List<CompanyVO> getComCode() throws Exception;
-	public List<CompanyVO> currentList() throws Exception;
-	public List<CompanyVO> rsrqAvgList() throws Exception;
 
 	public Map<String, Object> selectDashboardKpi() throws Exception;
 	public List<Map<String, Object>> selectDashboardTrendList() throws Exception;
