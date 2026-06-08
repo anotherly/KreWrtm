@@ -34,7 +34,7 @@
                         <article class="dash-card trend-card"><div class="card-header"><span class="bar"></span><strong>최근 12분 수신 데이터</strong></div><div class="chart-box chart-line"><canvas id="receiveTrendChart"></canvas></div></article>
 
                         <article class="dash-card radio-card">
-                            <div class="card-header"><span class="bar"></span><strong>무선망 분포</strong><em>CurrentRadioType 기준</em></div>
+                            <div class="card-header"><span class="bar"></span><strong>무선망 분포</strong></div>
                             <div class="radio-layout"><div class="chart-box donut-box"><canvas id="radioTypeChart"></canvas></div>
                                 <div class="radio-summary">
                                     <div class="radio-row"><div><strong>LTE-R</strong><span id="lteRatioText">0%</span></div><div class="progress"><i id="lteRatioBar" style="width:0%"></i></div></div>
@@ -60,7 +60,7 @@
                         </article>
 
                         <article class="dash-card table-card">
-                            <div class="card-header"><span class="bar"></span><strong>tbl_receive_data 주요 필드</strong><em>Cell ID 제외</em></div>
+                            <div class="card-header"><span class="bar"></span><strong>단말기 송신 데이터 주요 값</strong></div>
                             <div class="table-wrap"><table><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th>RSRP</th><th>RSRP 상태</th><th>RSRQ</th><th>RSRQ 상태</th><th>수신시각</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="8">데이터 조회 중입니다.</td></tr></tbody></table></div>
                         </article>
                     </section>

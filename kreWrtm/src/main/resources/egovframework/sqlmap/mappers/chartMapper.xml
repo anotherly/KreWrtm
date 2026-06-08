@@ -201,7 +201,7 @@
 		    DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime
 		FROM tbl_receive_data A
 		ORDER BY A.RCV_DT DESC
-		LIMIT 5
+		LIMIT 7
 		]]>
 	</select>
 
