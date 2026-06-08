@@ -111,6 +111,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
+					<img class="list-title-img" src="/images/icons/ico_doc_title.png"/>
 						<div class="ttl_ctn">자료 수정</div>
 						<!-- 설명글 -->
 					</div>

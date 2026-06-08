@@ -1196,9 +1196,9 @@ input:focus{
     border-bottom: 3px double #1e1919;
 }
 
-#insertForm{
+/* #insertForm{
 	margin-top:45px;
-}
+} */
 
 /* 설명글 */
 .txt_info{
@@ -2044,4 +2044,74 @@ input 클릭(focus) 시 테두리 제거
         width: 100%;
         justify-content: flex-end;
     }
+}
+
+
+/* =========================================================
+ * 공통 화면 제목 개선 v2
+ * - 기존 목록/등록/상세/수정 화면의 .ctn_tbl_header .ttl_ctn에만 적용
+ * - 백단/화면 구조 변경 없음
+ * - 메뉴 아이콘 스프라이트를 작게 사용하고, 과한 박스/두꺼운 밑줄 제거
+ * ========================================================= */
+.ctn_tbl_header {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    margin: 0 0 30px 0;
+}
+
+/* .ctn_tbl_header .list-title-img {
+    display: none !important;
+}
+ */
+.ctn_tbl_header .ttl_ctn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 2px 8px 0;
+    font-size: 28px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.9px;
+    color: #111827;
+}
+
+.list-title-img{
+	width:40px;
+}
+
+/* .ctn_tbl_header .ttl_ctn::before {
+    content: "";
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    background-image: url(../images/icons/menu_icon.png);
+    background-repeat: no-repeat;
+    background-position: 0 -90px;
+    background-size: 30px auto;
+    opacity: 0.72;
+} */
+
+/* .ctn_tbl_header .ttl_ctn::after {
+    content: "";
+    position: absolute;
+    left: 36px;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: linear-gradient(to bottom,
+        #111827 0,
+        #111827 1px,
+        transparent 1px,
+        transparent 3px,
+        rgba(17, 24, 39, 0.45) 3px,
+        rgba(17, 24, 39, 0.45) 4px
+    );
+} */
+
+/* 검색/모니터링 화면의 대형 타이틀에는 공통 제목 장식을 강제하지 않음 */
+.monitoring-contents .ctn_tbl_header .ttl_ctn::before,
+.monitoring-contents .ctn_tbl_header .ttl_ctn::after {
+    content: none;
 }

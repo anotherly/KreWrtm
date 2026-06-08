@@ -50,8 +50,8 @@ $(document).ready(function() {
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="/company/companyList.do" class="menu-link" style="color: rgb(255, 255, 255);">
-		<i class="menu-icon n08"></i>
-		<div>회사코드 관리</div>
+		<i class="menu-icon n09"></i>
+		<div>소속기관 관리</div>
 	</a>
 </li>	
 <li class="menu-item" id="ROOT_TEST_SW">
@@ -62,7 +62,15 @@ $(document).ready(function() {
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="/search/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
-		<i class="menu-icon n09"></i>
+		<i style="
+    background: url(../images/icons/btn_sch.png) no-repeat 0 0;
+    opacity: 0.5;
+    transition: all 0.3s;
+    flex-grow: 0;
+    flex-shrink: 0;
+    font-size: 15px;
+    width: 24px;
+    height: 23px;"></i>
 		<div>검색 & 모니터링</div>
 	</a>
 	<ul class="menu-sub">

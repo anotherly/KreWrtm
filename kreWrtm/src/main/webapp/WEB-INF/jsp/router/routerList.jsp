@@ -185,6 +185,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
+				<img class="list-title-img" src="/images/icons/ico_device_title.png"/>
 					<div class="ttl_ctn">장치 목록</div>
 				</div>
                 <!-- search_box Start -->
@@ -194,7 +195,7 @@
                             <select class="table_sel" name="searchType">
                                 <option value="deviceName">장치명</option>
                                 <option value="modelName">모델명</option>
-                                <option value="companyName">제조사</option>
+                                <option value="companyName">소속기관</option>
                             </select>
                             <input type="text"
                                    id="searchValue"

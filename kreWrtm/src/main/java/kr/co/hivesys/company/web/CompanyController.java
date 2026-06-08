@@ -163,7 +163,7 @@ public class CompanyController{
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
-			mav.addObject("msg","에러가 발생했습니다.");
+			mav.addObject("msg","삭제가 불허되었습니다 해당 소속사에 포함되는 사용자 또는 장비 등을 먼저 삭제해 주십시오.");
 		}
 		return mav;
 	}

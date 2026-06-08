@@ -32,6 +32,129 @@
 	    	font-size : 12px;
 	    }
 	}
+
+
+    /* 검색 & 모니터링 화면 전용 정렬 보정 - 백단 로직 수정 없음 */
+    .monitoring-contents .left-container .click_title_div {
+        width: 1000px;
+        margin: 26px auto 16px;
+        display: grid;
+        grid-template-columns: 200px 300px 200px 300px;
+        align-items: center;
+        column-gap: 0;
+    }
+
+    .monitoring-contents .left-container .sub_title_div {
+        grid-column: 1 / 3;
+        justify-self: start;
+        text-align: left;
+        font-size: 32px;
+        line-height: 1.2;
+        font-weight: 800 !important;
+        color: #59636b;
+        letter-spacing: -1px;
+        margin: 0;
+    }
+
+    .monitoring-contents .left-container .carNum_container {
+        grid-column: 3 / 5;
+        justify-self: start;
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        color: #59636b;
+    }
+
+    .monitoring-contents .left-container .arrow {
+        width: 38px;
+        margin-right: 16px !important;
+        font-size: 32px;
+        line-height: 1;
+        color: #59636b;
+    }
+
+    .monitoring-contents .left-container .select_carNum {
+        font-size: 32px;
+        line-height: 1.1;
+        font-weight: 800 !important;
+        color: #59636b;
+        letter-spacing: -0.4px;
+    }
+
+    .monitoring-contents .right-container .search_table_div form#searchFrm {
+        display: flex !important;
+        width: 100% !important;
+        height: 100% !important;
+        align-items: flex-end !important;
+        justify-content: space-between !important;
+        gap: 18px;
+        padding: 0 16px 2px 0;
+        box-sizing: border-box;
+    }
+
+    .monitoring-contents .right-container .searchType1_container,
+    .monitoring-contents .right-container .searchType2_container {
+        display: flex;
+        align-items: center;
+        height: 38px;
+        margin-right: 16px;
+    }
+
+    .monitoring-contents .right-container .searchType1_title,
+    .monitoring-contents .right-container .searchType2_title {
+        height: 38px;
+        line-height: 38px;
+        margin-right: 8px;
+        font-size: 17px;
+        font-weight: 700;
+        color: #59636b;
+        white-space: nowrap;
+    }
+
+    .monitoring-contents .right-container #companyCode,
+    .monitoring-contents .right-container #deviceName {
+        height: 38px !important;
+        min-height: 38px !important;
+        box-sizing: border-box;
+        padding-left: 8px !important;
+        border: 1px solid #bfc7d1;
+        border-radius: 4px !important;
+        background: #fff;
+    }
+
+    .monitoring-contents .right-container .searchBox {
+        height: 38px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px;
+        margin-bottom: 0;
+    }
+
+    .monitoring-contents .right-container .searchText {
+        height: 38px !important;
+        min-height: 38px !important;
+        line-height: 38px !important;
+        box-sizing: border-box;
+        padding: 0 14px 0 22px !important;
+        border: 1px solid #cfd6df;
+        border-radius: 19px;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    .monitoring-contents .right-container .btn_sch {
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
 </style>
 <script>
 	var nowTagId = '${data.deviceId}';	
@@ -256,7 +379,7 @@
 		</div>
 		<!-- header End ------------------>
 		<!-- contents Start ------------------>
-		<div id="contents" class="contents-wrap">
+		<div id="contents" class="contents-wrap monitoring-contents">
 			<div class="left-container">  <!-- 좌측 정보 테이블 -->
 				<div class="click_title_div">
 					<div class="sub_title_div" style="font-weight : bold;">실시간 수신 데이터 보기</div>
@@ -426,7 +549,7 @@
 			</div>
 			<div class="right-container"> <!-- 우측 단말기 테이블 -->
 				<div class="search_table_div">
-					<form id=searchFrm name="searchFrm" method="post" enctype="multipart/form-data" style="display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: space-around;">
+					<form id="searchFrm" name="searchFrm" method="post" enctype="multipart/form-data" style="display: flex; width: 100%; height: 100%; align-items: flex-end; justify-content: space-around;">
 						<div style="display: flex; flex-direction: column;">
 							<div id="routerCounter" style="font-size: 18px; margin-bottom: 5px;"></div>
 							<div style="display : flex;">
@@ -461,7 +584,7 @@
 						        placeholder="검색어를 입력하세요." 
 						        style="width:300px; padding-left:25px;">
 						
-						    <button class="btn_sch" onclick="search()" style="border:none;">
+						    <button type="button" class="btn_sch" onclick="search()" style="border:none;padding-right: 18px;">
 						        <div class="ico_sch_search"></div>
 						    </button>
 						</div>

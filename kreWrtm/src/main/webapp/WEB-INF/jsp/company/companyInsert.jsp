@@ -130,9 +130,8 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<div class="ttl_ctn">소속기관 등록</div>
-						<!-- 설명글 -->
-					</div>
+					<img class="list-title-img" src="/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 등록</div>
+				</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">

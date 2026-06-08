@@ -31,7 +31,6 @@
 	<!-- 장애이력 관리 목록 조회 -->
 	<select id="selectDataList" parameterType="obsVo" resultMap="selectDataList">	
 		SELECT * FROM TBL_OBS_INFO
-		
 		WHERE 1=1
 		AND DEL_CODE = 'N'
 		<if test="obsName != null and obsName != ''">
@@ -40,12 +39,26 @@
 		<if test="carNum != null and carNum != ''">
 			AND CAR_NUM LIKE CONCAT('%', #{carNum}, '%')
 		</if>
-		<if test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' ">
-			AND <![CDATA[ RPT_DATE >= #{sDate} AND RPT_DATE <= #{eDate} ]]>
-		</if>
-		<if test="ssDate !=null and ssDate neq '' and eeDate !=null and eeDate neq '' ">
-			AND <![CDATA[ PRC_DATE >= #{ssDate} AND PRC_DATE <= #{eeDate} ]]>
-		</if>
+		
+		<choose>
+		    <!-- 동시검색 -->
+		    <when test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' and ssDate !=null and ssDate neq '' and eeDate !=null and eeDate neq ''">
+		        AND(
+		         <![CDATA[ RPT_DATE >= #{sDate} AND RPT_DATE <= #{eDate} ]]>
+				 or		        
+				 <![CDATA[ PRC_DATE >= #{ssDate} AND PRC_DATE <= #{eeDate} ]]>
+		        )
+		         
+		    </when>
+		    <otherwise>
+				<if test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' ">
+					AND <![CDATA[ RPT_DATE >= #{sDate} AND RPT_DATE <= #{eDate} ]]>
+				</if>
+				<if test="ssDate !=null and ssDate neq '' and eeDate !=null and eeDate neq '' ">
+					AND <![CDATA[ PRC_DATE >= #{ssDate} AND PRC_DATE <= #{eeDate} ]]>
+				</if>		        
+		    </otherwise>
+		</choose>
 		
 		ORDER BY RPT_DATE DESC
 	</select>

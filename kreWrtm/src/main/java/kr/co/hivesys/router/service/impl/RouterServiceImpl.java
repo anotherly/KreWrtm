@@ -45,6 +45,13 @@ public class RouterServiceImpl implements RouterService {
 	}
 	
 	@Override
+	public void deleteCompany(List<String> paramArr) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("chkList",paramArr);
+		routerMapper.deleteCompany(map);		
+	}
+	
+	@Override
 	public List<OrgVO> userTypeSelect(OrgVO inputVo) throws Exception {
 		return routerMapper.userTypeSelect(inputVo);
 	}

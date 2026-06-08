@@ -78,8 +78,9 @@
 					$("#btnIns").append("<input type='button' id='btnUpdate' class='btn btn_primary' value='수정' onclick='tbUpdate(this,updUrl)'>");
 				} */
 				if(typeof $("#btnDelete").val()==="undefined"){
-					$("#btnIns").append("<input type='button' id='btnDelete' class='btn btn_primary' value='삭제' onclick='tbDelete(this,delUrl,delbak)'>");
+					$("#btnIns").append("<input type='button' id='btnDelete' class='btn btn_primary' value='삭제' onclick='companyDeleteBefore(this)'>");
 				}
+				
 			}else{
 				//$("#btnIns").empty();	
 				if(typeof $("#btnUpdate").val()==="undefined"){
@@ -161,7 +162,12 @@
 		var tagUrl="/company/companyList.ajax";
 		tbSearch("tableList",tagUrl,frm);
 	 }
-    
+    //삭제 시 확인문구
+	 function companyDeleteBefore(obj) {
+	    alert("주의! 소속기관 삭제 시 해당 소속기관에 등록된 하위 기관 및 단말기도 함께 삭제됩니다. 삭제하시겠습니까?");
+	    tbDelete(obj, delUrl, delbak);
+	}
+	
 </script>
 </head>
 <body class="open">
@@ -185,7 +191,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<div class="ttl_ctn">소속기관코드 목록</div>
+					<img class="list-title-img" src="/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 목록</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box list_search_box">

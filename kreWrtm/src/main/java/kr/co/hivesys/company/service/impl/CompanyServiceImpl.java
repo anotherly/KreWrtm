@@ -12,9 +12,14 @@ import kr.co.hivesys.company.mapper.OrgMapper;
 import kr.co.hivesys.company.service.CompanyService;
 import kr.co.hivesys.company.vo.CompanyVO;
 import kr.co.hivesys.company.vo.OrgVO;
+import kr.co.hivesys.router.mapper.RouterMapper;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyService {
+	
+	@Resource(name = "routerMapper")
+	private RouterMapper routerMapper;
+	
 	@Resource(name = "companyMapper")
 	private CompanyMapper companyMapper;
 	
@@ -51,6 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
 		
 		// 회사 삭제 전 하위 본부/처/실 정보를 먼저 삭제한다.
 		orgMapper.deleteByCompanyChk(map);
+		routerMapper.deleteCompany(map);
 		companyMapper.deleteChk(map);		
 	}
 	

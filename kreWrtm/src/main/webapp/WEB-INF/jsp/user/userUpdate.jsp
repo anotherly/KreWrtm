@@ -219,7 +219,7 @@
 				<div id="contents_box" class="contents_box user_form_page">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<div class="ttl_ctn">사용자 수정</div>
+						<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 수정</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 

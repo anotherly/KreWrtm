@@ -60,8 +60,9 @@
 		<div id="contents" class="contents-wrap">
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page" style="justify-content : center; align-items : center;">
-				<div class="ctn_tbl_header" style="justify-content: center; border-bottom: 2px solid #555555; padding-bottom: 15px; width: 180px;">
-					<div class="ttl_ctn" style="font-size : 32px;">장치 관리</div>
+				<div class="ctn_tbl_header">
+				<img class="list-title-img" src="/images/icons/ico_search_title.png"/>
+					<div class="ttl_ctn" style="font-size : 32px;">장치 검색</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box" style="margin-bottom : calc( 10px + 22vh); margin-top: calc(10px + 0vh); background : none; box-shadow : none;">

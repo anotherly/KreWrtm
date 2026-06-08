@@ -45,75 +45,64 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap">
 				<!-- contents_box Start -->
-				<div id="contents_box" class="contents_box">
+				<div id="contents_box" class="contents_box user_form_page user_detail_page">
 					<!-- 컨텐츠 테이블 헤더 Start -->
-					<div class="ctn_tbl_header">
-						<div class="ttl_ctn">사용자 상세정보</div>
-					</div>
+				<div class="ctn_tbl_header">
+					<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 상세</div>
+				</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
-						<div class="ctn_tbl_area">
-							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_row">
-									<div class="ctn_tbl_th fm_rep">ID</div>
-									<div class="ctn_tbl_td">
-										${data.userId}
-									</div>
-									<div class="ctn_tbl_td"></div>
-									<div class="ctn_tbl_td"></div>
-								</div>
-							</div>
-							
-							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">사용자명</div>
-								<div class="ctn_tbl_td">
-									${data.userName}
-								</div>
-								<div class="ctn_tbl_td"></div>
-								<div class="ctn_tbl_td"></div>
-							</div>
-						
-							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th  fm_rep">제조사</div>
-								<div class="ctn_tbl_td">
-									${data.companyName}
-								</div>
-								<div class="ctn_tbl_th fm_rep">소속</div>
-								<div class="ctn_tbl_td">
-									${data.orgName}
-								</div>
-							</div>
-						
-							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">연락처 #1</div>
-								<div class="ctn_tbl_td">
-									${data.userPhone}
-								</div>
-								<div class="ctn_tbl_th">연락처 #2</div>
-								<div class="ctn_tbl_td">
-									${data.userPhone2}
-								</div>
-							</div>	
-							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th ">등록일</div>
-								<div class="ctn_tbl_td">
-									${data.regDate}
-								</div>
-								<div class="ctn_tbl_th">정보수정일</div>
-								<div class="ctn_tbl_td">
-									${data.updatedAt}
-								</div>
-							</div>
+					<div class="ctn_tbl_area">
+						<div class="ctn_tbl_row user-form-id-row">
+							<div class="ctn_tbl_th fm_rep">ID</div>
+							<div class="ctn_tbl_td user_detail_value">${data.userId}</div>
+							<div class="ctn_tbl_td"></div>
+							<div class="ctn_tbl_td"></div>
 						</div>
-						<!-- btn_box Start -->
-						<div class="btn_box">
-							<div class="right">
-								<input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" />
-								<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
-							</div>
+
+						<div class="ctn_tbl_row">
+							<div class="ctn_tbl_th fm_rep">사용자명</div>
+							<div class="ctn_tbl_td user_detail_value">${data.userName}</div>
+							<div class="ctn_tbl_td"></div>
+							<div class="ctn_tbl_td"></div>
 						</div>
-						<!-- btn_box End -->
-				</div>
+
+						<div class="ctn_tbl_row">
+							<div class="ctn_tbl_th fm_rep">사용자 유형</div>
+							<div class="ctn_tbl_td user_detail_value">${data.userType}</div>
+							<div class="ctn_tbl_th fm_rep">소속</div>
+							<div class="ctn_tbl_td user_detail_value">${data.companyName}</div>
+						</div>
+
+						<div class="ctn_tbl_row">
+							<div class="ctn_tbl_th fm_rep">본부/처/실</div>
+							<div class="ctn_tbl_td user_detail_value">${data.orgName}</div>
+							<div class="ctn_tbl_td"></div>
+							<div class="ctn_tbl_td"></div>
+						</div>
+
+						<div class="ctn_tbl_row">
+							<div class="ctn_tbl_th fm_rep">연락처 #1</div>
+							<div class="ctn_tbl_td user_detail_value">${data.userPhone}</div>
+							<div class="ctn_tbl_th">연락처 #2</div>
+							<div class="ctn_tbl_td user_detail_value">${data.userPhone2}</div>
+						</div>
+
+						<div class="ctn_tbl_row">
+							<div class="ctn_tbl_th">등록일</div>
+							<div class="ctn_tbl_td user_detail_value">${data.regDate}</div>
+							<div class="ctn_tbl_th">정보수정일</div>
+							<div class="ctn_tbl_td user_detail_value">${data.updatedAt}</div>
+						</div>
+					</div>
+					<!-- btn_box Start -->
+					<div class="btn_box">
+						<div class="right">
+							<input type="button" class="btn btn_primary" id="btnSave" alt="수정" value="수정" />
+							<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
+						</div>
+					</div>
+					<!-- btn_box End --></div>
 				<!-- contents_box End -->
 			</div>
 			<!-- work End -->

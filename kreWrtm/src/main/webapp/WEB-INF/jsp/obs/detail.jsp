@@ -51,6 +51,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
+					<img class="list-title-img" src="/images/icons/ico_obs_title.png"/>
 						<div class="ttl_ctn">장애이력 상세정보</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->

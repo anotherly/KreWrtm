@@ -22,4 +22,6 @@ public interface RouterMapper {
 	public List<OrgVO> userTypeSelect(OrgVO inputVo) throws Exception;
 	
 	public List<RouterVO> selectCompany(RouterVO inputVo) throws Exception;
+
+	void deleteCompany(HashMap<String, Object> map);
 }

@@ -9,31 +9,40 @@ import org.springframework.stereotype.Service;
 
 import kr.co.hivesys.chart.mapper.ChartMapper;
 import kr.co.hivesys.chart.service.ChartService;
-import kr.co.hivesys.chart.vo.ChartVo;
-import kr.co.hivesys.company.vo.CompanyVO;
-import kr.co.hivesys.router.vo.RouterVO;
 
 @Service("chartService")
-public class ChartServiceImpl implements ChartService{
+public class ChartServiceImpl implements ChartService {
 
-	@Resource(name="chartMapper")
-	private ChartMapper chartMapper;
+    @Resource(name = "chartMapper")
+    private ChartMapper chartMapper;
 
-	@Override
-	public Map<String, Object> selectDashboardKpi() throws Exception { return chartMapper.selectDashboardKpi(); }
-	
-	@Override
-	public List<Map<String, Object>> selectDashboardTrendList() throws Exception { return chartMapper.selectDashboardTrendList(); }
-	
-	@Override
-	public List<Map<String, Object>> selectDashboardRadioList() throws Exception { return chartMapper.selectDashboardRadioList(); }
-	
-	@Override
-	public List<Map<String, Object>> selectDashboardRsrpStatusList() throws Exception { return chartMapper.selectDashboardRsrpStatusList(); }
-	
-	@Override
-	public List<Map<String, Object>> selectDashboardRsrqStatusList() throws Exception { return chartMapper.selectDashboardRsrqStatusList(); }
-	
-	@Override
-	public List<Map<String, Object>> selectDashboardReceiveList() throws Exception { return chartMapper.selectDashboardReceiveList(); }
+    @Override
+    public Map<String, Object> selectDashboardKpi(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardKpi(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectDashboardTrendList(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardTrendList(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectDashboardRadioList(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardRadioList(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectDashboardRsrpStatusList(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardRsrpStatusList(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectDashboardRsrqStatusList(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardRsrqStatusList(param);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectDashboardReceiveList(Map<String, Object> param) throws Exception {
+        return chartMapper.selectDashboardReceiveList(param);
+    }
 }

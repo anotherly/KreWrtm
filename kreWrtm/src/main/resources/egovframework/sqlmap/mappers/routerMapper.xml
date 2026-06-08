@@ -210,5 +210,13 @@
 	        #{id}
 	    </foreach>
 	</delete>
+	
+	<delete id="deleteCompany" parameterType="map">
+	    DELETE FROM TBL_ROUTER_INFO
+	    WHERE company_code IN
+	    <foreach collection="chkList" item="id" open="(" separator="," close=")">
+	        #{id}
+	    </foreach>
+	</delete>
 
 </mapper>

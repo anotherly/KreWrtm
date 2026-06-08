@@ -16,6 +16,8 @@ public interface RouterService {
 	
 	void deleteChk(List<String> paramArr);
 	
+	void deleteCompany(List<String> paramArr);
+	
 	public List<OrgVO> userTypeSelect(OrgVO inputVo) throws Exception;
 	
 	public List<RouterVO> selectCompany(RouterVO inputVo) throws Exception;

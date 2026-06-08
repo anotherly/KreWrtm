@@ -81,14 +81,13 @@ public class SearchController {
 		
 		try {				
 			String beforeComCode = inputVo.getCompanyCode();
-
-			
 			//beforeComCode가 비어있다면, 첫 진입
 			if(beforeComCode == null || beforeComCode.isEmpty()) {
 				UserVO reqLoginVo = (UserVO) request.getSession().getAttribute("login");
 				String companyCode = reqLoginVo.getCompanyCode();
+				String userT = reqLoginVo.getUserType();
 				
-				if(companyCode == "KREG" && companyCode == "KREM") { // 관리자 계정이라면 all로 전부 조회
+				if(userT.equals("코레일")) { // 관리자 계정이라면 all로 전부 조회
 					inputVo.setCompanyCode("all");
 				} else {
 					inputVo.setCompanyCode(companyCode);

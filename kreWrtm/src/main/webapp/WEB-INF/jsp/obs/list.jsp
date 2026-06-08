@@ -29,8 +29,8 @@
 		$("#datetimepicker3").find("input").prop('disabled', true);
 		$("#datetimepicker4").find("input").prop('disabled', true);
 		
-		let nowDate = new Date().toISOString().split('T')[0];
-		let nextDate = new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0];
+		let  nextDate= new Date().toISOString().split('T')[0];
+		let  nowDate= new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0];
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
@@ -268,6 +268,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
+				<img class="list-title-img" src="/images/icons/ico_obs_title.png"/>
 					<div class="ttl_ctn">장애이력 관리</div>
 				</div>
                 <!-- search_box Start -->

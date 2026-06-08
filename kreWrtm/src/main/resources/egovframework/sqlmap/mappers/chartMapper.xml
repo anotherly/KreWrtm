@@ -1,208 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.hivesys.chart.mapper.ChartMapper">
 
-	<resultMap type="kr.co.hivesys.chart.vo.ChartVo" id="selectDataList">
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="firmUse" column="FIRM_USE"/>
-		<result property="etc" column="ETC"/>
-	</resultMap>
-	
-	<resultMap type="routerVo" id="selectRouterList">
-		<id property="deviceId" column="DEVICE_ID"/>
-		<result property="companyCode" column="COMPANY_CODE"/>
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="userType" column="USER_TYPE"/>
-		<result property="orgId" column="ORG_ID"/>
-		<result property="orgName" column="ORG_NAME"/>
-		<result property="deviceName" column="DEVICE_NAME"/>
-		<result property="modelName" column="MODEL_NAME"/>
-		<result property="volteNum" column="VOLTE_NUM"/>
-		<result property="carNum" column="CAR_NUM"/>
-		<result property="routerCount" column="ROUTER_COUNT"/>
-	</resultMap>
+    <!--
+        대시보드 공통 권한 범위.
+        - tbl_company_info.user_type = 코레일인 사용자는 전체 등록 단말 조회
+        - 제조사 사용자는 로그인 company_code의 등록 단말만 조회
+        - 미등록 부하테스트 데이터는 tbl_router_info INNER JOIN에서 제외됨
+    -->
 
-	<resultMap id="CompanyInfoMap" type="companyVo">
-		<id property="companyCode" column="COMPANY_CODE"/>
-		<result property="companyName" column="COMPANY_NAME"/>
-		<result property="userType" column="USER_TYPE"/>
-		<result property="todayCnt" column="TODAY_CNT"/>
-		<result property="rsrqAvg" column="RSRQ_AVG"/>
-	</resultMap>
-
-	<!-- 대시보드 KPI: tbl_last_data 최신 상태 기준 -->
-	<select id="selectDashboardKpi" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    COUNT(*) AS totalDeviceCnt,
-		    SUM(CASE WHEN UPPER(TRIM(CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
-		    SUM(CASE WHEN UPPER(TRIM(CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt,
-		    SUM(CASE WHEN TRIM(AutoSwitchingRadio) = '1' THEN 1 ELSE 0 END) AS autoSwitchCnt,
-		    ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrp,
-		    ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrq,
-		    SUM(CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90
-		          OR CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10
-		        THEN 1
-		        ELSE 0
-		    END) AS cautionDeviceCnt,
-		    DATE_FORMAT(MAX(RCV_DT), '%Y-%m-%d %H:%i:%s') AS lastRcvDt
-		FROM tbl_last_data
-		]]>
+    <select id="selectDashboardKpi" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            COUNT(*) AS totalDeviceCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt,
+            SUM(CASE WHEN TRIM(A.AutoSwitchingRadio) = '1' THEN 1 ELSE 0 END) AS autoSwitchCnt,
+            ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrp,
+            ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrq,
+            SUM(CASE
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90
+                  OR CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10
+                THEN 1 ELSE 0
+            END) AS cautionDeviceCnt,
+            DATE_FORMAT(MAX(A.RCV_DT), '%Y-%m-%d %H:%i:%s') AS lastRcvDt
+        FROM tbl_last_data A
+        INNER JOIN tbl_router_info R
+            ON A.VoLTE_NUM = R.volte_num
+        WHERE 1=1
+        <if test='userType neq "코레일"'>
+            AND R.company_code = #{companyCode}
+        </if>
+    </select>
+<!-- 전체 시간 훑어서 가져옴 -->
+<!--     <select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
+            COUNT(*) AS totalCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
+        FROM tbl_receive_data A
+        INNER JOIN tbl_router_info R
+            ON A.VoLTE_NUM = R.volte_num
+        WHERE A.RCV_DT <![CDATA[ >= ]]> (
+            SELECT DATE_SUB(MAX(A2.RCV_DT), INTERVAL 11 MINUTE)
+            FROM tbl_receive_data A2
+            INNER JOIN tbl_router_info R2
+                ON A2.VoLTE_NUM = R2.volte_num
+            WHERE 1=1
+            <if test='userType neq "코레일"'>
+                AND R2.company_code = #{companyCode}
+            </if>
+        )
+        <if test='userType neq "코레일"'>
+            AND R.company_code = #{companyCode}
+        </if>
+        GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
+        ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
+    </select> -->
+    
+	<!-- 현재 시각 기점으로 12분(데이터 없으면 안나옴) -->
+	<select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
+	    SELECT
+	        DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
+	        COUNT(*) AS totalCnt,
+	        SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
+	        SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
+	    FROM tbl_receive_data A
+	    INNER JOIN tbl_router_info R
+	        ON A.VoLTE_NUM = R.volte_num
+	    WHERE A.RCV_DT <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 12 MINUTE)
+	    <if test='!"코레일".equals(userType)'>
+	        AND R.company_code = #{companyCode}
+	    </if>
+	    GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
+	    ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
 	</select>
 
-	<!-- 최근 12분 수신 추이: tbl_receive_data 기준 -->
-	<select id="selectDashboardTrendList" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
-		    COUNT(*) AS totalCnt,
-		    SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
-		    SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
-		FROM tbl_receive_data A
-		WHERE A.RCV_DT >= (
-		    SELECT DATE_SUB(MAX(RCV_DT), INTERVAL 11 MINUTE)
-		    FROM tbl_receive_data
-		)
-		GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
-		ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
-		]]>
-	</select>
+    <select id="selectDashboardRadioList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            T.radioType,
+            T.cnt,
+            ROUND(T.cnt * 100 / NULLIF(T.totalCnt, 0), 0) AS ratio
+        FROM (
+            SELECT
+                CASE
+                    WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 'LTE-R'
+                    WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 'VHF'
+                    ELSE '기타'
+                END AS radioType,
+                COUNT(*) AS cnt,
+                SUM(COUNT(*)) OVER() AS totalCnt
+            FROM tbl_last_data A
+            INNER JOIN tbl_router_info R
+                ON A.VoLTE_NUM = R.volte_num
+            WHERE 1=1
+            <if test='userType neq "코레일"'>
+                AND R.company_code = #{companyCode}
+            </if>
+            GROUP BY CASE
+                    WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 'LTE-R'
+                    WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 'VHF'
+                    ELSE '기타'
+                END
+        ) T
+        ORDER BY CASE T.radioType WHEN 'LTE-R' THEN 1 WHEN 'VHF' THEN 2 ELSE 3 END
+    </select>
 
-	<!-- 무선망 분포: tbl_last_data 기준 -->
-	<select id="selectDashboardRadioList" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    CASE
-		        WHEN UPPER(TRIM(CurrentRadioType)) = 'LTE-R' THEN 'LTE-R'
-		        WHEN UPPER(TRIM(CurrentRadioType)) = 'VHF' THEN 'VHF'
-		        ELSE '기타'
-		    END AS radioType,
-		    COUNT(*) AS cnt,
-		    ROUND(COUNT(*) * 100 / NULLIF((SELECT COUNT(*) FROM tbl_last_data), 0), 0) AS ratio
-		FROM tbl_last_data
-		GROUP BY CASE
-		        WHEN UPPER(TRIM(CurrentRadioType)) = 'LTE-R' THEN 'LTE-R'
-		        WHEN UPPER(TRIM(CurrentRadioType)) = 'VHF' THEN 'VHF'
-		        ELSE '기타'
-		    END
-		ORDER BY CASE radioType WHEN 'LTE-R' THEN 1 WHEN 'VHF' THEN 2 ELSE 3 END
-		]]>
-	</select>
+    <select id="selectDashboardRsrpStatusList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            S.sortOrder AS sortOrder,
+            S.status AS status,
+            S.statusClass AS statusClass,
+            S.rangeText AS rangeText,
+            COALESCE(T.cnt, 0) AS cnt
+        FROM (
+            SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRP <![CDATA[ >= ]]> -90 dBm' AS rangeText
+            UNION ALL SELECT 2, '주의', 'caution', '-100 <![CDATA[ <= ]]> RSRP <![CDATA[ < ]]> -90 dBm'
+            UNION ALL SELECT 3, '경고', 'warning', '-110 <![CDATA[ <= ]]> RSRP <![CDATA[ < ]]> -100 dBm'
+            UNION ALL SELECT 4, '심각', 'critical', 'RSRP <![CDATA[ < ]]> -110 dBm'
+        ) S
+        LEFT JOIN (
+            SELECT
+                CASE
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 4
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN 3
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN 2
+                    ELSE 1
+                END AS sortOrder,
+                COUNT(*) AS cnt
+            FROM tbl_last_data A
+            INNER JOIN tbl_router_info R
+                ON A.VoLTE_NUM = R.volte_num
+            WHERE 1=1
+            <if test='userType neq "코레일"'>
+                AND R.company_code = #{companyCode}
+            </if>
+            GROUP BY CASE
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 4
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN 3
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN 2
+                    ELSE 1
+                END
+        ) T ON S.sortOrder = T.sortOrder
+        ORDER BY S.sortOrder ASC
+    </select>
 
-	<!-- RSRP 상태 분포: tbl_last_data 기준 -->
-	<select id="selectDashboardRsrpStatusList" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    S.sortOrder AS sortOrder,
-		    S.status AS status,
-		    S.statusClass AS statusClass,
-		    S.rangeText AS rangeText,
-		    COALESCE(A.cnt, 0) AS cnt
-		FROM (
-		    SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRP >= -90' AS rangeText
-		    UNION ALL SELECT 2, '주의', 'caution', '-100 <= RSRP < -90'
-		    UNION ALL SELECT 3, '경고', 'warning', '-110 <= RSRP < -100'
-		    UNION ALL SELECT 4, '심각', 'critical', 'RSRP < -110'
-		) S
-		LEFT JOIN (
-		    SELECT
-		        CASE
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN 4
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN 3
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN 2
-		            ELSE 1
-		        END AS sortOrder,
-		        COUNT(*) AS cnt
-		    FROM tbl_last_data
-		    GROUP BY CASE
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN 4
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN 3
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN 2
-		            ELSE 1
-		        END
-		) A ON S.sortOrder = A.sortOrder
-		ORDER BY S.sortOrder ASC
-		]]>
-	</select>
+    <select id="selectDashboardRsrqStatusList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            S.sortOrder AS sortOrder,
+            S.status AS status,
+            S.statusClass AS statusClass,
+            S.rangeText AS rangeText,
+            COALESCE(T.cnt, 0) AS cnt
+        FROM (
+            SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRQ <![CDATA[ >= ]]> -10 dB' AS rangeText
+            UNION ALL SELECT 2, '주의', 'caution', '-15 <![CDATA[ <= ]]> RSRQ <![CDATA[ < ]]> -10 dB'
+            UNION ALL SELECT 3, '경고', 'warning', '-18 <![CDATA[ <= ]]> RSRQ <![CDATA[ < ]]> -15 dB'
+            UNION ALL SELECT 4, '심각', 'critical', 'RSRQ <![CDATA[ < ]]> -18 dB'
+        ) S
+        LEFT JOIN (
+            SELECT
+                CASE
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 4
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN 3
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN 2
+                    ELSE 1
+                END AS sortOrder,
+                COUNT(*) AS cnt
+            FROM tbl_last_data A
+            INNER JOIN tbl_router_info R
+                ON A.VoLTE_NUM = R.volte_num
+            WHERE 1=1
+            <if test='userType neq "코레일"'>
+                AND R.company_code = #{companyCode}
+            </if>
+            GROUP BY CASE
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 4
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN 3
+                    WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN 2
+                    ELSE 1
+                END
+        ) T ON S.sortOrder = T.sortOrder
+        ORDER BY S.sortOrder ASC
+    </select>
 
-
-	<!-- RSRQ 상태 분포: tbl_last_data 기준 -->
-	<select id="selectDashboardRsrqStatusList" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    S.sortOrder AS sortOrder,
-		    S.status AS status,
-		    S.statusClass AS statusClass,
-		    S.rangeText AS rangeText,
-		    COALESCE(A.cnt, 0) AS cnt
-		FROM (
-		    SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRQ >= -10' AS rangeText
-		    UNION ALL SELECT 2, '주의', 'caution', '-15 <= RSRQ < -10'
-		    UNION ALL SELECT 3, '경고', 'warning', '-18 <= RSRQ < -15'
-		    UNION ALL SELECT 4, '심각', 'critical', 'RSRQ < -18'
-		) S
-		LEFT JOIN (
-		    SELECT
-		        CASE
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 4
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 3
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 2
-		            ELSE 1
-		        END AS sortOrder,
-		        COUNT(*) AS cnt
-		    FROM tbl_last_data
-		    GROUP BY CASE
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 4
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 3
-		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 2
-		            ELSE 1
-		        END
-		) A ON S.sortOrder = A.sortOrder
-		ORDER BY S.sortOrder ASC
-		]]>
-	</select>
-
-	<!-- tbl_receive_data 주요 필드 최신 목록: Cell ID 제외, RSRP/RSRQ 상태 분리 -->
-	<select id="selectDashboardReceiveList" resultType="java.util.HashMap">
-		<![CDATA[
-		SELECT
-		    A.VoLTE_NUM AS volteNum,
-		    A.CAR_NUM AS carNum,
-		    A.CurrentRadioType AS currentRadioType,
-		    A.RSRP AS rsrp,
-		    CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN '심각'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN '경고'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN '주의'
-		        ELSE '정상'
-		    END AS rsrpStatus,
-		    CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN 'critical'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN 'warning'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN 'caution'
-		        ELSE 'normal'
-		    END AS rsrpStatusClass,
-		    A.RSRQ AS rsrq,
-		    CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN '심각'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN '경고'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN '주의'
-		        ELSE '정상'
-		    END AS rsrqStatus,
-		    CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 'critical'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 'warning'
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 'caution'
-		        ELSE 'normal'
-		    END AS rsrqStatusClass,
-		    DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime
-		FROM tbl_receive_data A
-		ORDER BY A.RCV_DT DESC
-		LIMIT 7
-		]]>
-	</select>
+    <select id="selectDashboardReceiveList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            A.VoLTE_NUM AS volteNum,
+            A.CAR_NUM AS carNum,
+            A.CurrentRadioType AS currentRadioType,
+            A.RSRP AS rsrp,
+            CASE
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN '심각'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN '경고'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN '주의'
+                ELSE '정상'
+            END AS rsrpStatus,
+            CASE
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 'critical'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN 'warning'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN 'caution'
+                ELSE 'normal'
+            END AS rsrpStatusClass,
+            A.RSRQ AS rsrq,
+            CASE
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN '심각'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN '경고'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN '주의'
+                ELSE '정상'
+            END AS rsrqStatus,
+            CASE
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 'critical'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN 'warning'
+                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN 'caution'
+                ELSE 'normal'
+            END AS rsrqStatusClass,
+            DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime
+        FROM tbl_receive_data A
+        INNER JOIN tbl_router_info R
+            ON A.VoLTE_NUM = R.volte_num
+        WHERE 1=1
+        <if test='userType neq "코레일"'>
+            AND R.company_code = #{companyCode}
+        </if>
+        ORDER BY A.RCV_DT DESC
+        LIMIT 7
+    </select>
 
 </mapper>
