@@ -27,7 +27,7 @@
                         <article class="kpi-card"><div class="kpi-label">LTE-R 비율</div><div class="kpi-value"><span id="kpiLteRatio">0</span><span>%</span></div><div class="kpi-desc">CurrentRadioType 기준</div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
-                        <article class="kpi-card warning"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP 기준 임계치 후보</div></article>
+                        <article class="kpi-card warning"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
                     </section>
 
                     <section class="dashboard-grid">
@@ -45,13 +45,23 @@
                         </article>
 
                         <article class="dash-card radar-card">
-                            <div class="card-header"><span class="bar"></span><strong>RSRP 상태 분포</strong><em>전체 <span id="rsrpTotalText">0</span>대 기준</em></div>
-                            <div class="radar-layout"><div class="chart-box radar-box"><canvas id="rsrpRadarChart"></canvas></div><div id="rsrpStatusSummary" class="status-summary"></div></div>
+                            <div class="card-header"><span class="bar"></span><strong>RSRQ/RSRP 상태 분포</strong><em>전체 <span id="rsrpTotalText">0</span>대 기준</em></div>
+                            <div class="radar-layout split-radar-layout">
+                                <div class="radar-side radar-side-left">
+                                    <div class="metric-title">RSRQ</div>
+                                    <div id="rsrqStatusSummary" class="status-summary metric-status-summary"></div>
+                                </div>
+                                <div class="chart-box radar-box"><canvas id="rsrpRadarChart"></canvas></div>
+                                <div class="radar-side radar-side-right">
+                                    <div class="metric-title">RSRP</div>
+                                    <div id="rsrpStatusSummary" class="status-summary metric-status-summary"></div>
+                                </div>
+                            </div>
                         </article>
 
                         <article class="dash-card table-card">
                             <div class="card-header"><span class="bar"></span><strong>tbl_receive_data 주요 필드</strong><em>Cell ID 제외</em></div>
-                            <div class="table-wrap"><table><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th>RSRP</th><th>RSRQ</th><th>수신시각</th><th>상태</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="7">데이터 조회 중입니다.</td></tr></tbody></table></div>
+                            <div class="table-wrap"><table><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th>RSRP</th><th>RSRP 상태</th><th>RSRQ</th><th>RSRQ 상태</th><th>수신시각</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="8">데이터 조회 중입니다.</td></tr></tbody></table></div>
                         </article>
                     </section>
                 </div>
@@ -96,6 +106,7 @@
         var trendList = data.trendList || [];
         var radioList = data.radioList || [];
         var rsrpStatusList = data.rsrpStatusList || [];
+        var rsrqStatusList = data.rsrqStatusList || [];
         var receiveList = data.receiveList || [];
 
         setText("kpiTotalDeviceCnt", n(kpi.totalDeviceCnt));
@@ -114,8 +125,8 @@
 
         drawTrendChart(trendList);
         drawRadioChart(radioList);
-        drawRsrpRadarChart(rsrpStatusList);
-        drawRsrpStatusSummary(rsrpStatusList);
+        drawRsrpRadarChart(rsrpStatusList, rsrqStatusList);
+        drawRsrqRsrpStatusSummary(rsrpStatusList, rsrqStatusList);
         drawReceiveTable(receiveList);
     }
 
@@ -148,49 +159,144 @@
         });
     }
 
-    function drawRsrpRadarChart(list) {
-        var labels = list.map(function (r) { return v(r.status, ""); });
-        var data = list.map(function (r) { return n(r.cnt); });
-        var maxVal = Math.max.apply(null, data.concat([10]));
+    function drawRsrpRadarChart(rsrpList, rsrqList) {
+        var labels = ["정상", "주의", "경고", "심각"];
+        var rsrpMap = listToStatusMap(rsrpList);
+        var rsrqMap = listToStatusMap(rsrqList);
+        var rsrpData = labels.map(function (label) { return n(rsrpMap[label]); });
+        var rsrqData = labels.map(function (label) { return n(rsrqMap[label]); });
+        var maxVal = Math.max.apply(null, rsrpData.concat(rsrqData).concat([10]));
         var scaleMax = Math.ceil(maxVal / 10) * 10;
+
         if (rsrpRadarChart) rsrpRadarChart.destroy();
         rsrpRadarChart = new Chart(document.getElementById("rsrpRadarChart"), {
             type: "radar",
-            data: { labels: labels, datasets: [{ label: "장비 수", data: data, fill: true, backgroundColor: "rgba(47,128,237,0.20)", borderColor: "#2f80ed", pointBackgroundColor: "#fff", pointBorderColor: "#2f80ed", pointBorderWidth: 3, pointRadius: 4, borderWidth: 3 }] },
-            options: { maintainAspectRatio: false, responsive: true, plugins: { legend: { display: false } }, layout: { padding: { top: 8, right: 8, bottom: 8, left: 8 } }, scales: { r: { min: 0, max: scaleMax, ticks: { stepSize: Math.max(1, Math.ceil(scaleMax / 4)), backdropColor: "transparent", font: { size: 9 } }, grid: { color: "rgba(83,100,122,0.22)" }, angleLines: { color: "rgba(83,100,122,0.22)" }, pointLabels: { font: { size: 11, weight: "bold" }, color: "#34465d", padding: 4 } } } }
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "RSRP",
+                        data: rsrpData,
+                        fill: true,
+                        backgroundColor: "rgba(47,128,237,0.18)",
+                        borderColor: "#2f80ed",
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#2f80ed",
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        borderWidth: 3
+                    },
+                    {
+                        label: "RSRQ",
+                        data: rsrqData,
+                        fill: true,
+                        backgroundColor: "rgba(255,159,26,0.16)",
+                        borderColor: "#ff9f1a",
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#ff9f1a",
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        borderWidth: 3
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: { boxWidth: 10, font: { size: 10, weight: "bold" } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) { return ctx.dataset.label + ": " + ctx.raw + "대"; }
+                        }
+                    }
+                },
+                layout: { padding: { top: 6, right: 6, bottom: 0, left: 6 } },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: scaleMax,
+                        ticks: { stepSize: Math.max(1, Math.ceil(scaleMax / 4)), backdropColor: "transparent", font: { size: 9 } },
+                        grid: { color: "rgba(83,100,122,0.22)" },
+                        angleLines: { color: "rgba(83,100,122,0.22)" },
+                        pointLabels: { font: { size: 11, weight: "bold" }, color: "#34465d", padding: 4 }
+                    }
+                }
+            }
         });
     }
 
-    function drawRsrpStatusSummary(list) {
-        var html = "";
-        for (var i=0; i<list.length; i++) {
-            var r = list[i];
-            html += '<div class="status-row ' + esc(v(r.statusClass, "")) + '">';
-            html += '<b>' + esc(v(r.status, "")) + '</b>';
-            html += '<span>' + n(r.cnt) + '대</span>';
-            html += '<small>' + esc(v(r.rangeText, "")) + '</small>';
-            html += '</div>';
+    function drawRsrqRsrpStatusSummary(rsrpList, rsrqList) {
+        var labels = ["정상", "주의", "경고", "심각"];
+        var classes = {"정상":"normal", "주의":"caution", "경고":"warning", "심각":"critical"};
+        var rsrpMap = listToStatusMap(rsrpList);
+        var rsrqMap = listToStatusMap(rsrqList);
+
+        var rsrqHtml = "";
+        var rsrpHtml = "";
+
+        for (var i=0; i<labels.length; i++) {
+            var label = labels[i];
+            rsrqHtml += '<div class="status-row ' + classes[label] + '">';
+            rsrqHtml += '<b>' + label + '</b>';
+            rsrqHtml += '<span>' + n(rsrqMap[label]) + '대</span>';
+            rsrqHtml += '</div>';
+
+            rsrpHtml += '<div class="status-row ' + classes[label] + '">';
+            rsrpHtml += '<b>' + label + '</b>';
+            rsrpHtml += '<span>' + n(rsrpMap[label]) + '대</span>';
+            rsrpHtml += '</div>';
         }
-        $("#rsrpStatusSummary").html(html || '<div class="status-empty">RSRP 데이터 없음</div>');
+
+        $("#rsrqStatusSummary").html(rsrqHtml || '<div class="status-empty">RSRQ 상태 데이터 없음</div>');
+        $("#rsrpStatusSummary").html(rsrpHtml || '<div class="status-empty">RSRP 상태 데이터 없음</div>');
     }
 
     function drawReceiveTable(list) {
         var html = "";
         for (var i=0; i<list.length; i++) {
             var r = list[i];
-            var radio = v(r.currentRadioType, "-");
+            var radio = v(getVal(r, "currentRadioType", "-"), "-");
             var chipClass = radio === "LTE-R" ? "lter" : "vhf";
             html += "<tr>";
-            html += "<td>" + esc(v(r.volteNum, "")) + "</td>";
-            html += "<td>" + esc(v(r.carNum, "")) + "</td>";
+            html += "<td>" + esc(v(getVal(r, "volteNum", ""), "")) + "</td>";
+            html += "<td>" + esc(v(getVal(r, "carNum", ""), "")) + "</td>";
             html += '<td><span class="chip ' + chipClass + '">' + esc(radio) + '</span></td>';
-            html += "<td>" + esc(v(r.rsrp, "")) + "</td>";
-            html += "<td>" + esc(v(r.rsrq, "")) + "</td>";
-            html += "<td>" + esc(v(r.rcvTime, "")) + "</td>";
-            html += '<td><span class="state ' + esc(v(r.statusClass, "")) + '">' + esc(v(r.status, "")) + '</span></td>';
+            html += "<td>" + esc(v(getVal(r, "rsrp", ""), "")) + "</td>";
+            html += '<td><span class="state ' + esc(v(getVal(r, "rsrpStatusClass", ""), "")) + '">' + esc(v(getVal(r, "rsrpStatus", ""), "")) + '</span></td>';
+            html += "<td>" + esc(v(getVal(r, "rsrq", ""), "")) + "</td>";
+            html += '<td><span class="state ' + esc(v(getVal(r, "rsrqStatusClass", ""), "")) + '">' + esc(v(getVal(r, "rsrqStatus", ""), "")) + '</span></td>';
+            html += "<td>" + esc(v(getVal(r, "rcvTime", ""), "")) + "</td>";
             html += "</tr>";
         }
-        $("#receiveTableBody").html(html || '<tr><td colspan="7">수신 데이터가 없습니다.</td></tr>');
+        $("#receiveTableBody").html(html || '<tr><td colspan="8">수신 데이터가 없습니다.</td></tr>');
+    }
+
+    function listToStatusMap(list) {
+        var map = {};
+        for (var i=0; i<list.length; i++) {
+            var status = getVal(list[i], "status", "");
+            var cnt = getVal(list[i], "cnt", 0);
+            map[v(status, "")] = n(cnt);
+        }
+        return map;
+    }
+
+    function getVal(row, key, def) {
+        if (!row || !key) return def;
+        if (row[key] !== undefined && row[key] !== null) return row[key];
+        var upperKey = key.toUpperCase();
+        if (row[upperKey] !== undefined && row[upperKey] !== null) return row[upperKey];
+        for (var k in row) {
+            if (row.hasOwnProperty(k) && String(k).toLowerCase() === String(key).toLowerCase()) {
+                return row[k];
+            }
+        }
+        return def;
     }
 
     function chartLineOptions() {

@@ -976,3 +976,372 @@
 
 .dashboard-db-page .dashboard-error{display:block;margin:0 0 10px;padding:10px 14px;border-radius:10px;background:#ffe5e5;color:#c93838;font-weight:700}
 .dashboard-db-page .status-empty{padding:20px;text-align:center;color:#6f8197}
+
+/* v2: RSRP/RSRQ 레이더 2개 데이터셋 + 주요 필드 표 상태 분리 보정 */
+.dashboard-db-page .dual-status-summary .status-row {
+    grid-template-columns: 52px 1fr !important;
+}
+
+.dashboard-db-page .dual-status-summary .status-row span,
+.dashboard-db-page .dual-status-summary .status-row small {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dashboard-db-page .table-wrap table th:nth-child(1),
+.dashboard-db-page .table-wrap table td:nth-child(1) { width: 17%; }
+.dashboard-db-page .table-wrap table th:nth-child(2),
+.dashboard-db-page .table-wrap table td:nth-child(2) { width: 12%; }
+.dashboard-db-page .table-wrap table th:nth-child(3),
+.dashboard-db-page .table-wrap table td:nth-child(3) { width: 11%; }
+.dashboard-db-page .table-wrap table th:nth-child(4),
+.dashboard-db-page .table-wrap table td:nth-child(4) { width: 10%; }
+.dashboard-db-page .table-wrap table th:nth-child(5),
+.dashboard-db-page .table-wrap table td:nth-child(5) { width: 12%; }
+.dashboard-db-page .table-wrap table th:nth-child(6),
+.dashboard-db-page .table-wrap table td:nth-child(6) { width: 10%; }
+.dashboard-db-page .table-wrap table th:nth-child(7),
+.dashboard-db-page .table-wrap table td:nth-child(7) { width: 12%; }
+.dashboard-db-page .table-wrap table th:nth-child(8),
+.dashboard-db-page .table-wrap table td:nth-child(8) { width: 16%; }
+
+
+/* =========================
+   v4 화면 가득 채우기 + RSRQ/RSRP 좌우 분리 패치
+   ========================= */
+#work.dashboard-work {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 12px !important;
+    box-sizing: border-box !important;
+}
+
+#contents_box.dashboard-db-page {
+    width: 100% !important;
+    max-width: none !important;
+    height: calc(100vh - 62px) !important;
+    min-height: 720px !important;
+    margin: 0 !important;
+    padding: 12px 12px 14px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #edf3f8 !important;
+}
+
+.dashboard-db-page .kpi-grid {
+    flex: 0 0 auto !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    margin: 0 0 12px 0 !important;
+}
+
+.dashboard-db-page .kpi-card {
+    min-height: 96px !important;
+    padding: 15px 18px 12px !important;
+}
+
+.dashboard-db-page .kpi-label {
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
+}
+
+.dashboard-db-page .kpi-value {
+    font-size: 29px !important;
+}
+
+.dashboard-db-page .kpi-desc {
+    font-size: 12px !important;
+    margin-top: 7px !important;
+}
+
+.dashboard-db-page .dashboard-grid {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.32fr) minmax(0, .68fr) !important;
+    grid-template-rows: minmax(300px, 1fr) minmax(300px, 1fr) !important;
+    gap: 12px !important;
+}
+
+.dashboard-db-page .dash-card {
+    min-height: 0 !important;
+    border-radius: 18px !important;
+}
+
+.dashboard-db-page .card-header {
+    height: 48px !important;
+    padding: 0 18px !important;
+}
+
+.dashboard-db-page .card-header strong {
+    font-size: 15px !important;
+}
+
+.dashboard-db-page .chart-box,
+.dashboard-db-page .radio-layout,
+.dashboard-db-page .radar-layout,
+.dashboard-db-page .table-wrap {
+    height: calc(100% - 48px) !important;
+}
+
+.dashboard-db-page .chart-line {
+    padding: 8px 18px 4px !important;
+}
+
+.dashboard-db-page .radio-layout {
+    grid-template-columns: minmax(0, .95fr) minmax(180px, 1.05fr) !important;
+    gap: 14px !important;
+    padding: 14px 16px !important;
+}
+
+/* 레이더 영역: 좌측 RSRQ / 중앙 차트 / 우측 RSRP */
+.dashboard-db-page .split-radar-layout {
+    display: grid !important;
+    grid-template-columns: 190px minmax(260px, 1fr) 190px !important;
+    gap: 14px !important;
+    padding: 12px 16px 12px !important;
+    align-items: stretch !important;
+}
+
+.dashboard-db-page .radar-side {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.dashboard-db-page .metric-title {
+    font-size: 25px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    color: #111f30 !important;
+    letter-spacing: -0.7px !important;
+    margin-bottom: 10px !important;
+}
+
+.dashboard-db-page .radar-side-left .metric-title {
+    text-align: left !important;
+}
+
+.dashboard-db-page .radar-side-right .metric-title {
+    text-align: left !important;
+}
+
+.dashboard-db-page .metric-status-summary {
+    gap: 7px !important;
+    justify-content: flex-start !important;
+}
+
+.dashboard-db-page .metric-status-summary .status-row {
+    min-height: 43px !important;
+    padding: 8px 12px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    border-radius: 12px !important;
+}
+
+.dashboard-db-page .metric-status-summary .status-row b {
+    font-size: 15px !important;
+}
+
+.dashboard-db-page .metric-status-summary .status-row span {
+    font-size: 17px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+}
+
+.dashboard-db-page .radar-box {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.dashboard-db-page .radar-box canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+}
+
+.dashboard-db-page .table-wrap {
+    padding: 12px 14px !important;
+}
+
+.dashboard-db-page .table-wrap table {
+    font-size: 11px !important;
+}
+
+.dashboard-db-page .table-wrap thead th,
+.dashboard-db-page .table-wrap tbody td {
+    height: 34px !important;
+}
+
+@media (max-height: 900px) {
+    #contents_box.dashboard-db-page {
+        min-height: 0 !important;
+        height: calc(100vh - 56px) !important;
+        padding: 10px !important;
+    }
+    .dashboard-db-page .kpi-card {
+        min-height: 86px !important;
+        padding: 12px 15px 10px !important;
+    }
+    .dashboard-db-page .kpi-value {
+        font-size: 25px !important;
+    }
+    .dashboard-db-page .dashboard-grid {
+        grid-template-rows: minmax(270px, 1fr) minmax(270px, 1fr) !important;
+        gap: 10px !important;
+    }
+    .dashboard-db-page .split-radar-layout {
+        grid-template-columns: 170px minmax(230px, 1fr) 170px !important;
+        gap: 10px !important;
+        padding: 10px 12px !important;
+    }
+    .dashboard-db-page .metric-title {
+        font-size: 22px !important;
+        margin-bottom: 8px !important;
+    }
+    .dashboard-db-page .metric-status-summary .status-row {
+        min-height: 39px !important;
+        padding: 6px 10px !important;
+    }
+    .dashboard-db-page .metric-status-summary .status-row b {
+        font-size: 13px !important;
+    }
+    .dashboard-db-page .metric-status-summary .status-row span {
+        font-size: 15px !important;
+    }
+}
+
+
+/* =========================
+   v5 radar-side split fix
+   =========================
+   Chart.js 기본 legend는 하나의 legend box만 top/bottom/left/right에 둘 수 있으므로
+   RSRQ/RSRP를 좌우에 따로 배치하려면 현재처럼 HTML custom summary를 사용하는 방식이 맞습니다.
+   아래는 기존 .radar-layout 2열 규칙이 split-radar-layout을 덮어써서 RSRP가 아래로 떨어지는 문제를 방지합니다.
+*/
+#contents_box.dashboard-db-page .radar-card .split-radar-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
+    height: calc(100% - 48px) !important;
+    padding: 10px 14px !important;
+    gap: 14px !important;
+    overflow: hidden !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-side {
+    flex: 0 0 220px !important;
+    width: 220px !important;
+    min-width: 190px !important;
+    max-width: 240px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-side-left {
+    order: 1 !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-box {
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    min-width: 250px !important;
+    height: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-side-right {
+    order: 3 !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-box canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 360px !important;
+    max-height: 250px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-title {
+    font-size: 22px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    color: #111f30 !important;
+    letter-spacing: -0.6px !important;
+    margin: 0 0 8px 0 !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-side-left .metric-title {
+    text-align: left !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-side-right .metric-title {
+    text-align: right !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    min-height: 0 !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row {
+    width: 100% !important;
+    min-height: 38px !important;
+    padding: 6px 10px !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    border-radius: 11px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row b {
+    font-size: 13px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row span {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+}
+
+/* 폭이 좁은 경우에도 아래로 떨어뜨리지 않고 좌우 박스만 줄임 */
+@media (max-width: 1500px) {
+    #contents_box.dashboard-db-page .radar-card .radar-side {
+        flex-basis: 190px !important;
+        width: 190px !important;
+        min-width: 175px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .split-radar-layout {
+        gap: 10px !important;
+        padding: 8px 10px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-box {
+        min-width: 210px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-box canvas {
+        max-width: 300px !important;
+        max-height: 230px !important;
+    }
+}

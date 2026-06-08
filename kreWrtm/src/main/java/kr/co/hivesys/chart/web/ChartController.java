@@ -83,8 +83,9 @@ public class ChartController {
 		Map<String, Object> kpiRaw = chartService.selectDashboardKpi();
 		List<Map<String, Object>> trendList = chartService.selectDashboardTrendList();
 		List<Map<String, Object>> radioList = chartService.selectDashboardRadioList();
-		List<Map<String, Object>> rsrpStatusList = chartService.selectDashboardRsrpStatusList();
-		List<Map<String, Object>> receiveList = chartService.selectDashboardReceiveList();
+		List<Map<String, Object>> rsrpStatusList = normalizeStatusList(chartService.selectDashboardRsrpStatusList());
+		List<Map<String, Object>> rsrqStatusList = normalizeStatusList(chartService.selectDashboardRsrqStatusList());
+		List<Map<String, Object>> receiveList = normalizeReceiveList(chartService.selectDashboardReceiveList());
 
 		int totalDeviceCnt = getInt(kpiRaw, "totalDeviceCnt");
 		int lteCnt = getInt(kpiRaw, "lteCnt");
@@ -109,6 +110,7 @@ public class ChartController {
 		dashboardData.put("trendList", trendList);
 		dashboardData.put("radioList", radioList);
 		dashboardData.put("rsrpStatusList", rsrpStatusList);
+		dashboardData.put("rsrqStatusList", rsrqStatusList);
 		dashboardData.put("receiveList", receiveList);
 		return dashboardData;
 	}
@@ -129,6 +131,7 @@ public class ChartController {
 		dashboardData.put("trendList", java.util.Collections.emptyList());
 		dashboardData.put("radioList", java.util.Collections.emptyList());
 		dashboardData.put("rsrpStatusList", java.util.Collections.emptyList());
+		dashboardData.put("rsrqStatusList", java.util.Collections.emptyList());
 		dashboardData.put("receiveList", java.util.Collections.emptyList());
 		return dashboardData;
 	}
@@ -149,6 +152,44 @@ public class ChartController {
 		return mav;
 	}
 	
+
+	private List<Map<String, Object>> normalizeStatusList(List<Map<String, Object>> list) {
+		List<Map<String, Object>> result = new java.util.ArrayList<Map<String, Object>>();
+		if (list == null) return result;
+
+		for (Map<String, Object> row : list) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("sortOrder", getMapValue(row, "sortOrder"));
+			item.put("status", getString(row, "status"));
+			item.put("statusClass", getString(row, "statusClass"));
+			item.put("rangeText", getString(row, "rangeText"));
+			item.put("cnt", getInt(row, "cnt"));
+			result.add(item);
+		}
+		return result;
+	}
+
+	private List<Map<String, Object>> normalizeReceiveList(List<Map<String, Object>> list) {
+		List<Map<String, Object>> result = new java.util.ArrayList<Map<String, Object>>();
+		if (list == null) return result;
+
+		for (Map<String, Object> row : list) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("volteNum", getString(row, "volteNum"));
+			item.put("carNum", getString(row, "carNum"));
+			item.put("currentRadioType", getString(row, "currentRadioType"));
+			item.put("rsrp", getString(row, "rsrp"));
+			item.put("rsrpStatus", getString(row, "rsrpStatus"));
+			item.put("rsrpStatusClass", getString(row, "rsrpStatusClass"));
+			item.put("rsrq", getString(row, "rsrq"));
+			item.put("rsrqStatus", getString(row, "rsrqStatus"));
+			item.put("rsrqStatusClass", getString(row, "rsrqStatusClass"));
+			item.put("rcvTime", getString(row, "rcvTime"));
+			result.add(item);
+		}
+		return result;
+	}
+
 	private Object getMapValue(Map<String, Object> map, String key) {
 		if (map == null || key == null) return null;
 		if (map.containsKey(key)) return map.get(key);

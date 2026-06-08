@@ -20,6 +20,9 @@ public class ChartServiceImpl implements ChartService{
 	private ChartMapper chartMapper;
 	
 	@Override
+	public List<ChartVo> selectDataList() throws Exception { return chartMapper.selectDataList(); }
+	
+	@Override
 	public List<RouterVO> routerList() throws Exception { return chartMapper.routerList(); }
 	
 	@Override
@@ -44,6 +47,8 @@ public class ChartServiceImpl implements ChartService{
 	public List<Map<String, Object>> selectDashboardRsrpStatusList() throws Exception { return chartMapper.selectDashboardRsrpStatusList(); }
 	
 	@Override
+	public List<Map<String, Object>> selectDashboardRsrqStatusList() throws Exception { return chartMapper.selectDashboardRsrqStatusList(); }
+	
+	@Override
 	public List<Map<String, Object>> selectDashboardReceiveList() throws Exception { return chartMapper.selectDashboardReceiveList(); }
-
 }

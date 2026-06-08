@@ -3,6 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.hivesys.chart.mapper.ChartMapper">
+
+	<resultMap type="kr.co.hivesys.chart.vo.ChartVo" id="selectDataList">
+		<result property="companyName" column="COMPANY_NAME"/>
+		<result property="firmUse" column="FIRM_USE"/>
+		<result property="etc" column="ETC"/>
+	</resultMap>
 	
 	<resultMap type="routerVo" id="selectRouterList">
 		<id property="deviceId" column="DEVICE_ID"/>
@@ -25,6 +31,10 @@
 		<result property="todayCnt" column="TODAY_CNT"/>
 		<result property="rsrqAvg" column="RSRQ_AVG"/>
 	</resultMap>
+
+	<select id="selectDataList" parameterType="kr.co.hivesys.chart.vo.ChartVo" resultMap="selectDataList">
+		SELECT * FROM tbl_use_info
+	</select>
 
 	<select id="routerList" parameterType="kr.co.hivesys.router.vo.RouterVO" resultMap="selectRouterList">
 		SELECT B.COMPANY_NAME, COUNT(*) AS ROUTER_COUNT
@@ -78,7 +88,9 @@
 		    ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrp,
 		    ROUND(AVG(CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED)), 1) AS avgRsrq,
 		    SUM(CASE
-		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN 1
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90
+		          OR CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10
+		        THEN 1
 		        ELSE 0
 		    END) AS cautionDeviceCnt,
 		    DATE_FORMAT(MAX(RCV_DT), '%Y-%m-%d %H:%i:%s') AS lastRcvDt
@@ -161,7 +173,44 @@
 		]]>
 	</select>
 
-	<!-- tbl_receive_data 주요 필드 최신 목록: Cell ID 제외 -->
+
+	<!-- RSRQ 상태 분포: tbl_last_data 기준 -->
+	<select id="selectDashboardRsrqStatusList" resultType="java.util.HashMap">
+		<![CDATA[
+		SELECT
+		    S.sortOrder AS sortOrder,
+		    S.status AS status,
+		    S.statusClass AS statusClass,
+		    S.rangeText AS rangeText,
+		    COALESCE(A.cnt, 0) AS cnt
+		FROM (
+		    SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRQ >= -10' AS rangeText
+		    UNION ALL SELECT 2, '주의', 'caution', '-15 <= RSRQ < -10'
+		    UNION ALL SELECT 3, '경고', 'warning', '-18 <= RSRQ < -15'
+		    UNION ALL SELECT 4, '심각', 'critical', 'RSRQ < -18'
+		) S
+		LEFT JOIN (
+		    SELECT
+		        CASE
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 4
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 3
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 2
+		            ELSE 1
+		        END AS sortOrder,
+		        COUNT(*) AS cnt
+		    FROM tbl_last_data
+		    GROUP BY CASE
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 4
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 3
+		            WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 2
+		            ELSE 1
+		        END
+		) A ON S.sortOrder = A.sortOrder
+		ORDER BY S.sortOrder ASC
+		]]>
+	</select>
+
+	<!-- tbl_receive_data 주요 필드 최신 목록: Cell ID 제외, RSRP/RSRQ 상태 분리 -->
 	<select id="selectDashboardReceiveList" resultType="java.util.HashMap">
 		<![CDATA[
 		SELECT
@@ -169,20 +218,32 @@
 		    A.CAR_NUM AS carNum,
 		    A.CurrentRadioType AS currentRadioType,
 		    A.RSRP AS rsrp,
-		    A.RSRQ AS rsrq,
-		    DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime,
 		    CASE
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN '심각'
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN '경고'
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN '주의'
 		        ELSE '정상'
-		    END AS status,
+		    END AS rsrpStatus,
 		    CASE
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -110 THEN 'critical'
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -100 THEN 'warning'
 		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -90 THEN 'caution'
 		        ELSE 'normal'
-		    END AS statusClass
+		    END AS rsrpStatusClass,
+		    A.RSRQ AS rsrq,
+		    CASE
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN '심각'
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN '경고'
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN '주의'
+		        ELSE '정상'
+		    END AS rsrqStatus,
+		    CASE
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -18 THEN 'critical'
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -15 THEN 'warning'
+		        WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) < -10 THEN 'caution'
+		        ELSE 'normal'
+		    END AS rsrqStatusClass,
+		    DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime
 		FROM tbl_receive_data A
 		ORDER BY A.RCV_DT DESC
 		LIMIT 5
