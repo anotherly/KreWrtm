@@ -16,6 +16,7 @@
 	<script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
 	<script src="<%=request.getContextPath()%>/js/common/common.js"></script>
 	<script src="<%=request.getContextPath()%>/js/common/validation.js"></script>
+	<script src="<%=request.getContextPath()%>/js/common/passwordToggle.js"></script>
 	<script src="<%=request.getContextPath()%>/js/common/dtb.js"></script>
 	<script src="<%=request.getContextPath()%>/js/common/menu.js"></script>
 	<script src="<%=request.getContextPath()%>/js/arex.js"></script>

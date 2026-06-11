@@ -1,4 +1,4 @@
-/* 사용자 등록/수정 화면 전용 스타일 */
+/* 사용자 등록/수정 + 로그인 비밀번호 보기/숨김 공통 스타일 */
 .user_form_page .ctn_tbl_area > .ctn_tbl_row:first-child {
     border-top: 0;
 }
@@ -14,36 +14,31 @@
     box-sizing: border-box;
 }
 
-.user_form_page .password_input_box {
+.password_input_box {
     position: relative;
     display: inline-block;
-    vertical-align: middle;
-}
-
-.user_form_page .password_input_box input.form-control {
-    width: 100%;
-    padding-right: 38px;
+    max-width: 100%;
     box-sizing: border-box;
 }
 
-/*
- * 비밀번호 보기 버튼 영역 보정
- * - 공통 CSS의 svg min-height/width 규칙이 아이콘 영역을 과하게 키우는 것을 차단합니다.
- * - 버튼 클릭 영역을 input 오른쪽 26px 안으로 제한해 아래 행 input을 침범하지 않게 합니다.
- */
-.user_form_page .btn_pw_toggle {
+.password_input_box input.form-control {
+    width: 100%;
+    padding-right: 42px !important;
+    box-sizing: border-box;
+}
+
+.btn_pw_toggle {
     position: absolute;
     top: 50%;
     right: 8px;
     transform: translateY(-50%);
     width: 26px;
-    min-width: 26px;
-    max-width: 26px;
     height: 26px;
+    min-width: 26px;
     min-height: 26px;
+    max-width: 26px;
     max-height: 26px;
     padding: 0;
-    margin: 0;
     border: 0;
     outline: 0;
     background: transparent;
@@ -53,39 +48,40 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     z-index: 2;
+    box-sizing: border-box;
 }
 
-.user_form_page .btn_pw_toggle:hover,
-.user_form_page .btn_pw_toggle:focus {
+.btn_pw_toggle:hover,
+.btn_pw_toggle:focus {
     color: #008bd2;
 }
 
-.user_form_page .btn_pw_toggle svg {
-    display: block !important;
+.btn_pw_toggle svg {
+    display: block;
     width: 18px !important;
-    min-width: 18px !important;
-    max-width: 18px !important;
     height: 18px !important;
+    min-width: 18px !important;
     min-height: 18px !important;
+    max-width: 18px !important;
     max-height: 18px !important;
-    overflow: hidden !important;
     stroke: currentColor;
-    flex: 0 0 18px;
+    stroke-width: 2;
+    fill: none;
     pointer-events: none;
+    flex: 0 0 18px;
 }
 
-.user_form_page .btn_pw_toggle .icon-eye-off {
-    display: none !important;
+.btn_pw_toggle .icon-eye-off {
+    display: none;
 }
 
-.user_form_page .btn_pw_toggle.is-visible .icon-eye {
-    display: none !important;
+.btn_pw_toggle.is_visible .icon-eye {
+    display: none;
 }
 
-.user_form_page .btn_pw_toggle.is-visible .icon-eye-off {
-    display: block !important;
+.btn_pw_toggle.is_visible .icon-eye-off {
+    display: block;
 }
 
 .user_form_page .id_check_box {
@@ -133,4 +129,18 @@
     width: 164px;
     height: 34px;
     box-sizing: border-box;
+}
+
+/* 로그인 화면 전용 보정 */
+.login_password_box {
+    position: relative;
+    display: block;
+}
+
+.login_password_box input.form-control {
+    padding-right: 42px !important;
+}
+
+.login_password_box .btn_pw_toggle {
+    right: 12px;
 }

@@ -31,23 +31,41 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.preHandle 메소드 진입");
 		HttpSession httpSession = request.getSession();
+		String requestUri = request.getRequestURI();
 
+		logger.debug("▶▶▶▶▶▶▶.requestUri : " + requestUri);
 		logger.debug("▶▶▶▶▶▶▶.httpSession : " + httpSession);
 		logger.debug("▶▶▶▶▶▶▶.httpSession.getId : " + httpSession.getId());
 		logger.debug("▶▶▶▶▶▶▶.httpSession : " + httpSession.getAttribute(LOGIN));
 		try {
-			// 기존의 로그인 정보 제거
+			// 로그아웃 요청이면 기존 로그인 정보 제거
+			if (requestUri.endsWith("/login/logout.do")) {
+				if (httpSession.getAttribute(LOGIN) != null) {
+					logger.debug("▶▶▶▶▶▶▶.logout clear login data before");
+					UserVO logoutVo = new UserVO();
+					String uid = SessionListener.getInstance().getUserID(httpSession);
+					logoutVo.setUserId(uid);
+
+					httpSession.removeAttribute(LOGIN);
+					SessionListener.getInstance().removeSession(httpSession);
+					// userService.logoutUpdate(logoutVo);
+				}
+				return true;
+			}
+
+			// 로그인 화면/로그인 처리 진입 전에 기존 로그인 정보 제거
 			if (httpSession.getAttribute(LOGIN) != null) {
 				logger.debug("▶▶▶▶▶▶▶.clear login data before");
 				UserVO logoutVo = new UserVO();
 				String uid = SessionListener.getInstance().getUserID(httpSession);
 				logoutVo.setUserId(uid);
-				/* httpSession.removeAttribute(LOGIN); */
+
+				httpSession.removeAttribute(LOGIN);
 				SessionListener.getInstance().removeSession(httpSession);
-				//userService.logoutUpdate(logoutVo);
+				// userService.logoutUpdate(logoutVo);
 			}
 		} catch (Exception e) {
-			logger.debug("에러메시지 : " + e.toString());
+			logger.error("LoginInterceptor preHandle 처리 중 오류 발생", e);
 			return false;
 		}
 		return true;
@@ -58,6 +76,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.postHandle 메소드 진입");
 		logger.debug("▶▶▶▶▶▶▶.httpSession.getId : " + request.getSession().getId());
+
+		if (modelAndView == null) {
+			logger.debug("▶▶▶▶▶▶▶.modelAndView is null");
+			return;
+		}
+
 		HttpSession httpSession = request.getSession();
 		ModelMap modelMap = modelAndView.getModelMap();
 		// UserController에서 받은 모델 어트리뷰트 값
@@ -68,11 +92,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			if (userVo != null) {
 				logger.debug("▶▶▶▶▶▶▶.new login success");
 				UserVO lvo = (UserVO) userVo;
+				logger.debug("▶▶▶▶▶▶▶.login userId : " + lvo.getUserId());
 				// web으로 어트리뷰트값 전송
 				httpSession.setAttribute(LOGIN, userVo);
 			}
 		} catch (Exception e) {
-			logger.debug("에러메시지 : " + e.toString());
+			logger.error("LoginInterceptor postHandle 처리 중 오류 발생", e);
 		}
 	}
 

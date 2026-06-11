@@ -1,5 +1,7 @@
 package kr.co.hivesys.user.web;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.hivesys.comm.SessionListener;
-import kr.co.hivesys.user.web.LoginController;
 import kr.co.hivesys.user.service.UserService;
 import kr.co.hivesys.user.vo.UserVO;
 
@@ -29,14 +30,13 @@ public class LoginController {
 	@Resource(name = "userService")
 	private UserService userService;
 
-	public String url = "";
 	public boolean isClose = false;
 
 	// 주소에 맞게 매핑
 	@RequestMapping(value = "/login/*.do")
 	public String userUrlMapping(HttpSession httpSession, HttpServletRequest request, Model model) throws Exception {
 		logger.debug("▶▶▶▶▶▶▶.main 최초 컨트롤러 진입 httpSession : " + httpSession);
-		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
+		String url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];
 		return url;
 	}
 
@@ -67,7 +67,7 @@ public class LoginController {
 
 	/**
 	 * 로그인 -일반사용자 향후 타 프로젝트 재 사용성을 위해 관리자 로그인과는 주소를 달리함
-	 * 
+	 *
 	 * @param model
 	 * @return
 	 * @throws Exception
@@ -81,11 +81,19 @@ public class LoginController {
 		logger.debug("▶▶▶▶▶▶▶.loginPost 진입 세션 : " + httpSession);
 		logger.debug("▶▶▶▶▶▶▶.받아온 loginVo 값 : " + inputVo.toString());
 		String msg = "";
-		UserVO userVo = new UserVO();
+		UserVO userVo = null;
 		ModelAndView mav = new ModelAndView("jsonView");
 
 		try {
-			userVo = userService.select(inputVo).get(0);
+			List<UserVO> userList = userService.select(inputVo);
+
+			if (userList == null || userList.isEmpty()) {
+				logger.debug("▶▶▶▶▶▶▶.가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다");
+				msg = "가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다";
+				return mav;
+			}
+
+			userVo = userList.get(0);
 
 			// 등록되지 않은 사용자 또는 사용자 입력 오류
 			// BCrypt.checkpw(a,b) 메소드(함수)의
@@ -107,39 +115,37 @@ public class LoginController {
 					logger.debug("▶▶▶▶▶▶▶.기존 세션을 삭제하고 재생성");
 					SessionListener.getInstance().removeSessionById(inputVo.getUserId());
 					// userService.logoutUpdate(inputVo);
-					HttpSession loginSession = request.getSession(true);
-
-					logger.debug("로그인vo 세션시간 : " + loginSession.getMaxInactiveInterval());
-					// 세션에 값 주입
-					httpSession.setAttribute("login", inputVo);
-					// 세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
-					SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
-					// ${}세션
-					model.addAttribute("user", userVo);
-				} else {// 최초 로그인
-					HttpSession loginSession = request.getSession(true);
-
-					// 세션시간 설정 24*60*60 24시간 (시간/분/초 단위 : 초)
-					// 미설정시 30분 (기본값)
-					// loginSession.setMaxInactiveInterval(24*60*60);
-
-					logger.debug("로그인vo 세션시간 : " + loginSession.getMaxInactiveInterval());
-					// 세션에 값 주입
-					httpSession.setAttribute("login", inputVo);
-					// 세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
-					SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
-					// ${}세션
-					model.addAttribute("user", userVo);
 				}
-				url = "/chart/main.do";
-				/*url = "/obs/list.do"; // 25-09-18 : 임시로 첫 진입 화면 장애이력 관리로 변경*/			
+
+				HttpSession loginSession = request.getSession(true);
+
+				// 세션시간 설정 24*60*60 24시간 (시간/분/초 단위 : 초)
+				// 미설정시 30분 (기본값)
+				// loginSession.setMaxInactiveInterval(24*60*60);
+
+				logger.debug("로그인vo 세션시간 : " + loginSession.getMaxInactiveInterval());
+
+				/*
+				 * 세션에는 화면 입력값(inputVo)이 아니라 DB 조회 결과(userVo)를 넣어야
+				 * userType/companyId/companyCode/orgId 등 권한/소속 정보가 유지된다.
+				 */
+				userVo.setUserPw(null);
+
+				// 세션에 값 주입
+				httpSession.setAttribute("login", userVo);
+				// 세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
+				SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
+				// ${}세션
+				model.addAttribute("user", userVo);
+				mav.addObject("user", userVo);
+
+				mav.addObject("url", "/chart/main.do");
+				/* url = "/obs/list.do"; // 25-09-18 : 임시로 첫 진입 화면 장애이력 관리로 변경 */
 			}
-			mav.addObject("url", url);
 		} catch (Exception e) {
-			msg = "가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다";
+			msg = "기타 문제로 로그인에 실패하였습니다 관리자에게 문의하세요";
 			userVo = null;
-			logger.debug("▶▶▶▶▶▶▶.캐치 에러 : " + e.getMessage());
-			e.printStackTrace();
+			logger.error("▶▶▶▶▶▶▶.로그인 처리 중 오류 발생", e);
 		} finally {
 			mav.addObject("msg", msg);
 		}

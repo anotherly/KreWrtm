@@ -7,51 +7,10 @@
 <title>단말장치(LTE-R) 관리 WEB 시스템</title>
 <meta charset="UTF-8">
 <jsp:include page="../cmn/top.jsp" flush="false" />
-
-
 	<script>
 		var dupChkFlag = false;
 		$(document).ready(function() {
 			console.log("사용자 등록 화면");
-
-			function resetPasswordVisible($box) {
-				var $btn = $box.find(".btn_pw_toggle");
-				var targetId = $btn.data("target");
-				if (!targetId) return;
-
-				var $target = $("#" + targetId);
-				$target.attr("type", "password");
-				$btn.removeClass("is-visible")
-					.attr("title", "비밀번호 보기")
-					.attr("aria-label", "비밀번호 보기");
-			}
-
-			$(document).on("click", ".btn_pw_toggle", function(){
-				var targetId = $(this).data("target");
-				var $target = $("#" + targetId);
-				var showPassword = $target.attr("type") === "password";
-
-				$target.attr("type", showPassword ? "text" : "password");
-				$(this)
-					.toggleClass("is-visible", showPassword)
-					.attr("title", showPassword ? "비밀번호 숨기기" : "비밀번호 보기")
-					.attr("aria-label", showPassword ? "비밀번호 숨기기" : "비밀번호 보기");
-
-				// 버튼 클릭 후에도 해당 input을 계속 입력할 수 있도록 포커스 유지
-				$target.focus();
-			});
-
-			$(document).on("focusout", ".password_input_box", function(){
-				var $box = $(this);
-				setTimeout(function(){
-					// input ↔ 눈 아이콘 사이 이동은 같은 박스 내부 이동이므로 유지하고,
-					// 다음 input/다른 영역으로 포커스가 빠져나가면 다시 비밀번호 숨김 처리
-					if ($box.find(document.activeElement).length === 0) {
-						resetPasswordVisible($box);
-					}
-				}, 0);
-			});
-
 			// 최초 진입: 사용자 유형 → 소속기관 → 본부/처/실 순서로 구성
 			loadCompanyList($("#userType").val(), '${login.companyCode}', null);
 
@@ -247,14 +206,9 @@
 											maxLength="20"
 											oninput="checkPw(this)">
 										<button type="button" class="btn_pw_toggle" data-target="userPw" title="비밀번호 보기" aria-label="비밀번호 보기">
-											<svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
+											<svg viewBox="0 0 24 24" aria-hidden="true">
 												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
-											</svg>
-											<svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
-												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
-												<path d="M4 4l16 16" fill="none" stroke-width="2.2" stroke-linecap="round"/>
 											</svg>
 										</button>
 									</div>
@@ -275,14 +229,9 @@
 											maxLength="20"
 											oninput="checkPw(this)">
 										<button type="button" class="btn_pw_toggle" data-target="userPw2" title="비밀번호 보기" aria-label="비밀번호 보기">
-											<svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
+											<svg viewBox="0 0 24 24" aria-hidden="true">
 												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
-											</svg>
-											<svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
-												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
-												<path d="M4 4l16 16" fill="none" stroke-width="2.2" stroke-linecap="round"/>
 											</svg>
 										</button>
 									</div>

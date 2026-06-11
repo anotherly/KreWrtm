@@ -14,6 +14,9 @@
 	<script src="<%=request.getContextPath()%>/js/jquery.migrate.js"></script>
 
 	<!-- 로그인 시큐어코딩 관련 -->
+	<script>
+		window.APP_CONTEXT_PATH = "<%=request.getContextPath()%>";
+	</script>
 	<script src="<%=request.getContextPath()%>/js/loginSC/login.js"></script>
 	<script>
 		var rkFlag = false;//로드/언로드 플래그
@@ -22,7 +25,7 @@
 			var sessionVo = '${login.userId}';
 			console.log("세션체크 : "+sessionVo);
 			//로그인(세션) 여부를 판별하여 화면전환 (로그인/메인화면)
-			stMainIdx(sessionVo);  
+			stMainIdx(sessionVo);
 		});
 	</script>
 </head>

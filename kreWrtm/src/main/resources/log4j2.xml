@@ -1,121 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
-<configuration status="DEBUG">
- 
+
+<Configuration status="WARN" monitorInterval="30">
+
     <Appenders>
-        <!-- 콜솔 -->
+        <!-- 콘솔 로그 -->
         <Console name="console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %5p [%c] %m%n"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%c] %m%n"/>
         </Console>
-        
-        <!-- 파일  -->
-        <RollingFile name ="RollingFile">
-            <FileName>C:/log/kre_log.txt</FileName>
-            <FilePattern>C:/log/kre_log_%d{yyyy-MM-dd}.txt</FilePattern>
-            <PatternLayout>
-                <Pattern>%d %5p [%c] %m%n</Pattern>
-            </PatternLayout>
+
+        <!-- 일반 로그 (시간 단위 + 10일 보관) -->
+        <RollingFile name="RollingFile"
+                     fileName="C:/log/kre_log.txt"
+                     filePattern="C:/log/kre_log_%d{yyyy-MM-dd-HH}.txt">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%c] %m%n"/>
             <Policies>
-                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
-            <!-- 일정시간 경과 시 로그 삭제 설정부  -->
-			<DefaultRolloverStrategy max="7">
-			    <Delete basePath="C:/log" maxDepth="2">
-				  <IfFileName glob="*/*.txt">
-				    <IfLastModified age="2d">
-				      <IfAny>
-				        <IfAccumulatedFileCount exceeds="2"/>
-				      </IfAny>
-				    </IfLastModified>
-				  </IfFileName>
-				</Delete>
-			</DefaultRolloverStrategy>
+            <!-- 시간 단위 롤링 기준 10일 = 최대 240개 -->
+            <DefaultRolloverStrategy max="240">
+                <Delete basePath="C:/log" maxDepth="1">
+                    <IfFileName glob="kre_log_*.txt"/>
+                    <IfLastModified age="10d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        
-        <!-- 에러 파일 -->
-        <RollingFile name ="RollingFileError">
-            <FileName>C:/log/kre_log_error.txt</FileName>
-            <FilePattern>C:/log/kre_error_%d{yyyy-MM-dd}.txt</FilePattern>
-            <PatternLayout>
-                <Pattern>%d %5p [%c] %m%n</Pattern>
-            </PatternLayout>
+
+        <!-- 에러 로그 (ERROR 이상만, 시간 단위 + 10일 보관) -->
+        <RollingFile name="RollingFileError"
+                     fileName="C:/log/kre_log_error.txt"
+                     filePattern="C:/log/kre_log_error_%d{yyyy-MM-dd-HH}.txt">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%c] %m%n"/>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <Policies>
-                <TimeBasedTriggeringPolicy interval = "1" modulate = "true"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
-            <!-- 일정시간 경과 시 로그 삭제 설정부  -->
-			<DefaultRolloverStrategy max="7">
-			    <Delete basePath="C:/log" maxDepth="2">
-				  <IfFileName glob="*/*.txt">
-				    <IfLastModified age="2d">
-				      <IfAny>
-				        <IfAccumulatedFileCount exceeds="2"/>
-				      </IfAny>
-				    </IfLastModified>
-				  </IfFileName>
-				</Delete>
-			</DefaultRolloverStrategy>
+            <!-- 시간 단위 롤링 기준 10일 = 최대 240개 -->
+            <DefaultRolloverStrategy max="240">
+                <Delete basePath="C:/log" maxDepth="1">
+                    <IfFileName glob="kre_log_error_*.txt"/>
+                    <IfLastModified age="10d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-        
+
     </Appenders>
-    
-    <loggers>
-        <root level="debug" additivity="true">
+
+    <Loggers>
+        <Root level="debug">
             <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-        </root>
-        
-        <logger name="kr.co.hivesys" level="DEBUG" additivity="false">
-	        <AppenderRef ref="console" />
-	        <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-	    </logger>
+            <AppenderRef ref="RollingFileError"/>
+        </Root>
+
+        <Logger name="kr.co.hivesys" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="RollingFileError"/>
+        </Logger>
+
         <Logger name="java.sql" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="egovframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="jdbc.sqltiming" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
-        <Logger name="jdbc" level="OFF" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
-        </Logger>
+
+        <!-- jdbc 전체 OFF. sqlonly/sqltiming/resultsettable은 아래에서 개별 제어 -->
+        <Logger name="jdbc" level="OFF" additivity="false"/>
+
         <Logger name="org.apache.commons.digester" level="ERROR" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="jdbc.sqlonly" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="jdbc.resultsettable" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="org.springframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
+
         <Logger name="org.springframework.web" level="DEBUG" additivity="false">
+            <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
-            <AppenderRef ref="RollingFileError" level = "ERROR"/>
-            <AppenderRef ref="console" />
+            <AppenderRef ref="RollingFileError"/>
         </Logger>
-        
-    </loggers>
-    
-</configuration> 
+
+    </Loggers>
+
+</Configuration>
