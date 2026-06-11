@@ -65,6 +65,30 @@ public class ChartController {
         return mav;
     }
 
+
+    /* more 클릭 시 tbl_last_data 기준 전체 단말 최신 수신 상태를 조회한다. */
+    @RequestMapping(value = "/chart/dashboardLastDataList.ajax")
+    public @ResponseBody ModelAndView dashboardLastDataList(HttpServletRequest request) throws Exception {
+        ModelAndView mav = new ModelAndView("jsonView");
+
+        try {
+            Map<String, Object> param = makeDashboardSearchParam(request);
+            param.put("listAll", "Y");
+
+            List<Map<String, Object>> receiveList = normalizeReceiveList(chartService.selectDashboardReceiveList(param));
+
+            mav.addObject("result", "success");
+            mav.addObject("receiveList", receiveList);
+        } catch (Exception e) {
+            logger.error("대시보드 최신 수신 전체 목록 조회 중 오류", e);
+            mav.addObject("result", "fail");
+            mav.addObject("message", "최신 수신 전체 목록 조회 중 오류가 발생했습니다.");
+            mav.addObject("receiveList", Collections.emptyList());
+        }
+
+        return mav;
+    }
+
     /*
      * 로그인 사용자 기준 대시보드 조회 범위 생성.
      * - 코레일: router_info에 등록된 전체 단말기 조회
@@ -184,12 +208,15 @@ public class ChartController {
             item.put("carNum", getString(row, "carNum"));
             item.put("currentRadioType", getString(row, "currentRadioType"));
             item.put("rsrp", getString(row, "rsrp"));
+            item.put("rsrpNum", getMapValue(row, "rsrpNum"));
             item.put("rsrpStatus", getString(row, "rsrpStatus"));
             item.put("rsrpStatusClass", getString(row, "rsrpStatusClass"));
             item.put("rsrq", getString(row, "rsrq"));
+            item.put("rsrqNum", getMapValue(row, "rsrqNum"));
             item.put("rsrqStatus", getString(row, "rsrqStatus"));
             item.put("rsrqStatusClass", getString(row, "rsrqStatusClass"));
             item.put("rcvTime", getString(row, "rcvTime"));
+            item.put("rcvDtSort", getString(row, "rcvDtSort"));
             result.add(item);
         }
         return result;

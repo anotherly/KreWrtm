@@ -1670,3 +1670,119 @@
         min-width: 420px !important;
     }
 }
+
+/* =========================
+   v10 last_data table more/sort patch
+   =========================
+   - more 버튼으로 tbl_last_data 전체 목록 조회
+   - RSRP / RSRQ / 수신시각 th 클릭 정렬 표시
+*/
+.dashboard-db-page .more-btn {
+    margin-left: auto !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: #61738b !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    padding: 6px 4px !important;
+}
+
+.dashboard-db-page .more-btn:hover {
+    color: #1688da !important;
+    text-decoration: underline !important;
+}
+
+.dashboard-db-page .table-wrap th.sort-th {
+    position: relative !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    padding-right: 18px !important;
+}
+
+.dashboard-db-page .table-wrap th.sort-th::after {
+    content: "↕";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    font-weight: 900;
+    color: #9aa9bb;
+}
+
+.dashboard-db-page .table-wrap th.sort-th.sort-asc::after {
+    content: "▲";
+    color: #1688da;
+}
+
+.dashboard-db-page .table-wrap th.sort-th.sort-desc::after {
+    content: "▼";
+    color: #1688da;
+}
+
+@media screen and (min-width: 2200px) and (min-height: 1100px) {
+    .dashboard-db-page .more-btn {
+        font-size: 14px !important;
+    }
+
+    .dashboard-db-page .table-wrap th.sort-th::after {
+        right: 8px;
+        font-size: 12px;
+    }
+}
+
+
+/* =========================
+   v12 last_data table scroll overlap fix
+   =========================
+   more 조회 후 데이터가 많아질 때 우측 세로 스크롤만 적용합니다.
+   기존 sticky header는 tbody 행 위에 겹쳐 보이는 문제가 있어 제거합니다.
+*/
+.dashboard-db-page .table-wrap {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: thin;
+    scrollbar-color: #9fb2c7 #eef3f8;
+}
+
+.dashboard-db-page .table-wrap table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+}
+
+.dashboard-db-page .table-wrap::-webkit-scrollbar {
+    width: 9px;
+}
+
+.dashboard-db-page .table-wrap::-webkit-scrollbar-track {
+    background: #eef3f8;
+    border-radius: 999px;
+}
+
+.dashboard-db-page .table-wrap::-webkit-scrollbar-thumb {
+    background: #9fb2c7;
+    border-radius: 999px;
+    border: 2px solid #eef3f8;
+}
+
+.dashboard-db-page .table-wrap::-webkit-scrollbar-thumb:hover {
+    background: #7f93aa;
+}
+
+.dashboard-db-page .table-wrap thead th {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    background: #f1f6fb !important;
+}
+
+.dashboard-db-page .table-wrap tbody td {
+    background: #fff !important;
+}
+
+.dashboard-db-page .table-wrap tbody tr:hover td {
+    background: #f8fbff !important;
+}

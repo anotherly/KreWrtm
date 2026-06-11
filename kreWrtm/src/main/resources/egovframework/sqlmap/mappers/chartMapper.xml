@@ -15,7 +15,7 @@
                 SELECT COUNT(*)
                 FROM tbl_router_info R_CNT
                 WHERE 1=1
-                <if test='userType neq "코레일"'>
+                <if test='!"코레일".equals(userType)'>
                     AND R_CNT.company_code = #{companyCode}
                 </if>
             ) AS manageDeviceCnt,
@@ -35,7 +35,7 @@
         INNER JOIN tbl_router_info R
             ON A.VoLTE_NUM = R.volte_num
         WHERE 1=1
-        <if test='userType neq "코레일"'>
+        <if test='!"코레일".equals(userType)'>
             AND R.company_code = #{companyCode}
         </if>
     </select>
@@ -55,11 +55,11 @@
             INNER JOIN tbl_router_info R2
                 ON A2.VoLTE_NUM = R2.volte_num
             WHERE 1=1
-            <if test='userType neq "코레일"'>
+            <if test='!"코레일".equals(userType)'>
                 AND R2.company_code = #{companyCode}
             </if>
         )
-        <if test='userType neq "코레일"'>
+        <if test='!"코레일".equals(userType)'>
             AND R.company_code = #{companyCode}
         </if>
         GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
@@ -102,7 +102,7 @@
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
-            <if test='userType neq "코레일"'>
+            <if test='!"코레일".equals(userType)'>
                 AND R.company_code = #{companyCode}
             </if>
             GROUP BY CASE
@@ -140,7 +140,7 @@
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
-            <if test='userType neq "코레일"'>
+            <if test='!"코레일".equals(userType)'>
                 AND R.company_code = #{companyCode}
             </if>
             GROUP BY CASE
@@ -179,7 +179,7 @@
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
-            <if test='userType neq "코레일"'>
+            <if test='!"코레일".equals(userType)'>
                 AND R.company_code = #{companyCode}
             </if>
             GROUP BY CASE
@@ -194,45 +194,66 @@
 
     <select id="selectDashboardReceiveList" parameterType="java.util.Map" resultType="java.util.HashMap">
         SELECT
-            A.VoLTE_NUM AS volteNum,
-            A.CAR_NUM AS carNum,
-            A.CurrentRadioType AS currentRadioType,
-            A.RSRP AS rsrp,
+            T.VoLTE_NUM AS volteNum,
+            T.CAR_NUM AS carNum,
+            T.CurrentRadioType AS currentRadioType,
+            T.RSRP AS rsrp,
+            T.rsrpNum AS rsrpNum,
             CASE
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN '심각'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN '경고'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN '주의'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -110 THEN '심각'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -100 THEN '경고'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -90 THEN '주의'
                 ELSE '정상'
             END AS rsrpStatus,
             CASE
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 'critical'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN 'warning'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -90 THEN 'caution'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -110 THEN 'critical'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -100 THEN 'warning'
+                WHEN T.rsrpNum <![CDATA[ < ]]> -90 THEN 'caution'
                 ELSE 'normal'
             END AS rsrpStatusClass,
-            A.RSRQ AS rsrq,
+            T.RSRQ AS rsrq,
+            T.rsrqNum AS rsrqNum,
             CASE
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN '심각'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN '경고'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN '주의'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -18 THEN '심각'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -15 THEN '경고'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -10 THEN '주의'
                 ELSE '정상'
             END AS rsrqStatus,
             CASE
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 'critical'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN 'warning'
-                WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -10 THEN 'caution'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -18 THEN 'critical'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -15 THEN 'warning'
+                WHEN T.rsrqNum <![CDATA[ < ]]> -10 THEN 'caution'
                 ELSE 'normal'
             END AS rsrqStatusClass,
-            DATE_FORMAT(A.RCV_DT, '%H:%i:%s') AS rcvTime
-        FROM tbl_receive_data A
-        INNER JOIN tbl_router_info R
-            ON A.VoLTE_NUM = R.volte_num
-        WHERE 1=1
-        <if test='userType neq "코레일"'>
-            AND R.company_code = #{companyCode}
+            DATE_FORMAT(T.RCV_DT, '%H:%i:%s') AS rcvTime,
+            DATE_FORMAT(T.RCV_DT, '%Y-%m-%d %H:%i:%s') AS rcvDtSort
+        FROM (
+            SELECT
+                A.VoLTE_NUM,
+                A.CAR_NUM,
+                A.CurrentRadioType,
+                A.RSRP,
+                A.RSRQ,
+                A.RCV_DT,
+                CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) AS rsrpNum,
+                CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) AS rsrqNum
+            FROM tbl_last_data A
+            INNER JOIN tbl_router_info R
+                ON A.VoLTE_NUM = R.volte_num
+            WHERE 1=1
+            <if test='!"코레일".equals(userType)'>
+                AND R.company_code = #{companyCode}
+            </if>
+        ) T
+        ORDER BY
+            CASE WHEN T.rsrqNum IS NULL THEN 1 ELSE 0 END ASC,
+            T.rsrqNum ASC,
+            CASE WHEN T.rsrpNum IS NULL THEN 1 ELSE 0 END ASC,
+            T.rsrpNum ASC,
+            T.RCV_DT DESC
+        <if test='!"Y".equals(listAll)'>
+            LIMIT 7
         </if>
-        ORDER BY A.RCV_DT DESC
-        LIMIT 7
     </select>
 
 </mapper>

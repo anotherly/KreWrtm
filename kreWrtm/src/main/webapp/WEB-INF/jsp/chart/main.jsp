@@ -60,8 +60,8 @@
                         </article>
 
                         <article class="dash-card table-card">
-                            <div class="card-header"><span class="bar"></span><strong>단말기별 데이터 수신 상태</strong><em>▶ more</em></div>
-                            <div class="table-wrap"><table><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th>RSRP</th><th>RSRP 상태</th><th>RSRQ</th><th>RSRQ 상태</th><th>수신시각</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="8">데이터 조회 중입니다.</td></tr></tbody></table></div>
+                            <div class="card-header"><span class="bar"></span><strong>단말기별 데이터 수신 상태</strong><button type="button" id="lastDataMoreBtn" class="more-btn">▶ more</button></div>
+                            <div class="table-wrap"><table id="lastDataTable"><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th class="sort-th" data-sort-key="rsrp" data-default-dir="asc">RSRP</th><th>RSRP 상태</th><th class="sort-th" data-sort-key="rsrq" data-default-dir="asc">RSRQ</th><th>RSRQ 상태</th><th class="sort-th" data-sort-key="rcvDtSort" data-default-dir="desc">수신시각</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="8">데이터 조회 중입니다.</td></tr></tbody></table></div>
                         </article>
                     </section>
                 </div>
@@ -76,6 +76,8 @@
     var radioTypeChart = null;
     var rsrpRadarChart = null;
     var commonFont = "'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
+    var lastDataList = [];
+    var tableSortState = { key: null, dir: null };
 
     /*
      * 4K + Windows 배율 150% 환경 보정
@@ -113,6 +115,7 @@
     }
 
     $(document).ready(function () {
+        bindTableEvents();
         loadDashboardData();
     });
 
@@ -143,6 +146,8 @@
         var rsrpStatusList = data.rsrpStatusList || [];
         var rsrqStatusList = data.rsrqStatusList || [];
         var receiveList = data.receiveList || [];
+        lastDataList = receiveList.slice();
+        tableSortState = { key: null, dir: null };
 
         setText("kpiTotalDeviceCnt", n(kpi.manageDeviceCnt));
         setText("kpiLastRcvDt", v(kpi.lastRcvDt, "-"));
@@ -162,7 +167,8 @@
         drawRadioChart(radioList);
         drawRsrpRadarChart(rsrpStatusList, rsrqStatusList);
         drawRsrqRsrpStatusSummary(rsrpStatusList, rsrqStatusList);
-        drawReceiveTable(receiveList);
+        drawReceiveTable(lastDataList);
+        updateSortHeader();
     }
 
     function drawTrendChart(list) {
@@ -313,6 +319,103 @@
         html += '    <span>' + n(count) + '대</span>';
         html += '</div>';
         return html;
+    }
+
+    function bindTableEvents() {
+        $(document).on("click", "#lastDataMoreBtn", function () {
+            loadAllLastDataList();
+        });
+
+        $(document).on("click", "#lastDataTable th.sort-th", function () {
+            var key = $(this).data("sortKey");
+            var defaultDir = $(this).data("defaultDir") || "asc";
+            if (!key) return;
+
+            if (tableSortState.key === key) {
+                tableSortState.dir = tableSortState.dir === "asc" ? "desc" : "asc";
+            } else {
+                tableSortState.key = key;
+                tableSortState.dir = defaultDir;
+            }
+
+            drawReceiveTable(sortLastDataList(lastDataList));
+            updateSortHeader();
+        });
+    }
+
+    function loadAllLastDataList() {
+        var $btn = $("#lastDataMoreBtn");
+        if ($btn.data("loading") === true) return;
+
+        $btn.data("loading", true).text("조회중...");
+
+        $.ajax({
+            url: contextPath + "/chart/dashboardLastDataList.ajax",
+            type: "POST",
+            dataType: "json",
+            cache: false,
+            success: function (res) {
+                if (!res || res.result !== "success") {
+                    showError(res && res.message ? res.message : "최신 수신 전체 목록 조회에 실패했습니다.");
+                    return;
+                }
+
+                lastDataList = res.receiveList || [];
+                drawReceiveTable(sortLastDataList(lastDataList));
+                updateSortHeader();
+                $btn.text("전체 " + lastDataList.length + "건");
+            },
+            error: function (xhr, status, err) {
+                showError("/chart/dashboardLastDataList.ajax 호출 실패: " + status);
+                console.log(xhr, err);
+            },
+            complete: function () {
+                $btn.data("loading", false);
+                if ($btn.text() === "조회중...") {
+                    $btn.text("▶ more");
+                }
+            }
+        });
+    }
+
+    function sortLastDataList(list) {
+        var arr = (list || []).slice();
+        if (!tableSortState.key) return arr;
+
+        arr.sort(function (a, b) {
+            var key = tableSortState.key;
+            var dir = tableSortState.dir === "desc" ? -1 : 1;
+            var av;
+            var bv;
+
+            if (key === "rsrp" || key === "rsrq") {
+                av = toNumberForSort(getVal(a, key + "Num", getVal(a, key, null)));
+                bv = toNumberForSort(getVal(b, key + "Num", getVal(b, key, null)));
+            } else if (key === "rcvDtSort") {
+                av = String(getVal(a, "rcvDtSort", getVal(a, "rcvTime", "")) || "");
+                bv = String(getVal(b, "rcvDtSort", getVal(b, "rcvTime", "")) || "");
+            } else {
+                av = String(getVal(a, key, "") || "");
+                bv = String(getVal(b, key, "") || "");
+            }
+
+            if (av === bv) return 0;
+            return av > bv ? dir : -dir;
+        });
+
+        return arr;
+    }
+
+    function toNumberForSort(val) {
+        if (val === undefined || val === null || val === "") return 999999;
+        var num = Number(String(val).replace(/[^0-9\-\.]/g, ""));
+        return isNaN(num) ? 999999 : num;
+    }
+
+    function updateSortHeader() {
+        $("#lastDataTable th.sort-th").removeClass("sort-asc sort-desc");
+        if (!tableSortState.key) return;
+        $('#lastDataTable th.sort-th[data-sort-key="' + tableSortState.key + '"]').addClass(tableSortState.dir === "desc" ? "sort-desc" : "sort-asc");
     }
 
     function drawReceiveTable(list) {
