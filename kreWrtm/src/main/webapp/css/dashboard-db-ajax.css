@@ -1561,11 +1561,11 @@
 
     #contents_box.dashboard-db-page .radar-card .metric-title {
         font-size: 31px !important;
-        margin-bottom: 40px !important;
+        margin-bottom: 26px !important;
     }
 
     #contents_box.dashboard-db-page .radar-card .metric-status-summary {
-		gap: 20px !important;
+        gap: 10px !important;
     }
 
     #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row {

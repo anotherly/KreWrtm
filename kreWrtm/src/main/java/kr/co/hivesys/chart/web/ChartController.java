@@ -105,12 +105,14 @@ public class ChartController {
         List<Map<String, Object>> rsrqStatusList = normalizeStatusList(chartService.selectDashboardRsrqStatusList(param));
         List<Map<String, Object>> receiveList = normalizeReceiveList(chartService.selectDashboardReceiveList(param));
 
+        int manageDeviceCnt = getInt(kpiRaw, "manageDeviceCnt");
         int totalDeviceCnt = getInt(kpiRaw, "totalDeviceCnt");
         int lteCnt = getInt(kpiRaw, "lteCnt");
         int vhfCnt = getInt(kpiRaw, "vhfCnt");
         int autoSwitchCnt = getInt(kpiRaw, "autoSwitchCnt");
 
         Map<String, Object> kpi = new HashMap<String, Object>();
+        kpi.put("manageDeviceCnt", manageDeviceCnt);
         kpi.put("totalDeviceCnt", totalDeviceCnt);
         kpi.put("lteCnt", lteCnt);
         kpi.put("vhfCnt", vhfCnt);
@@ -136,6 +138,7 @@ public class ChartController {
 
     private Map<String, Object> getEmptyDashboardData() {
         Map<String, Object> kpi = new HashMap<String, Object>();
+        kpi.put("manageDeviceCnt", 0);
         kpi.put("totalDeviceCnt", 0);
         kpi.put("lteRatio", 0);
         kpi.put("vhfRatio", 0);

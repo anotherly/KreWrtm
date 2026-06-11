@@ -3,7 +3,7 @@
 <mapper namespace="kr.co.hivesys.chart.mapper.ChartMapper">
 
     <!--
-       	 대시보드 공통 권한 범위.
+        대시보드 공통 권한 범위.
         - tbl_company_info.user_type = 코레일인 사용자는 전체 등록 단말 조회
         - 제조사 사용자는 로그인 company_code의 등록 단말만 조회
         - 미등록 부하테스트 데이터는 tbl_router_info INNER JOIN에서 제외됨
@@ -11,6 +11,14 @@
 
     <select id="selectDashboardKpi" parameterType="java.util.Map" resultType="java.util.HashMap">
         SELECT
+            (
+                SELECT COUNT(*)
+                FROM tbl_router_info R_CNT
+                WHERE 1=1
+                <if test='userType neq "코레일"'>
+                    AND R_CNT.company_code = #{companyCode}
+                </if>
+            ) AS manageDeviceCnt,
             COUNT(*) AS totalDeviceCnt,
             SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
             SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt,
@@ -24,16 +32,39 @@
             END) AS cautionDeviceCnt,
             DATE_FORMAT(MAX(A.RCV_DT), '%Y-%m-%d %H:%i:%s') AS lastRcvDt
         FROM tbl_last_data A
-        
         INNER JOIN tbl_router_info R
             ON A.VoLTE_NUM = R.volte_num
         WHERE 1=1
         <if test='userType neq "코레일"'>
             AND R.company_code = #{companyCode}
         </if>
-        
-        
     </select>
+<!-- 전체 시간 훑어서 가져옴 -->
+<!--     <select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
+            COUNT(*) AS totalCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
+            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
+        FROM tbl_receive_data A
+        INNER JOIN tbl_router_info R
+            ON A.VoLTE_NUM = R.volte_num
+        WHERE A.RCV_DT <![CDATA[ >= ]]> (
+            SELECT DATE_SUB(MAX(A2.RCV_DT), INTERVAL 11 MINUTE)
+            FROM tbl_receive_data A2
+            INNER JOIN tbl_router_info R2
+                ON A2.VoLTE_NUM = R2.volte_num
+            WHERE 1=1
+            <if test='userType neq "코레일"'>
+                AND R2.company_code = #{companyCode}
+            </if>
+        )
+        <if test='userType neq "코레일"'>
+            AND R.company_code = #{companyCode}
+        </if>
+        GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
+        ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
+    </select> -->
     
 	<!-- 현재 시각 기점으로 12분(데이터 없으면 안나옴) -->
 	<select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
@@ -106,15 +137,12 @@
                 END AS sortOrder,
                 COUNT(*) AS cnt
             FROM tbl_last_data A
-           <!-- 회사에 상관없이 다 보여줄려면 아래 조인부랑 if문을 주석처리 -->
-           
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='userType neq "코레일"'>
                 AND R.company_code = #{companyCode}
             </if>
-           
             GROUP BY CASE
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 4
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -100 THEN 3
@@ -148,15 +176,12 @@
                 END AS sortOrder,
                 COUNT(*) AS cnt
             FROM tbl_last_data A
-            <!-- 회사에 상관없이 다 보여줄려면 아래 조인부랑 if문을 주석처리 -->
-            
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='userType neq "코레일"'>
                 AND R.company_code = #{companyCode}
             </if>
-            
             GROUP BY CASE
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 4
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -15 THEN 3

@@ -23,8 +23,8 @@
                     <div id="dashboardError" class="dashboard-error" style="display:none;"></div>
 
                     <section class="kpi-grid">
-                        <article class="kpi-card"><div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
-                        <article class="kpi-card"><div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiLteRatio">0</span><span>%</span></div><div class="kpi-desc">CurrentRadioType 기준</div></article>
+                        <article class="kpi-card"><div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">장치 관리 등록 단말 기준</div></article>
+                        <article class="kpi-card"><div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
                         <article class="kpi-card warning"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
@@ -144,9 +144,9 @@
         var rsrqStatusList = data.rsrqStatusList || [];
         var receiveList = data.receiveList || [];
 
-        setText("kpiTotalDeviceCnt", n(kpi.totalDeviceCnt));
+        setText("kpiTotalDeviceCnt", n(kpi.manageDeviceCnt));
         setText("kpiLastRcvDt", v(kpi.lastRcvDt, "-"));
-        setText("kpiLteRatio", n(kpi.lteRatio));
+        setText("kpiReceiveDeviceCnt", n(kpi.totalDeviceCnt));
         setText("kpiAvgRsrp", v(kpi.avgRsrp, "0"));
         setText("kpiAvgRsrq", v(kpi.avgRsrq, "0"));
         setText("kpiCautionDeviceCnt", n(kpi.cautionDeviceCnt));
