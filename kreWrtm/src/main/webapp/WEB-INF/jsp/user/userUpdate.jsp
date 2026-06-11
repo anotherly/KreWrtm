@@ -8,92 +8,48 @@
 <meta charset="UTF-8">
 <jsp:include page="../cmn/top.jsp" flush="false" />
 
-	<style>
-		/* 사용자 등록/수정 화면 보정 */
-		.user_form_page .ctn_tbl_area > .ctn_tbl_row:first-child {
-			border-top: 0;
-		}
-		.user_form_page .ctn_tbl_area .ctn_tbl_row .ctn_tbl_row {
-			border-top: 0;
-		}
-		.user_form_page .user_form_input,
-		.user_form_page .password_input_box {
-			width: 480px;
-			max-width: 100%;
-			box-sizing: border-box;
-		}
-		.user_form_page .password_input_box {
-			position: relative;
-			display: inline-block;
-		}
-		.user_form_page .password_input_box input.form-control {
-			width: 100%;
-			padding-right: 38px;
-			box-sizing: border-box;
-		}
-		.user_form_page .btn_pw_toggle {
-			position: absolute;
-			top: 50%;
-			right: 8px;
-			transform: translateY(-50%);
-			width: 28px;
-			height: 28px;
-			padding: 0;
-			border: 0;
-			background: transparent;
-			cursor: pointer;
-			color: #555;
-			line-height: 28px;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-		}
-		.user_form_page .btn_pw_toggle:hover {
-			color: #008bd2;
-		}
-		.user_form_page .btn_pw_toggle svg {
-			display: block;
-			width: 18px;
-			height: 18px;
-			stroke: currentColor;
-		}
-		.user_form_page .password_note {
-			padding: 0;
-			font-size: 12px;
-			white-space: nowrap;
-			color: #555;
-		}
-		.user_form_page .th_caption {
-			display: flex;
-			flex-direction: column;
-			margin: 0;
-		}
-		.user_form_page .th_caption span {
-			font-size: 12px;
-			margin-top: 4px;
-		}
-		.user_form_page select.table_sel {
-			width: 164px;
-			height: 34px;
-			box-sizing: border-box;
-		}
-	</style>
 
 	<script>
 		var dupChkFlag = true;
 		$(document).ready(function() {
 			console.log("사용자 수정 화면");
 
+			function resetPasswordVisible($box) {
+				var $btn = $box.find(".btn_pw_toggle");
+				var targetId = $btn.data("target");
+				if (!targetId) return;
+
+				var $target = $("#" + targetId);
+				$target.attr("type", "password");
+				$btn.removeClass("is-visible")
+					.attr("title", "비밀번호 보기")
+					.attr("aria-label", "비밀번호 보기");
+			}
+
 			$(document).on("click", ".btn_pw_toggle", function(){
 				var targetId = $(this).data("target");
 				var $target = $("#" + targetId);
-				if ($target.attr("type") === "password") {
-					$target.attr("type", "text");
-					$(this).attr("title", "비밀번호 숨기기");
-				} else {
-					$target.attr("type", "password");
-					$(this).attr("title", "비밀번호 보기");
-				}
+				var showPassword = $target.attr("type") === "password";
+
+				$target.attr("type", showPassword ? "text" : "password");
+				$(this)
+					.toggleClass("is-visible", showPassword)
+					.attr("title", showPassword ? "비밀번호 숨기기" : "비밀번호 보기")
+					.attr("aria-label", showPassword ? "비밀번호 숨기기" : "비밀번호 보기");
+
+				// 버튼 클릭 후에도 해당 input을 계속 입력할 수 있도록 포커스 유지
+				$target.focus();
+			});
+
+			$(document).on("focusout", ".password_input_box", function(){
+				var $box = $(this);
+				setTimeout(function(){
+					// input ↔ 눈 아이콘 사이 이동은 같은 박스 내부 이동이므로 유지하고,
+					// 다음 input/다른 영역으로 포커스가 빠져나가면 다시 비밀번호 숨김 처리
+					if ($box.find(document.activeElement).length === 0) {
+						resetPasswordVisible($box);
+					}
+				}, 0);
 			});
 
 			var dataCompanyCode = '${data.companyCode}';
@@ -262,9 +218,14 @@
 											maxLength="20"
 											oninput="checkPw(this)">
 										<button type="button" class="btn_pw_toggle" data-target="userPw" title="비밀번호 보기" aria-label="비밀번호 보기">
-											<svg viewBox="0 0 24 24" aria-hidden="true">
+											<svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
 												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
+											</svg>
+											<svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
+												<path d="M4 4l16 16" fill="none" stroke-width="2.2" stroke-linecap="round"/>
 											</svg>
 										</button>
 									</div>
@@ -287,9 +248,14 @@
 											maxLength="20"
 											oninput="checkPw(this)">
 										<button type="button" class="btn_pw_toggle" data-target="userPw2" title="비밀번호 보기" aria-label="비밀번호 보기">
-											<svg viewBox="0 0 24 24" aria-hidden="true">
+											<svg class="icon-eye" viewBox="0 0 24 24" aria-hidden="true">
 												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
+											</svg>
+											<svg class="icon-eye-off" viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+												<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/>
+												<path d="M4 4l16 16" fill="none" stroke-width="2.2" stroke-linecap="round"/>
 											</svg>
 										</button>
 									</div>

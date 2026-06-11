@@ -234,41 +234,91 @@ function phoneCellChk(phone1,phone2) {
  *    - 'default'    → 02-1234-5678 또는 031-1234-5678 (2or3-4-4)
  */
 function formatPhoneAuto(input,type) {
-	  let val = input.value.replace(/[^0-9]/g, ""); // 숫자만
-	  // 최대 11자리 제한
-	  if (val.length > 11) val = val.substring(0, 11);
-	  // 휴대폰 번호 (010, 011, 016, 017, 018, 019)
-	  if (/^01[016789]/.test(val)) {
-	    if (val.length > 7) {
-	      val = val.replace(/(\d{3})(\d{3,4})(\d{1,4})/, "$1-$2-$3");
-	    } else if (val.length > 3) {
-	      val = val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-	    }
-	  }
-	  // 서울 02
-	  // 향후 딴데서 가져다 쓸려면 volte의 경우는 빼야함
-	  else if (/^02/.test(val) && type!="volte" ) {
-	    if (val.length === 9) { // 02-123-4567
-	      val = val.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
-	    } else if (val.length === 10) { // 02-1234-5678
-	      val = val.replace(/(\d{2})(\d{4})(\d{4})/, "$1-$2-$3");
-	    } else if (val.length > 2) {
-	      val = val.replace(/(\d{2})(\d{1,4})/, "$1-$2");
-	    }
-	  }
-	  // 나머지 지역번호 (3자리)
-	  else if (/^\d{3}/.test(val)) {
-	    if (val.length === 10) { // 031-123-4567
-	      val = val.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-	    } else if (val.length === 11) { // 031-1234-5678
-	      val = val.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
-	    } else if (val.length > 3) {
-	      val = val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-	    }
-	  }else{
-		  console.log("비식별 코드");
-	  }
-	  input.value = val;
+    if (!input) return;
+
+    var originalValue = input.value || "";
+    var selectionStart = (typeof input.selectionStart === "number") ? input.selectionStart : originalValue.length;
+
+    // 현재 커서 앞에 존재하는 숫자 개수를 기준으로 포맷 후 커서 위치를 복원합니다.
+    // 이 방식은 중간 숫자 선택 후 덮어쓰기, 중간 삭제, 중간 삽입을 모두 처리합니다.
+    var digitCursorIndex = countDigits(originalValue.substring(0, selectionStart));
+    var digits = originalValue.replace(/[^0-9]/g, "");
+
+    // 최대 11자리 제한
+    if (digits.length > 11) {
+        digits = digits.substring(0, 11);
+        if (digitCursorIndex > 11) digitCursorIndex = 11;
+    }
+
+    var formattedValue = formatPhoneDigits(digits, type);
+    input.value = formattedValue;
+
+    var nextCursor = findCursorPositionByDigitIndex(formattedValue, digitCursorIndex);
+    try {
+        input.setSelectionRange(nextCursor, nextCursor);
+    } catch (e) {
+        // 일부 구형 브라우저/비활성 input에서는 setSelectionRange가 실패할 수 있으므로 무시합니다.
+    }
+}
+
+function countDigits(str) {
+    var match = String(str || "").match(/\d/g);
+    return match ? match.length : 0;
+}
+
+function findCursorPositionByDigitIndex(formattedValue, digitIndex) {
+    if (digitIndex <= 0) return 0;
+
+    var digitCount = 0;
+    for (var i = 0; i < formattedValue.length; i++) {
+        if (/\d/.test(formattedValue.charAt(i))) {
+            digitCount++;
+            if (digitCount >= digitIndex) {
+                return i + 1;
+            }
+        }
+    }
+    return formattedValue.length;
+}
+
+function formatPhoneDigits(val, type) {
+    val = String(val || "");
+
+    // 휴대폰 번호 (010, 011, 016, 017, 018, 019)
+    if (/^01[016789]/.test(val)) {
+        if (val.length > 7) {
+            return val.replace(/(\d{3})(\d{3,4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 3) {
+            return val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+        }
+        return val;
+    }
+
+    // 서울 02. VoLTE 번호는 지역번호 판단에서 제외합니다.
+    if (/^02/.test(val) && type != "volte") {
+        if (val.length === 9) {
+            return val.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+        } else if (val.length >= 10) {
+            return val.replace(/(\d{2})(\d{4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 2) {
+            return val.replace(/(\d{2})(\d{1,4})/, "$1-$2");
+        }
+        return val;
+    }
+
+    // 나머지 지역번호 또는 VoLTE 번호 (3자리-3/4자리-4자리)
+    if (/^\d{3}/.test(val)) {
+        if (val.length === 10) {
+            return val.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+        } else if (val.length >= 11) {
+            return val.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 3) {
+            return val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+        }
+        return val;
+    }
+
+    return val;
 }
 /************************************************************************
 함수명 : spaceChk

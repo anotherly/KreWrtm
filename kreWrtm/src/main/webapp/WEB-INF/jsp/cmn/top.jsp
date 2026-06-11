@@ -26,6 +26,7 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/svc.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/dtb.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/user.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/user-form.css">
 	<!-- DataTable -->
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/DataTables/datatables.min.css" />
 	<script type="text/javascript" src="<%=request.getContextPath()%>/DataTables/datatables.min.js"></script>
