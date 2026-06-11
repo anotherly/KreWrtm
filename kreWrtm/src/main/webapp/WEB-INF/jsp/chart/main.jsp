@@ -23,8 +23,8 @@
                     <div id="dashboardError" class="dashboard-error" style="display:none;"></div>
 
                     <section class="kpi-grid">
-                        <article class="kpi-card"><div class="kpi-label">전체 수신 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
-                        <article class="kpi-card"><div class="kpi-label">LTE-R 비율</div><div class="kpi-value"><span id="kpiLteRatio">0</span><span>%</span></div><div class="kpi-desc">CurrentRadioType 기준</div></article>
+                        <article class="kpi-card"><div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
+                        <article class="kpi-card"><div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiLteRatio">0</span><span>%</span></div><div class="kpi-desc">CurrentRadioType 기준</div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
                         <article class="kpi-card"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
                         <article class="kpi-card warning"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
@@ -34,7 +34,7 @@
                         <article class="dash-card trend-card"><div class="card-header"><span class="bar"></span><strong>최근 12분 수신 데이터</strong></div><div class="chart-box chart-line"><canvas id="receiveTrendChart"></canvas></div></article>
 
                         <article class="dash-card radio-card">
-                            <div class="card-header"><span class="bar"></span><strong>무선망 분포</strong><em>CurrentRadioType 기준</em></div>
+                            <div class="card-header"><span class="bar"></span><strong>무선망 분포</strong><em></em></div>
                             <div class="radio-layout"><div class="chart-box donut-box"><canvas id="radioTypeChart"></canvas></div>
                                 <div class="radio-summary">
                                     <div class="radio-row"><div><strong>LTE-R</strong><span id="lteRatioText">0%</span></div><div class="progress"><i id="lteRatioBar" style="width:0%"></i></div></div>
@@ -60,7 +60,7 @@
                         </article>
 
                         <article class="dash-card table-card">
-                            <div class="card-header"><span class="bar"></span><strong>단말기 송신 데이터 주요 값</strong><em>Cell ID 제외</em></div>
+                            <div class="card-header"><span class="bar"></span><strong>단말기별 데이터 수신 상태</strong><em>▶ more</em></div>
                             <div class="table-wrap"><table><thead><tr><th>VoLTE 번호</th><th>편성번호</th><th>무선망</th><th>RSRP</th><th>RSRP 상태</th><th>RSRQ</th><th>RSRQ 상태</th><th>수신시각</th></tr></thead><tbody id="receiveTableBody"><tr><td colspan="8">데이터 조회 중입니다.</td></tr></tbody></table></div>
                         </article>
                     </section>
@@ -76,6 +76,41 @@
     var radioTypeChart = null;
     var rsrpRadarChart = null;
     var commonFont = "'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
+
+    /*
+     * 4K + Windows 배율 150% 환경 보정
+     * - 200% 환경에서는 브라우저 CSS viewport가 약 1920x1080 수준이라 기존 크기가 적절함
+     * - 150% 환경에서는 viewport가 약 2560x1440 수준으로 넓어져 차트 내부 글씨가 작아 보임
+     * - CSS media query와 같은 기준으로 Chart.js 내부 font/point/cutout 값을 키움
+     */
+    function isWideDashboardMode() {
+        return window.matchMedia && window.matchMedia("(min-width: 2200px) and (min-height: 1100px)").matches;
+    }
+
+    function chartUiSize() {
+        if (isWideDashboardMode()) {
+            return {
+                legend: 16,
+                tick: 15,
+                radarTick: 13,
+                radarPointLabel: 17,
+                radarPointRadius: 6,
+                radarBorderWidth: 4,
+                centerText: 27,
+                legendBox: 14
+            };
+        }
+        return {
+            legend: 12,
+            tick: 11,
+            radarTick: 10,
+            radarPointLabel: 13,
+            radarPointRadius: 5,
+            radarBorderWidth: 3,
+            centerText: 19,
+            legendBox: 10
+        };
+    }
 
     $(document).ready(function () {
         loadDashboardData();
@@ -154,8 +189,8 @@
         radioTypeChart = new Chart(document.getElementById("radioTypeChart"), {
             type: "doughnut",
             data: { labels: labels, datasets: [{ data: data, backgroundColor: ["#20b872", "#ff9f1a", "#1688da"], borderWidth: 0, hoverOffset: 2 }] },
-            options: { maintainAspectRatio: false, responsive: true, cutout: "54%", plugins: { legend: { display: false } } },
-            plugins: [{ id: "centerText", afterDraw: function(chart) { var ctx = chart.ctx; var x = chart.chartArea.left + (chart.chartArea.right-chart.chartArea.left)/2; var y = chart.chartArea.top + (chart.chartArea.bottom-chart.chartArea.top)/2; ctx.save(); ctx.font = "800 19px " + commonFont; ctx.fillStyle = "#111f30"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("무선망", x, y); ctx.restore(); } }]
+            options: { maintainAspectRatio: false, responsive: true, cutout: isWideDashboardMode() ? "58%" : "54%", plugins: { legend: { display: false } } },
+            plugins: [{ id: "centerText", afterDraw: function(chart) { var ui = chartUiSize(); var ctx = chart.ctx; var x = chart.chartArea.left + (chart.chartArea.right-chart.chartArea.left)/2; var y = chart.chartArea.top + (chart.chartArea.bottom-chart.chartArea.top)/2; ctx.save(); ctx.font = "800 " + ui.centerText + "px " + commonFont; ctx.fillStyle = "#111f30"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("무선망", x, y); ctx.restore(); } }]
         });
     }
 
@@ -182,9 +217,9 @@
                         borderColor: "#2f80ed",
                         pointBackgroundColor: "#fff",
                         pointBorderColor: "#2f80ed",
-                        pointBorderWidth: 3,
-                        pointRadius: 4,
-                        borderWidth: 3
+                        pointBorderWidth: chartUiSize().radarBorderWidth,
+                        pointRadius: chartUiSize().radarPointRadius,
+                        borderWidth: chartUiSize().radarBorderWidth
                     },
                     {
                         label: "RSRQ",
@@ -194,9 +229,9 @@
                         borderColor: "#ff9f1a",
                         pointBackgroundColor: "#fff",
                         pointBorderColor: "#ff9f1a",
-                        pointBorderWidth: 3,
-                        pointRadius: 4,
-                        borderWidth: 3
+                        pointBorderWidth: chartUiSize().radarBorderWidth,
+                        pointRadius: chartUiSize().radarPointRadius,
+                        borderWidth: chartUiSize().radarBorderWidth
                     }
                 ]
             },
@@ -207,7 +242,7 @@
                     legend: {
                         display: true,
                         position: "bottom",
-                        labels: { boxWidth: 10, font: { size: 10, weight: "bold" } }
+                        labels: { boxWidth: chartUiSize().legendBox, font: { size: chartUiSize().legend, weight: "bold" } }
                     },
                     tooltip: {
                         callbacks: {
@@ -215,15 +250,15 @@
                         }
                     }
                 },
-                layout: { padding: { top: 6, right: 6, bottom: 0, left: 6 } },
+                layout: { padding: { top: 0, right: 0, bottom: 0, left: 0 } },
                 scales: {
                     r: {
                         min: 0,
                         max: scaleMax,
-                        ticks: { stepSize: Math.max(1, Math.ceil(scaleMax / 4)), backdropColor: "transparent", font: { size: 9 } },
+                        ticks: { stepSize: Math.max(1, Math.ceil(scaleMax / 4)), backdropColor: "transparent", font: { size: chartUiSize().radarTick } },
                         grid: { color: "rgba(83,100,122,0.22)" },
                         angleLines: { color: "rgba(83,100,122,0.22)" },
-                        pointLabels: { font: { size: 11, weight: "bold" }, color: "#34465d", padding: 4 }
+                        pointLabels: { font: { size: chartUiSize().radarPointLabel, weight: "bold" }, color: "#34465d", padding: isWideDashboardMode() ? 6 : 3 }
                     }
                 }
             }
@@ -324,7 +359,33 @@
     }
 
     function chartLineOptions() {
-        return { maintainAspectRatio: false, responsive: true, plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 12, weight: "bold" } } }, tooltip: { mode: "index", intersect: false } }, scales: { x: { grid: { color: "rgba(83,100,122,0.10)" }, ticks: { font: { size: 11 } } }, y: { beginAtZero: true, grid: { color: "rgba(83,100,122,0.22)", borderDash: [3,3] }, ticks: { font: { size: 11 } } } } };
+        var ui = chartUiSize();
+        return {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        boxWidth: ui.legendBox,
+                        padding: isWideDashboardMode() ? 18 : 10,
+                        font: { size: ui.legend, weight: "bold" }
+                    }
+                },
+                tooltip: { mode: "index", intersect: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: "rgba(83,100,122,0.10)" },
+                    ticks: { font: { size: ui.tick } }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(83,100,122,0.22)", borderDash: [3,3] },
+                    ticks: { font: { size: ui.tick } }
+                }
+            }
+        };
     }
 
     function setText(id, val) { $("#" + id).text(val); }

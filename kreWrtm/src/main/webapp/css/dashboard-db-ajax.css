@@ -1044,17 +1044,17 @@
 }
 
 .dashboard-db-page .kpi-label {
-    font-size: 13px !important;
-    margin-bottom: 10px !important;
+    font-size: 15px !important;
+    margin-bottom: 11px !important;
 }
 
 .dashboard-db-page .kpi-value {
-    font-size: 29px !important;
+    font-size: 32px !important;
 }
 
 .dashboard-db-page .kpi-desc {
-    font-size: 12px !important;
-    margin-top: 7px !important;
+    font-size: 13px !important;
+    margin-top: 8px !important;
 }
 
 .dashboard-db-page .dashboard-grid {
@@ -1274,17 +1274,17 @@
 #contents_box.dashboard-db-page .radar-card .radar-box canvas {
     width: 100% !important;
     height: 100% !important;
-    max-width: 360px !important;
-    max-height: 250px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
 }
 
 #contents_box.dashboard-db-page .radar-card .metric-title {
-    font-size: 22px !important;
+    font-size: 23px !important;
     line-height: 1 !important;
     font-weight: 900 !important;
     color: #111f30 !important;
     letter-spacing: -0.6px !important;
-    margin: 0 0 8px 0 !important;
+    margin: 0 0 18px 0 !important;
 }
 
 #contents_box.dashboard-db-page .radar-card .radar-side-left .metric-title {
@@ -1341,8 +1341,8 @@
     }
 
     #contents_box.dashboard-db-page .radar-card .radar-box canvas {
-        max-width: 300px !important;
-        max-height: 230px !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
     }
 }
 
@@ -1407,5 +1407,266 @@
     }
     #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row > span {
         font-size: 14px !important;
+    }
+}
+
+/* =========================
+   v8 4K 150% presentation scale patch
+   =========================
+   목적:
+   - 4K 모니터 + Windows 배율 150% 환경에서는 CSS viewport가 약 2560x1440 수준으로 커져
+     기존 200% 기준 대시보드가 작고 비어 보입니다.
+   - Chart.js 자체 CSS 문제가 아니라 화면 전체 카드/폰트/차트 래퍼 크기 문제이므로,
+     4K 150%로 추정되는 넓은 viewport에서만 대시보드 요소를 확대합니다.
+   - 4K 200% 환경(대략 1920x1080 viewport)에는 적용되지 않습니다.
+*/
+@media screen and (min-width: 2200px) and (min-height: 1100px) {
+    #work.dashboard-work {
+        padding: 0 18px !important;
+    }
+
+    #contents_box.dashboard-db-page {
+        height: calc(100vh - 62px) !important;
+        min-height: 980px !important;
+        padding: 18px 22px 22px !important;
+        overflow: hidden !important;
+    }
+
+    .dashboard-db-page .kpi-grid {
+        gap: 18px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .dashboard-db-page .kpi-card {
+        min-height: 132px !important;
+        padding: 24px 28px 20px !important;
+        border-radius: 22px !important;
+        box-shadow: 0 18px 34px rgba(33, 58, 83, 0.09) !important;
+    }
+
+    .dashboard-db-page .kpi-card::after {
+        width: 52px !important;
+        height: 52px !important;
+        top: 22px !important;
+        right: 24px !important;
+        border-radius: 18px !important;
+    }
+
+    .dashboard-db-page .kpi-label {
+        margin-bottom: 20px !important;
+        font-size: 19px !important;
+        line-height: 1.2 !important;
+    }
+
+    .dashboard-db-page .kpi-value {
+        font-size: 42px !important;
+        letter-spacing: -1px !important;
+    }
+
+    .dashboard-db-page .kpi-value span {
+        font-size: 20px !important;
+    }
+
+    .dashboard-db-page .kpi-desc {
+        margin-top: 13px !important;
+        font-size: 16px !important;
+    }
+
+    .dashboard-db-page .dashboard-grid {
+        grid-template-columns: minmax(0, 1.32fr) minmax(0, .68fr) !important;
+        grid-template-rows: minmax(430px, 1fr) minmax(430px, 1fr) !important;
+        gap: 18px !important;
+    }
+
+    .dashboard-db-page .dash-card {
+        border-radius: 22px !important;
+        box-shadow: 0 18px 34px rgba(33, 58, 83, 0.09) !important;
+    }
+
+    .dashboard-db-page .card-header {
+        height: 62px !important;
+        padding: 0 26px !important;
+        gap: 14px !important;
+    }
+
+    .dashboard-db-page .card-header .bar {
+        width: 7px !important;
+        height: 30px !important;
+    }
+
+    .dashboard-db-page .card-header strong {
+        font-size: 19px !important;
+    }
+
+    .dashboard-db-page .card-header em {
+        font-size: 14px !important;
+    }
+
+    .dashboard-db-page .chart-box,
+    .dashboard-db-page .radio-layout,
+    .dashboard-db-page .radar-layout,
+    .dashboard-db-page .table-wrap,
+    #contents_box.dashboard-db-page .radar-card .split-radar-layout {
+        height: calc(100% - 62px) !important;
+    }
+
+    .dashboard-db-page .chart-line {
+        padding: 16px 28px 10px !important;
+    }
+
+    .dashboard-db-page .radio-layout {
+        grid-template-columns: minmax(0, .95fr) minmax(240px, 1.05fr) !important;
+        gap: 22px !important;
+        padding: 26px 28px !important;
+    }
+
+    .dashboard-db-page .radio-summary {
+        gap: 18px !important;
+    }
+
+    .dashboard-db-page .radio-row {
+        padding: 18px 20px !important;
+        border-radius: 17px !important;
+    }
+
+    .dashboard-db-page .radio-row > div:first-child {
+        margin-bottom: 12px !important;
+        font-size: 17px !important;
+    }
+
+    .dashboard-db-page .progress {
+        height: 10px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .split-radar-layout {
+        padding: 18px 24px !important;
+        gap: 24px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-side {
+        flex: 0 0 290px !important;
+        width: 290px !important;
+        min-width: 260px !important;
+        max-width: 320px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-box {
+        min-width: 360px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-box canvas {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-title {
+        font-size: 31px !important;
+        margin-bottom: 40px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary {
+		gap: 20px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row {
+        min-height: 62px !important;
+        padding: 11px 16px 11px 18px !important;
+        border-radius: 15px !important;
+        column-gap: 12px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box b {
+        font-size: 17px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-label-box small {
+        font-size: 12px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .metric-status-summary .status-row > span {
+        font-size: 20px !important;
+    }
+
+    .dashboard-db-page .table-wrap {
+        padding: 18px 22px !important;
+    }
+
+    .dashboard-db-page .table-wrap table {
+        font-size: 14px !important;
+    }
+
+    .dashboard-db-page .table-wrap thead th {
+        height: 48px !important;
+    }
+
+    .dashboard-db-page .table-wrap tbody td {
+        height: 48px !important;
+    }
+
+    .dashboard-db-page .chip,
+    .dashboard-db-page .state {
+        min-width: 62px !important;
+        height: 30px !important;
+        padding: 0 13px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* 4K 150%이지만 브라우저 높이가 낮게 잡히는 경우 카드가 잘리지 않도록 약간 축소 */
+@media screen and (min-width: 2200px) and (min-height: 1100px) and (max-height: 1250px) {
+    #contents_box.dashboard-db-page {
+        min-height: 0 !important;
+        padding: 14px 18px 16px !important;
+    }
+
+    .dashboard-db-page .kpi-card {
+        min-height: 116px !important;
+        padding: 19px 24px 16px !important;
+    }
+
+    .dashboard-db-page .kpi-value {
+        font-size: 38px !important;
+    }
+
+    .dashboard-db-page .dashboard-grid {
+        grid-template-rows: minmax(380px, 1fr) minmax(380px, 1fr) !important;
+        gap: 14px !important;
+    }
+
+    .dashboard-db-page .card-header {
+        height: 56px !important;
+    }
+
+    .dashboard-db-page .chart-box,
+    .dashboard-db-page .radio-layout,
+    .dashboard-db-page .radar-layout,
+    .dashboard-db-page .table-wrap,
+    #contents_box.dashboard-db-page .radar-card .split-radar-layout {
+        height: calc(100% - 56px) !important;
+    }
+}
+
+
+/* v9 KPI readability + radar maximum patch */
+.dashboard-db-page .kpi-value span {
+    font-size: 16px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .radar-box {
+    flex: 1 1 auto !important;
+    min-width: 320px !important;
+}
+
+#contents_box.dashboard-db-page .radar-card .metric-status-summary {
+    margin-top: 0 !important;
+}
+
+@media screen and (min-width: 2200px) and (min-height: 1100px) {
+    .dashboard-db-page .kpi-value span {
+        font-size: 20px !important;
+    }
+
+    #contents_box.dashboard-db-page .radar-card .radar-box {
+        min-width: 420px !important;
     }
 }

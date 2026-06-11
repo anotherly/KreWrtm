@@ -10,7 +10,6 @@
 	<!-- JS -->
 	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.migrate.js"></script>
-	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
 
 	<!-- 로그인 시큐어코딩 관련 -->
 	<script  type="text/javascript" charset="utf-8"  src="<%=request.getContextPath()%>/js/loginSC/login.js"></script>
@@ -39,10 +38,10 @@
             <div class="login_logo">공항철도 | Airport Railroad Express | 무선장치 관리시스템 | Wireless device management system</div>
             <form id="loginForm" class="login_form" name="loginForm" method="post" enctype="multipart/form-data">
                 <div class="login_fm_id">
-                	<input type="text" id="userId" name="userId" class="form-control"  maxlength="10" onkeyup="spaceChk(this);" onkeydown="spaceChk(this);"  required/>
+                	<input type="text" id="userId" name="userId" class="form-control"  maxlength="20" onkeyup="spaceChk(this);" onkeydown="spaceChk(this);"  required/>
                 </div><!-- 아이디 -->
                 <div class="login_fm_pass"><!-- 비밀번호 -->
-                	<input type="password" id="userPw" name="userPw" class="form-control" maxlength="10" onkeyup="spaceChk(this);" onkeydown="spaceChk(this);"  required/>
+                	<input type="password" id="userPw" name="userPw" class="form-control" maxlength="20" onkeyup="spaceChk(this);" onkeydown="spaceChk(this);"  required/>
                 </div>
                 <div class="login_fm_btn">
                     <button class="btn btn_primary" type="submit" role="button">로그인</button>
