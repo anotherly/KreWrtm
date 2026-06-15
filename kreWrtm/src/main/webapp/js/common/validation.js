@@ -1,11 +1,11 @@
-//ID 검사 (영문 소문자+숫자, 6~20자리)
+//ID 검사 (영문 소문자+숫자, 6~12자리)
 function checkId(that) {
   let val = $(that).val();
   // 허용 문자 이외 제거
   val = val.replace(/[^a-z0-9]/g, "");
-  // 길이 제한 (20자)
-  if (val.length > 20) {
-    val = val.substring(0, 20);
+  // 길이 제한 (12자)
+  if (val.length > 12) {
+    val = val.substring(0, 12);
   }
   $(that).val(val);
 }
@@ -22,12 +22,12 @@ function checkPw(that) {
 	  $(that).val(val);
 }
 
-//ID 검사 함수 (영문 소문자 반드시 포함, 숫자는 선택, 6~20자리)
+//ID 검사 함수 (영문 소문자 반드시 포함, 숫자는 선택, 6~12자리)
 // ^ 시작 ~ $ 끝
 // (?=.*[a-z]) → 소문자 반드시 1개 이상
-// [a-z0-9]{6,20} → 허용 문자로만 6~20자리
+// [a-z0-9]{6,12} → 허용 문자로만 6~12자리
 function validateId(id) {
-    const regex = /^(?=.*[a-z])[a-z0-9]{6,20}$/;
+    const regex = /^(?=.*[a-z])[a-z0-9]{6,12}$/;
     return regex.test(id);
 }
 

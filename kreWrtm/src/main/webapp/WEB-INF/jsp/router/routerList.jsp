@@ -201,7 +201,7 @@
                                    id="searchValue"
                                    name="searchValue"
                                    maxlength="20"
-                                   placeholder=""
+                                   placeholder="검색어를 입력하세요."
                                    onkeydown="if(event.key === 'Enter'){ event.preventDefault(); search(); }"
                                    class="form-control">
                         </div>
