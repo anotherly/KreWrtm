@@ -194,8 +194,8 @@
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
 					<img class="list-title-img" src="/images/icons/ico_device_title.png"/>
-						<div class="ttl_ctn">장치 수정</div>
-						<!-- 설명글 -->
+						
+						<div class="ttl_ctn">장치 수정</div><!-- 설명글 -->
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
@@ -225,7 +225,7 @@
 									<input type="text" 
 										id="modelName" 
 										name ="modelName" 
-										placeholder="사용처 "
+										placeholder="최대 10자"
 										class="form-control input_base_require"
 										maxLength="10"
 									> - ${login.companyCode} _
@@ -241,7 +241,7 @@
 									<input type="text" 
 										id="phoneCell" 
 										name ="volteNum" 
-										placeholder="ex)013-1234-5678" 
+										placeholder="예: 013-1234-5678" 
 										class="form-control input_base_require"
 										oninput="formatPhoneAuto(this,'volte')"
 										maxLength="13"
@@ -261,7 +261,7 @@
 									<input type="text" 
 										id="keywords" 
 										name ="keywords" 
-										placeholder="" 
+										placeholder="예: 서해선|SDM845" 
 										class="form-control input_base_require"
 										maxLength="20"
 										value="${data.keywords}"
@@ -272,7 +272,7 @@
 									<input type="text" 
 										id="carNum" 
 										name ="carNum" 
-										placeholder="" 
+										placeholder="예: 123456ab" 
 										class="form-control input_base_require"
 										maxLength="10"
 										value="${data.carNum}"
@@ -303,7 +303,7 @@
 									<input type="text" 
 										id="phoneCell" 
 										name ="makerPhone1"
-										placeholder="" 
+										placeholder="예: 010-1234-5678" 
 										class="form-control input_base_require"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)"
@@ -315,7 +315,7 @@
 									<input type="text" 
 										id="phoneCell" 
 										name ="makerPhone2" 
-										placeholder="" 
+										placeholder="예: 02-1234-5678" 
 										class="form-control"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)"
@@ -328,7 +328,7 @@
 								<div class="ctn_tbl_td">
 									<input type="text" 
 										name="extraInfo"
-										placeholder="" 
+										placeholder="예: 비고 사항 입력" 
 										class="form-control"
 										maxLength="50"
 										value="${data.extraInfo}"

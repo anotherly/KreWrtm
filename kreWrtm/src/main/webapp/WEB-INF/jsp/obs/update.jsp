@@ -183,7 +183,7 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">호차</div>
 								<div class="ctn_tbl_td">
-									<input type="text" id="carNum" name ="carNum" value="${data.carNum}" maxlength="6" class="form-control input_base_require">
+									<input type="text" id="carNum" name ="carNum" value="${data.carNum}" maxlength="6" placeholder="예: 123456" class="form-control input_base_require">
 								</div>
 								<div class="ctn_tbl_th fm_rep">진행 상태</div>
 								<div class="ctn_tbl_td">
@@ -217,25 +217,25 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">신고 증상</div>
 								<div class="ctn_tbl_td">
-									<input type="text" id="obsName" name ="obsName" value="${data.obsName}" maxlength="200" class="form-control input_base_require">
+									<input type="text" id="obsName" name ="obsName" value="${data.obsName}" maxlength="200" placeholder="예: 단말 수신 불량 (최대 200자)" class="form-control input_base_require">
 								</div>
 							</div>
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">처리 내역</div>
 								<div class="ctn_tbl_td">
-									<input type="text" id="prcComment" name ="prcComment" value="${data.prcComment}" maxlength="200" class="form-control input_base_require">
+									<input type="text" id="prcComment" name ="prcComment" value="${data.prcComment}" maxlength="200" placeholder="예: 단말 재부팅 및 상태 확인 (최대 200자)" class="form-control input_base_require">
 								</div>
 							</div>
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">증상 원인</div>
 								<div class="ctn_tbl_td">
-									<input type="text" id="reason" name ="reason" value="${data.reason}" maxlength="200" class="form-control input_base_require">
+									<input type="text" id="reason" name ="reason" value="${data.reason}" maxlength="200" placeholder="예: 일시적 통신 품질 저하 (최대 200자)" class="form-control input_base_require">
 								</div>
 							</div>
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th">기타</div>
 								<div class="ctn_tbl_td">
-									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control input_base_require" maxlength="1000" wrap="hard">${data.etc}</textarea>
+									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control input_base_require" maxlength="1000" placeholder="예: 추가 확인 사항 입력 (최대 1000자)" wrap="hard">${data.etc}</textarea>
 								</div>
 							</div>
 						</div>

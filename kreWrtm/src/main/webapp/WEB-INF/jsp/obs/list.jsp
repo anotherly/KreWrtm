@@ -207,6 +207,10 @@
 		    window.location = "/obs/detail.do?obsId=" + tagId;
 		});
 
+		//최초 상태에 신고일은 체크되어있는 것으로...
+		$("#datetimepicker1").find("input").prop('disabled', false);
+		$("#datetimepicker2").find("input").prop('disabled', false);
+
 		
 	});
 	
@@ -275,7 +279,7 @@
                 <div class="search_box">
                 	<form id=searchFrm name="searchFrm" class="search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group" style="margin-right: 339px; margin-left: 15px;">
-                        	<input type="checkbox" id="dateChk" name="dateChk">
+                        	<input type="checkbox" id="dateChk" name="dateChk" checked>
                             <label for="dateChk" class="form-control-label">                           	
                             	신고 일시
                             </label>
@@ -314,11 +318,11 @@
                         </div>
                         <div class="form-group" style="margin-left: 38px; margin-right: 338px;">
                             <label for="sch_text_01" class="form-control-label">호차</label>
-                            <input type="text" id="carNum" name="carNum" placeholder="검색어를 입력하세요." class="form-control">
+                            <input type="text" id="carNum" name="carNum" maxlength="32" placeholder="검색어를 입력하세요." class="form-control">
                         </div>
                         <div class="form-group" >
                             <label for="sch_text_01" class="form-control-label">신고증상</label>
-                            <input type="text" id="obsName" name="obsName" placeholder="검색어를 입력하세요." class="form-control">
+                            <input type="text" id="obsName" name="obsName" maxlength="200" placeholder="검색어를 입력하세요." class="form-control">
                         </div>      
                         
                     </form>

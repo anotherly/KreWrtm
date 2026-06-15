@@ -27,13 +27,13 @@
 			// 중복확인 상태 초기화
 			$('input[name="userId"]').on("change",function(){
 				dupChkFlag = false;
-				$("#dupComment").css('color', '').text("(6~20자리 영문소문자 숫자 조합)");
+				$("#dupComment").css('color', '').text("(6~12자리 영문소문자 숫자 조합)");
 			});
 
 			// 중복확인
 			$("#dupChk").on('click',function(){
 				var userIdVal = $('input[name="userId"]').val();
-				if(userIdVal.length < 5){
+				if(userIdVal.length < 6){
 					alert("유효한 ID 값을 입력하세요");
 				}else{
 					var selectOne = ajaxMethod("/user/selectOne.ajax", {"userId":userIdVal}).data.length;
@@ -166,15 +166,15 @@
 									<input type="text"
 										id="userId"
 										name="userId"
-										placeholder="6~20자리  영문소문자 숫자 조합"
+										placeholder="6~12자리 영문소문자 숫자 조합"
 										class="form-control input_base_require user_form_input"
 										oninput="checkId(this)"
-										maxLength="20">
+										maxLength="12">
 								</div>
 								<div class="ctn_tbl_td">
 									<div class="id_check_box">
 										<input type="button" id="dupChk" alt="중복확인" value="중복확인" />
-										<span id="dupComment">(6~20자리 영문소문자 숫자 조합)</span>
+										<span id="dupComment">(6~12자리 영문소문자 숫자 조합)</span>
 									</div>
 								</div>
 								<div class="ctn_tbl_td"></div>
@@ -186,7 +186,7 @@
 									<input type="text"
 										id="userName"
 										name="userName"
-										placeholder=" "
+										placeholder="예: 홍길동"
 										class="form-control input_base_require user_form_input"
 										maxLength="10">
 								</div>
@@ -280,7 +280,7 @@
 									<input type="text"
 										id="userPhone"
 										name="userPhone"
-										placeholder=""
+										placeholder="예: 010-1234-5678"
 										class="form-control input_base_require user_form_input"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)">
@@ -290,7 +290,7 @@
 									<input type="text"
 										id="userPhone2"
 										name="userPhone2"
-										placeholder=""
+										placeholder="예: 02-1234-5678"
 										class="form-control user_form_input"
 										maxLength="13"
 										oninput="formatPhoneAuto(this)">

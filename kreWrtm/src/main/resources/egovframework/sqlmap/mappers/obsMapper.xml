@@ -48,7 +48,6 @@
 				 or		        
 				 <![CDATA[ PRC_DATE >= #{ssDate} AND PRC_DATE <= #{eeDate} ]]>
 		        )
-		         
 		    </when>
 		    <otherwise>
 				<if test="sDate !=null and sDate neq '' and eDate !=null and eDate neq '' ">

@@ -129,7 +129,7 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th fm_rep">제목</div>
 								<div class="ctn_tbl_td">
-									<input type="text" id="fileTitle" name ="fileTitle" maxlength="50" class="form-control input_base_require">
+									<input type="text" id="fileTitle" name ="fileTitle" maxlength="50" placeholder="최대 50자" class="form-control input_base_require">
 								</div>
 							</div>
 							<div class="ctn_tbl_row">

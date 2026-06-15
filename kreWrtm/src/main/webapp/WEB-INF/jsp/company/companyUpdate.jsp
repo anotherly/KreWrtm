@@ -46,15 +46,16 @@
 			
 			$("#btnAddOrg").on('click', function(){
 				addOrgRow('', '');
+				updateOrgRemoveButtons();
 			});
 			
 			$(document).on('click', '.btnRemoveOrg', function(){
-				if($("#orgTbody tr").length <= 1){
-					$(this).closest('tr').find('input').val('');
+				if($(this).prop('disabled') || $("#orgTbody tr").length <= 1){
 					return false;
 				}
 				$(this).closest('tr').remove();
 				reindexOrgRows();
+				updateOrgRemoveButtons();
 			});
 			
 			$(document).on('input', '.org-id-input', function(){
@@ -87,14 +88,16 @@
 				
 				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
+
+			updateOrgRemoveButtons();
 		});
 		
 		function addOrgRow(orgId, orgName){
 			let idx = $("#orgTbody tr").length;
 			let html = '';
 			html += '<tr>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control input_base_require org-id-input" maxlength="20" value="'+orgId+'" placeholder="예: SAFE_CTRL"></td>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control input_base_require" maxlength="100" value="'+orgName+'" placeholder="예: 관제실"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control org-id-input" maxlength="20" value="'+orgId+'" placeholder="예: CTRL"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control" maxlength="100" value="'+orgName+'" placeholder="예: 관제실"></td>';
 			html += '  <td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>';
 			html += '</tr>';
 			$("#orgTbody").append(html);
@@ -105,6 +108,10 @@
 				$(this).find('input[name$=".orgId"]').attr('name', 'orgList['+index+'].orgId');
 				$(this).find('input[name$=".orgName"]').attr('name', 'orgList['+index+'].orgName');
 			});
+		}
+
+		function updateOrgRemoveButtons(){
+			$(".btnRemoveOrg").prop("disabled", $("#orgTbody tr").length <= 1);
 		}
 	</script>
 
@@ -149,6 +156,7 @@
 										name ="companyName"  
 										class="form-control input_base_require"
 										maxLength="20"
+										placeholder="예: 안전본부, 차량본부, 케이원"
 										value="${data.companyName}"
 									>
 								</div>
@@ -158,7 +166,7 @@
 								<input type="hidden" 
 										id="companyCode" 
 										name ="companyCode" 
-										placeholder="" 
+										placeholder="4자리 영문 대문자" 
 										class="form-control"
 										oninput="valComCode(event)"
 										maxLength="4"
@@ -205,16 +213,16 @@
 											<c:choose>
 												<c:when test="${empty orgList}">
 													<tr>
-														<td><input type="text" name="orgList[0].orgId" class="form-control input_base_require org-id-input" maxlength="20" placeholder="예: SAFE_CTRL"></td>
-														<td><input type="text" name="orgList[0].orgName" class="form-control input_base_require" maxlength="100" placeholder="예: 관제실"></td>
+														<td><input type="text" name="orgList[0].orgId" class="form-control org-id-input" maxlength="4" placeholder="예: CTRL"></td>
+														<td><input type="text" name="orgList[0].orgName" class="form-control" maxlength="20" placeholder="예: 관제실"></td>
 														<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
 													</tr>
 												</c:when>
 												<c:otherwise>
 													<c:forEach var="org" items="${orgList}" varStatus="st">
 														<tr>
-															<td><input type="text" name="orgList[${st.index}].orgId" class="form-control input_base_require org-id-input" maxlength="20" value="${org.orgId}"></td>
-															<td><input type="text" name="orgList[${st.index}].orgName" class="form-control input_base_require" maxlength="100" value="${org.orgName}"></td>
+															<td><input type="text" name="orgList[${st.index}].orgId" class="form-control org-id-input" maxlength="20" value="${org.orgId}" placeholder="예: CTRL"></td>
+															<td><input type="text" name="orgList[${st.index}].orgName" class="form-control" maxlength="100" value="${org.orgName}" placeholder="예: 관제실"></td>
 															<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
 														</tr>
 													</c:forEach>
