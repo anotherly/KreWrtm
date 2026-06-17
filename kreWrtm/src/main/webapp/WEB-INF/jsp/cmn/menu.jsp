@@ -4,6 +4,7 @@
 <script>
 $(document).ready(function() {
 	console.log("메뉴 화면");
+	var contextPath = "<%=request.getContextPath()%>";
 
 	$(".menu-item a").on('click',function(){
 		console.log("소메뉴 확장을 위한 메뉴 클릭");
@@ -23,13 +24,13 @@ $(document).ready(function() {
 			//주소 이동
 			if($(this).parent().find("ul").length==0){
 				if($(this).attr("id")!==''){
-					location.href=$(this).attr("id");
+					location.href=contextPath + $(this).attr("id");
 				}
 			}
 			
 		}else{
 			if($(this).attr("id")!==''){
-				location.href=$(this).attr("id");
+				location.href=contextPath + $(this).attr("id");
 			}
 		}
 	});
@@ -37,31 +38,31 @@ $(document).ready(function() {
 </script>
 
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/chart/main.do" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="<%=request.getContextPath()%>/chart/main.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n01"></i>
 		<div>운용/사용률 현황</div>
 	</a>
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/user/userList.do" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="<%=request.getContextPath()%>/user/userList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n07"></i>
 		<div>사용자 관리</div>
 	</a>
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/company/companyList.do" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="<%=request.getContextPath()%>/company/companyList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n09"></i>
 		<div>소속기관 관리</div>
 	</a>
 </li>	
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/router/routerList.do" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="<%=request.getContextPath()%>/router/routerList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n02"></i>
 		<div>장치 관리</div>
 	</a>
 </li>
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/search/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
+	<a href="<%=request.getContextPath()%>/search/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
 		<i style="
     background: url(../images/icons/btn_sch.png) no-repeat 0 0;
     opacity: 0.5;
@@ -79,7 +80,7 @@ $(document).ready(function() {
 	</ul>
 </li>	
 <li class="menu-item" id="ROOT_TEST_SW">
-	<a href="/obs/list.do?" class="menu-link" style="color: rgb(255, 255, 255);">
+	<a href="<%=request.getContextPath()%>/obs/list.do?" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n03"></i>
 		<div>장애 관리</div>
 	</a>
@@ -94,5 +95,4 @@ $(document).ready(function() {
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/board/list.do" class="menu-link"><div>게시판</div></a></li>
 	</ul>
 </li>
-
 

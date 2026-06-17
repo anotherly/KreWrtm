@@ -24,7 +24,7 @@
 	
 		var tb2 = $("#tableList").DataTable({
 			ajax: {
-				"url": "/search/list.ajax?searchVal=" + searchSendValue,
+				"url": "<%=request.getContextPath()%>/search/list.ajax?searchVal=" + searchSendValue,
 				"type": "POST",
 				"dataType": "json",
 			},
@@ -70,7 +70,7 @@
 		
 		//상세 화면 조회
 		$("#tableList").on("click","tr",function () {			
-			var tagUrl = "/search/monitering.do";
+			var tagUrl = "<%=request.getContextPath()%>/search/monitering.do";
 		    var tagId = $(this).find("td:eq(2) input[type='hidden']").val(); // 장치명에 hidden 처리 된 deviceId 가져오기
 
 		    window.location = tagUrl + "?deviceId=" + tagId;  // 모니터링(상세)으로 이동
@@ -81,7 +81,7 @@
 
 	function search() {
 		let frm = $("#searchFrm").serialize();
-		var tagUrl = "/search/list.ajax";
+		var tagUrl = "<%=request.getContextPath()%>/search/list.ajax";
 	
 		var searchVal = $('#searchVal').val();
 	

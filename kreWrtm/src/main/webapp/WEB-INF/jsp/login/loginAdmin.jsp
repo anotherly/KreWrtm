@@ -6,6 +6,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<!-- JS -->
+	<script>
+		window.APP_CONTEXT_PATH = "<%=request.getContextPath()%>";
+	</script>
 	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.migrate.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
@@ -28,11 +31,11 @@
 		});//btnSub
 		
 		$("#findid").on("click",function(){
-			location.href="/login/findid"
+			location.href="<%=request.getContextPath()%>/login/findid"
 		});
 		
 		$("#findpw").on("click",function(){
-			location.href="/login/findpw"
+			location.href="<%=request.getContextPath()%>/login/findpw"
 		});
 	});
 </script>
@@ -59,7 +62,7 @@
 		</div>
 	</form>
 	<button class="buttonDf" id="findid">ID찾기</button>
-	<button class="buttonDf" id="findpw" href="/findpw">비밀번호찾기</button>
+	<button class="buttonDf" id="findpw" href="<%=request.getContextPath()%>/findpw">비밀번호찾기</button>
 </body>
 
 </html>

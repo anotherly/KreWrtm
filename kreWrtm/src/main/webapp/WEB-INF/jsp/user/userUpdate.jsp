@@ -37,7 +37,7 @@
 						var phoneChk = phoneCellChk("userPhone","userPhone2");
 						if(phoneChk) {
 							var queryString = $("#insertForm").serialize();
-							ajaxMethod('/user/userUpdate.ajax', queryString, '/user/userList.do', '저장되었습니다');
+							ajaxMethod('<%=request.getContextPath()%>/user/userUpdate.ajax', queryString, '<%=request.getContextPath()%>/user/userList.do', '저장되었습니다');
 						} else {
 							alert("연락처가 올바르지 않습니다. 다시 확인하세요.");
 						}
@@ -51,7 +51,7 @@
 		});
 
 		function loadCompanyList(userType, selectedCompanyCode, selectedOrgId) {
-			var result = ajaxMethod("/router/selectCompany.ajax", {"userType": userType});
+			var result = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax", {"userType": userType});
 			var comData = result.data || [];
 			var loginComcode = '${login.companyCode}';
 			var loginUserType = '${login.userType}';
@@ -90,7 +90,7 @@
 				return;
 			}
 
-			var result = ajaxMethod("/org/comCodeOrg.ajax", {"companyCode": companyCode});
+			var result = ajaxMethod("<%=request.getContextPath()%>/org/comCodeOrg.ajax", {"companyCode": companyCode});
 			var selectList = result.data || [];
 
 			if (selectList.length <= 0) {
@@ -134,7 +134,7 @@
 				<div id="contents_box" class="contents_box user_form_page">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 수정</div>
+						<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 수정</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 

@@ -168,7 +168,7 @@
 	$(document).ready(function(){	
 		console.log("모니터링");
 		// 첫 진입 시 단말기 테이블 띄우기
-		var alData = ajaxMethod("/search/list.ajax");		
+		var alData = ajaxMethod("<%=request.getContextPath()%>/search/list.ajax");		
 		var len = alData.data.length;
 
 		// 단말기 총 개수 텍스트 변경
@@ -218,12 +218,12 @@
         	$(".left-container").empty();
         	
         	chkTerId=$(this).attr('id');
-        	$(".left-container").load("/search/subDetail.do",{"deviceId":chkTerId});
+        	$(".left-container").load("<%=request.getContextPath()%>/search/subDetail.do",{"deviceId":chkTerId});
         });
     	
     	$('#companyCode').change(function() {
     		var selectedValue = $(this).val();
-    		var dataList = ajaxMethod("/search/list.ajax",{"companyCode":selectedValue});
+    		var dataList = ajaxMethod("<%=request.getContextPath()%>/search/list.ajax",{"companyCode":selectedValue});
     		changeOption(dataList.dnData);
         });
     	
@@ -302,7 +302,7 @@
 	    	        var f = document.getElementById('protoCallFrame');
 	    	        if (f) f.parentNode.removeChild(f);
 	    	    }, 1500); */
-	    	    window.location.href = "/remote/remoteControll.ajax?volteNum=" + volteNum;
+	    	    window.location.href = "<%=request.getContextPath()%>/remote/remoteControll.ajax?volteNum=" + volteNum;
 	    	} else {
 	    		return false;
 	    	}	    	
@@ -327,7 +327,7 @@
 	// 검색 기능
 	function search() {
 		let frm = $("#searchFrm").serialize();
-		var tagUrl="/search/routerlist.ajax";
+		var tagUrl="<%=request.getContextPath()%>/search/routerlist.ajax";
 		
 		event.preventDefault();  // ajax 제출 이후 form 전송 방지
 		

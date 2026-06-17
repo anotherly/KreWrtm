@@ -7,9 +7,9 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var updUrl="/router/routerUpdate.do";
-	var delUrl="/router/routerDelete.ajax";
-	var delbak="/router/routerList.do";
+	var updUrl="<%=request.getContextPath()%>/router/routerUpdate.do";
+	var delUrl="<%=request.getContextPath()%>/router/routerDelete.ajax";
+	var delbak="<%=request.getContextPath()%>/router/routerList.do";
 	
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
@@ -27,7 +27,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/router/routerList.ajax",
+                "url":"<%=request.getContextPath()%>/router/routerList.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -72,7 +72,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/router/routerInsert.do";
+			location.href="<%=request.getContextPath()%>/router/routerInsert.do";
 		});
 		
 		//상세 화면 조회
@@ -81,7 +81,7 @@
 			var tagId = $(this).parent().children().first().children().first().val();
 			$(this).attr('id');
 			if(tagId!="chkTd"){
-				location.href="/router/routerDetail.do?tagId="+tagId; 
+				location.href="<%=request.getContextPath()%>/router/routerDetail.do?tagId="+tagId; 
 			}
 		});
 		$("#tableList_filter").attr("hidden", "hidden");
@@ -157,7 +157,7 @@
 	    	return false;
 	    } else {
 			 let frm = $("#searchFrm").serialize();
-			 var tagUrl="/router/routerList.ajax";
+			 var tagUrl="<%=request.getContextPath()%>/router/routerList.ajax";
 			 tbSearch("tableList",tagUrl,frm);
 	    }
 	 }
@@ -185,7 +185,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-				<img class="list-title-img" src="/images/icons/ico_device_title.png"/>
+				<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_device_title.png"/>
 					<div class="ttl_ctn">장치 목록</div>
 				</div>
                 <!-- search_box Start -->

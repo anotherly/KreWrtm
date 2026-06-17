@@ -7,9 +7,9 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var updUrl="/company/companyUpdate.do";
-	var delUrl="/company/companyDelete.ajax";
-	var delbak="/company/companyList.do";
+	var updUrl="<%=request.getContextPath()%>/company/companyUpdate.do";
+	var delUrl="<%=request.getContextPath()%>/company/companyDelete.ajax";
+	var delbak="<%=request.getContextPath()%>/company/companyList.do";
 	
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
@@ -27,7 +27,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/company/companyList.ajax",
+                "url":"<%=request.getContextPath()%>/company/companyList.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -100,7 +100,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/company/companyInsert.do";
+			location.href="<%=request.getContextPath()%>/company/companyInsert.do";
 		});
 		
 		//상세 화면 조회
@@ -109,7 +109,7 @@
 			var tagId = $(this).parent().children().first().children().first().val();
 			$(this).attr('id');
 			if(tagId!="chkTd"){
-				location.href="/company/companyDetail.do?tagId="+tagId; 
+				location.href="<%=request.getContextPath()%>/company/companyDetail.do?tagId="+tagId; 
 			}
 		});
 
@@ -159,7 +159,7 @@
 		}
 
 		let frm = $("#searchFrm").serialize();
-		var tagUrl="/company/companyList.ajax";
+		var tagUrl="<%=request.getContextPath()%>/company/companyList.ajax";
 		tbSearch("tableList",tagUrl,frm);
 	 }
     //삭제 시 확인문구
@@ -191,7 +191,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 목록</div>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 목록</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box list_search_box">

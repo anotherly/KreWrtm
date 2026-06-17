@@ -28,7 +28,7 @@
 	    	        if (f) f.parentNode.removeChild(f);
 	    	    }, 1500);
 	    	     */
-	    	    window.location.href = "/remote/remoteControll.ajax?volteNum=" + volteNum;
+	    	    window.location.href = "<%=request.getContextPath()%>/remote/remoteControll.ajax?volteNum=" + volteNum;
 	    	} else {
 	    		return false;
 	    	}	    	

@@ -40,9 +40,9 @@ table.dataTable tbody tr{
 		//$("#container_chart").hide();
 		var userAuth='${login.userAuth}';
 		if(userAuth==0){
-			$("#chtImg").load("/stat/mainAdminChart.do");
+			$("#chtImg").load("<%=request.getContextPath()%>/stat/mainAdminChart.do");
 		}else{
-			$("#chtImg").load("/stat/mainUserChart.do");
+			$("#chtImg").load("<%=request.getContextPath()%>/stat/mainUserChart.do");
 		}
 		
 		//최대일과 현재일이 같을 경우 발생할수 있는 문제에 대해 최대일에 +1초 
@@ -56,8 +56,8 @@ table.dataTable tbody tr{
 			 defaultDate: defaultD
 		 }).on('dp.change', function (e) {
 			 	//변경일시에 해당하는 데이터로 호출
-			 	$("#chtImg").load("/stat/mainAdminChart.do");
-				tbSearch("tableList","/stat/list.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
+			 	$("#chtImg").load("<%=request.getContextPath()%>/stat/mainAdminChart.do");
+				tbSearch("tableList","<%=request.getContextPath()%>/stat/list.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
 		 });
 		
 		console.log("월별통계");
@@ -69,7 +69,7 @@ table.dataTable tbody tr{
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/stat/list.ajax",
+                "url":"<%=request.getContextPath()%>/stat/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  

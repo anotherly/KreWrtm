@@ -12,7 +12,7 @@
 		$(document).ready(function() {
 			console.log("단말기 등록 화면");
 			
-			var ajaxData=ajaxMethod('/terminal/routerTeamCnt.ajax',{"departCode":'ARX-SCH-SHT'}).data;
+			var ajaxData=ajaxMethod('<%=request.getContextPath()%>/terminal/routerTeamCnt.ajax',{"departCode":'ARX-SCH-SHT'}).data;
 			$("#teamCnt").val(ajaxData[0].teamCnt);
 			$("#deviceCnt").val(ajaxData[0].deviceCnt);
 			
@@ -35,7 +35,7 @@
 			//팀 변경시
 			$('#CPY_CODE').on("change",function(){
 				var tagId = $(this).val();
-				var ajaxData=ajaxMethod('/terminal/routerTeamCnt.ajax',{"departCode":tagId}).data;
+				var ajaxData=ajaxMethod('<%=request.getContextPath()%>/terminal/routerTeamCnt.ajax',{"departCode":tagId}).data;
 				$("#teamCnt").val(ajaxData[0].teamCnt);
 				$("#deviceCnt").val(ajaxData[0].deviceCnt);
 			});
@@ -49,8 +49,8 @@
 				}
 				$("#lteRCode").val($("#CPY_CODE").val());
 				let queryString = $("#insertForm").serialize();
-				ajaxMethod('/terminal/insert.ajax',queryString,'/terminal/list.do','저장되었습니다');
-				location.href='/terminal/list.do';
+				ajaxMethod('<%=request.getContextPath()%>/terminal/insert.ajax',queryString,'<%=request.getContextPath()%>/terminal/list.do','저장되었습니다');
+				location.href='<%=request.getContextPath()%>/terminal/list.do';
 			}); 
 			
 			//y면 체크 아니면 비체크인데 비체크값을 n으로 변경
@@ -74,7 +74,7 @@
 			});
 			
 			$("#btnReload").on('click',function(){
-				var rData=ajaxMethod('/terminal/deviceReload.ajax',{"lteRIp":$("#lteRIp").val()}).rData;
+				var rData=ajaxMethod('<%=request.getContextPath()%>/terminal/deviceReload.ajax',{"lteRIp":$("#lteRIp").val()}).rData;
 				console.log(rData);
 				//$("#lteRUsed").val(rData.lteRUsed);
 				//$("#insLocTxt").val(rData.insLocTxt);
@@ -102,7 +102,7 @@
 
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/terminal/list.do';
+				location.href='<%=request.getContextPath()%>/terminal/list.do';
 			});
 			
 		});

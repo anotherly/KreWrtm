@@ -18,7 +18,7 @@
 		$('.contents_box *').css('color','#fff');
 		
 		lteRIp='${data.lteRMacAdd}';
-		var rtVo=ajaxMethod("/realtimeChartFirst.ajax",{"lteRIp":lteRIp}).data;
+		var rtVo=ajaxMethod("<%=request.getContextPath()%>/realtimeChartFirst.ajax",{"lteRIp":lteRIp}).data;
 		//chart start
 		var memArr;
 		var downArr;
@@ -55,7 +55,7 @@
 			upArr=[0,0,0,0,0,0];
 		}
     	
-		var rtVo=ajaxMethod("/realtimeChartFirst.ajax",{"lteRIp":lteRIp}).data;
+		var rtVo=ajaxMethod("<%=request.getContextPath()%>/realtimeChartFirst.ajax",{"lteRIp":lteRIp}).data;
 		var MEMORY = rtVo.memCritVal; 
 		var UP = rtVo.lteRComUpVal; 
 		var DOWN = rtVo.lteRComDnVal; 
@@ -170,12 +170,12 @@
 	    $("#chartDiv").css('min-height','42vh');
 		chartObj.resize();
 	    
-		//$("#chartDetail").load("/chart/subDetail.do",{"lteRIp":lteRIp});
+		//$("#chartDetail").load("<%=request.getContextPath()%>/chart/subDetail.do",{"lteRIp":lteRIp});
 		
 	    subChartTimer=setInterval(function(){
 	    	console.log("nws timeinterval");
 	    	
-			var rtVo=ajaxMethod("/realtimeChart.ajax",{"lteRIp":lteRIp}).data;
+			var rtVo=ajaxMethod("<%=request.getContextPath()%>/realtimeChart.ajax",{"lteRIp":lteRIp}).data;
 			var MEMORY = rtVo.memCritVal; 
 			var UP = rtVo.lteRComUpVal; 
 			var DOWN = rtVo.lteRComDnVal; 
@@ -208,9 +208,9 @@
 			$("#all_chart").empty();
 			var userAuth='${login.userAuth}';
 			if(userAuth==0){
-				$("#all_chart").load("/chart/mainAdminChart.do");
+				$("#all_chart").load("<%=request.getContextPath()%>/chart/mainAdminChart.do");
 			}else{
-				$("#all_chart").load("/chart/mainUserChart.do");
+				$("#all_chart").load("<%=request.getContextPath()%>/chart/mainUserChart.do");
 			}
 		});
 	});

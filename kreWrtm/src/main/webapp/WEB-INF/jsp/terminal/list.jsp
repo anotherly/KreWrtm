@@ -7,9 +7,9 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var updUrl="/terminal/update.do";
-	var delUrl="/terminal/delete.ajax";
-	var delbak="/terminal/list.do";
+	var updUrl="<%=request.getContextPath()%>/terminal/update.do";
+	var delUrl="<%=request.getContextPath()%>/terminal/delete.ajax";
+	var delbak="<%=request.getContextPath()%>/terminal/list.do";
 	
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
@@ -18,7 +18,7 @@
 	$(document).ready(function(){
 		//테이블 기본설정 세팅
 		dtTbSetting();
-		//$("#sideDiv").load("/sidebar/company.do");
+		//$("#sideDiv").load("<%=request.getContextPath()%>/sidebar/company.do");
 
 		iidx = 3;
 		console.log("사용자 목록 화면 진입");
@@ -28,7 +28,7 @@
 		var tb2=$("#tableList").DataTable({
 			
 			ajax : {
-                "url":"/terminal/list.ajax",
+                "url":"<%=request.getContextPath()%>/terminal/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -132,7 +132,7 @@
 
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/terminal/insert.do";
+			location.href="<%=request.getContextPath()%>/terminal/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -141,7 +141,7 @@
 			var tagId = $(this).parent().children().first().children().first().val();
 			$(this).attr('id');
 			if(tagId!="chkTd"){
-				$("#contents").load("/terminal/detail.do",{"lteRIp":tagId}); 
+				$("#contents").load("<%=request.getContextPath()%>/terminal/detail.do",{"lteRIp":tagId}); 
 			}
 		});
 
@@ -170,7 +170,7 @@
 	 function search(){
 		 console.log("검색");
 		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/terminal/list.ajax";
+		 var tagUrl="<%=request.getContextPath()%>/terminal/list.ajax";
 		 tbSearch("tableList",tagUrl,frm);
 	 }
     

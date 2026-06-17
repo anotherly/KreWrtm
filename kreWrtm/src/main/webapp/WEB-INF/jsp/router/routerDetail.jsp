@@ -14,10 +14,10 @@
 	$(document).ready(function(){
 		console.log("상세");
 		$("#btnSave").on('click', function(){
-			location.href='/router/routerUpdate.do?tagId='+tagId;
+			location.href='<%=request.getContextPath()%>/router/routerUpdate.do?tagId='+tagId;
 		});
 		$("#btnCancel").on('click', function(){
-			location.href='/router/routerList.do';
+			location.href='<%=request.getContextPath()%>/router/routerList.do';
 		});
 	});
 
@@ -48,7 +48,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_device_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_device_title.png"/>
 						<div class="ttl_ctn">장치 상세정보</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->

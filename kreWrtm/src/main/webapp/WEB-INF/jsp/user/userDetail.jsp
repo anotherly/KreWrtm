@@ -14,10 +14,10 @@
 		console.log("상세");
 		var tagId='${data.userId}';
 		$("#btnSave").on('click', function(){
-			location.href='/user/userUpdate.do?tagId='+tagId;
+			location.href='<%=request.getContextPath()%>/user/userUpdate.do?tagId='+tagId;
 		});
 		$("#btnCancel").on('click', function(){
-			location.href='/user/userList.do';
+			location.href='<%=request.getContextPath()%>/user/userList.do';
 		});
 	});
 
@@ -48,7 +48,7 @@
 				<div id="contents_box" class="contents_box user_form_page user_detail_page">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 				<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 상세</div>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 상세</div>
 				</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->

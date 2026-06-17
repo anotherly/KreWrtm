@@ -11,9 +11,9 @@
 <script>
 	var iidx; 
 	var selectlang;
-	var updUrl="/dataroom/board/update.do";
-	var delUrl="/dataroom/board/delete.ajax";
-	var delbak="/dataroom/board/list.do";	
+	var updUrl="<%=request.getContextPath()%>/dataroom/board/update.do";
+	var delUrl="<%=request.getContextPath()%>/dataroom/board/delete.ajax";
+	var delbak="<%=request.getContextPath()%>/dataroom/board/list.do";	
 	
 	$(document).ready(function(){	
 		/* ▼ 데이터 테이블 관련 */
@@ -29,7 +29,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/dataroom/board/list.ajax",
+                "url":"<%=request.getContextPath()%>/dataroom/board/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -144,7 +144,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/dataroom/board/insert.do";
+			location.href="<%=request.getContextPath()%>/dataroom/board/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -152,7 +152,7 @@
 		    var tagId = $(this).parent().children().first().children().first().val();
 		    $(this).attr('id');
 
-		    window.location = "/dataroom/board/detail.do?fileId=" + tagId;
+		    window.location = "<%=request.getContextPath()%>/dataroom/board/detail.do?fileId=" + tagId;
 		});
 
 		
@@ -161,7 +161,7 @@
 	/* 검색 함수 */
 	 function search(){
 		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/dataroom/board/list.ajax";
+		 var tagUrl="<%=request.getContextPath()%>/dataroom/board/list.ajax";
 		 
 		 var sDate = $('#sDate').val();
 		 var eDate = $('#eDate').val();

@@ -7,9 +7,9 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var updUrl="/auth/update.do";
-	var delUrl="/auth/delete.ajax";
-	var delbak="/auth/list.do";
+	var updUrl="<%=request.getContextPath()%>/auth/update.do";
+	var delUrl="<%=request.getContextPath()%>/auth/delete.ajax";
+	var delbak="<%=request.getContextPath()%>/auth/list.do";
 	
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
@@ -24,7 +24,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/auth/list.ajax",
+                "url":"<%=request.getContextPath()%>/auth/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -117,7 +117,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/auth/insert.do";
+			location.href="<%=request.getContextPath()%>/auth/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -126,7 +126,7 @@
 			var tagId = $(this).parent().children().first().children().first().val();
 			$(this).attr('id');
 			if(tagId!="chkTd"){
-				$("#contents").load("/auth/detail.do",{"authLevel":tagId}); 
+				$("#contents").load("<%=request.getContextPath()%>/auth/detail.do",{"authLevel":tagId}); 
 			}
 		});
 
@@ -153,7 +153,7 @@
 	 function search(){
 		 console.log("검색");
 		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/auth/list.ajax";
+		 var tagUrl="<%=request.getContextPath()%>/auth/list.ajax";
 		 tbSearch("tableList",tagUrl,frm);
 	 }
     

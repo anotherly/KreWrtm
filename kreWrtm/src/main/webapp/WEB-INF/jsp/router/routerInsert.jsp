@@ -31,7 +31,7 @@
 				  if(volteVal.length<11){
 					  alert("유효한 volte 값을 입력하세요");
 				  }else{
-					  var selectOne = ajaxMethod("/router/selectOne.ajax",{"volteNum":volteVal}).result;
+					  var selectOne = ajaxMethod("<%=request.getContextPath()%>/router/selectOne.ajax",{"volteNum":volteVal}).result;
 					  if(selectOne != 0){
 						  dupChkFlag = false;
 						  $("#dupComment").empty();
@@ -81,7 +81,7 @@
 							
 							let queryString = $("#insertForm").serialize();
 							
-							ajaxMethod('/router/routerInsert.ajax',queryString,'/router/routerList.do','저장되었습니다');
+							ajaxMethod('<%=request.getContextPath()%>/router/routerInsert.ajax',queryString,'<%=request.getContextPath()%>/router/routerList.do','저장되었습니다');
 						} else {
 							alert("제조사 연락처가 올바르지 않습니다. 다시 확인하세요.");
 						}
@@ -94,7 +94,7 @@
 			}); 
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/router/routerList.do';
+				location.href='<%=request.getContextPath()%>/router/routerList.do';
 			});
 			
 			
@@ -111,7 +111,7 @@
 		// ajax 요청하는 함수
 		function changeSelect(userType) {
 			event.preventDefault(); 
-			var comData = ajaxMethod("/router/selectCompany.ajax",{"userType":userType}).data;
+			var comData = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax",{"userType":userType}).data;
 			
 			// option 요소 동적 생성
 			$('#companyCode').empty(); 
@@ -163,7 +163,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_device_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_device_title.png"/>
 						<div class="ttl_ctn">장치 등록</div>
 						<!-- 설명글 -->
 					</div>

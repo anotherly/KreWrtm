@@ -1,6 +1,28 @@
 var timeRefresh=null;
 var pastSide="";//이전 사이드바 메뉴
 
+function addContextPath(url) {
+	var contextPath = window.APP_CONTEXT_PATH || "";
+	if (!url || !contextPath || url === "goback") {
+		return url;
+	}
+	if (/^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(url)) {
+		return url;
+	}
+	if (url.charAt(0) === "/" && url.indexOf(contextPath + "/") !== 0) {
+		return contextPath + url;
+	}
+	return url;
+}
+
+if (typeof jQuery !== "undefined") {
+	$.ajaxPrefilter(function(options) {
+		if (options && options.url) {
+			options.url = addContextPath(options.url);
+		}
+	});
+}
+
 /************************************************************************
 함수명 : ajaxMethod
 설 명 : ajax 처리 함수 
@@ -17,7 +39,7 @@ var pastSide="";//이전 사이드바 메뉴
 function ajaxMethod(url, data, callback, message,thDiv){
 	var output = new Array();
 	$.ajax({
-		url : url,
+		url : addContextPath(url),
 		type : "post",
 		dataType : "json",
 		data : data,
@@ -40,7 +62,7 @@ function ajaxMethod(url, data, callback, message,thDiv){
 					if(callback=="goback"){
 						history.go(-1);
 					}else{
-						location.href=callback;
+						location.href=addContextPath(callback);
 					}
 				}
 			}else{
@@ -118,7 +140,7 @@ function chkMenu(that){
 ************************************************************************/
 function goMenuSite(goUrl,thDiv){
 	$.ajax({
-		url: goUrl,
+		url: addContextPath(goUrl),
 		type: "POST",
 		async : false,
 		// ajax 통신 성공 시 로직 수행
@@ -131,7 +153,7 @@ function goMenuSite(goUrl,thDiv){
 				//서버측으로 부터 받은 별도의 에러메시지가 없을 경우 화면 이동
 				if(json.msg=="" || typeof json.msg ==="undefined"){
 					console.log("url 이동");
-					location.href=goUrl;
+					location.href=addContextPath(goUrl);
 				}else{
 					alert(json.msg);
 				}

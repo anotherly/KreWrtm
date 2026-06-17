@@ -15,7 +15,7 @@
 
 	$(document).ready(function(){
 		console.log("메인차트 일반사용자");
-		var alData=ajaxMethod("/stat/mainUserChart.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
+		var alData=ajaxMethod("<%=request.getContextPath()%>/stat/mainUserChart.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
 		
 		var pie1Data=alData.data1;
 		var pie2Data=alData.data2;

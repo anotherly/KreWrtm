@@ -11,9 +11,9 @@
 <script>
 	var iidx; //날짜컬럼 인덱스
 	var selectlang;
-	var updUrl="/dataroom/update.do";
-	var delUrl="/dataroom/delete.ajax";
-	var delbak="/dataroom/list.do";	
+	var updUrl="<%=request.getContextPath()%>/dataroom/update.do";
+	var delUrl="<%=request.getContextPath()%>/dataroom/delete.ajax";
+	var delbak="<%=request.getContextPath()%>/dataroom/list.do";	
 	
 	$(document).ready(function(){	
 		/* ▼ 데이터 테이블 관련 */
@@ -29,7 +29,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/dataroom/list.ajax",
+                "url":"<%=request.getContextPath()%>/dataroom/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -176,7 +176,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/dataroom/insert.do";
+			location.href="<%=request.getContextPath()%>/dataroom/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -186,10 +186,10 @@
 
 		    if ($(this).index() === 2) {  // 세 번째 칸(첨부파일)인 경우
 		    	// 파일 다운로드 기능
-		    	window.location = '/dataroom/fileDownload.ajax?fileId=' + tagId;
+		    	window.location = '<%=request.getContextPath()%>/dataroom/fileDownload.ajax?fileId=' + tagId;
 		    } else { 
 		        if (tagId != "chkTd") {
-		        	window.location = "/dataroom/detail.do?fileId=" + tagId;
+		        	window.location = "<%=request.getContextPath()%>/dataroom/detail.do?fileId=" + tagId;
 		        } 
 		    }
 		});
@@ -200,7 +200,7 @@
 	/* 검색 함수 */
 	 function search(){
 		 let frm = $("#searchFrm").serialize();
-		 var tagUrl="/dataroom/list.ajax";
+		 var tagUrl="<%=request.getContextPath()%>/dataroom/list.ajax";
 		 
 		 var sDate = $('#sDate').val();
 		 var eDate = $('#eDate').val();
@@ -239,7 +239,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_doc_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_doc_title.png"/>
 					<div class="ttl_ctn">자료실</div>
 				</div>
                 <!-- search_box Start -->

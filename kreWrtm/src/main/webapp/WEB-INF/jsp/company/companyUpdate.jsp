@@ -39,7 +39,7 @@
 				} else {
 					reindexOrgRows();
 					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/company/companyUpdate.ajax',queryString,'/company/companyList.do','저장되었습니다');
+					ajaxMethod('<%=request.getContextPath()%>/company/companyUpdate.ajax',queryString,'<%=request.getContextPath()%>/company/companyList.do','저장되었습니다');
 				}
 				
 			}); 
@@ -84,7 +84,7 @@
 			
 			
 			$("#btnCancel").on('click',function(){
-				/* llocation.href='/company/companyList.do'; */
+				/* llocation.href='<%=request.getContextPath()%>/company/companyList.do'; */
 				
 				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
@@ -140,7 +140,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-						<img class="list-title-img" src="/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 수정</div>
+						<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 수정</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->

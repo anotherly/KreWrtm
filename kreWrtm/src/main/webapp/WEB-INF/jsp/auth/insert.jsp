@@ -70,7 +70,7 @@
 				
 				if(validChk){
 					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/auth/insert.ajax',queryString,'/auth/list.do','저장되었습니다');
+					ajaxMethod('<%=request.getContextPath()%>/auth/insert.ajax',queryString,'<%=request.getContextPath()%>/auth/list.do','저장되었습니다');
 				}
 			}); 
 			
@@ -95,7 +95,7 @@
 			});
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/auth/list.do';
+				location.href='<%=request.getContextPath()%>/auth/list.do';
 			});
 		});
 	</script>

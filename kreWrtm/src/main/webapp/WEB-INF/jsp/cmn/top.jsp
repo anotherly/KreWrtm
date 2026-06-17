@@ -11,6 +11,9 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/top.css">
 	<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/css/import.css" media="all">
 	<!-- JS -->
+	<script>
+		window.APP_CONTEXT_PATH = "<%=request.getContextPath()%>";
+	</script>
 	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.migrate.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.form.js"></script>
@@ -83,19 +86,19 @@
 			console.log("로그인 세션X");//로그인 안되있음
 			alert("로그인이 필요한 서비스이므로 로그인 창으로 이동합니다");
 			logBfurl=location.href;
-			location.href="/login/login.do";
+			location.href="<%=request.getContextPath()%>/login/login.do";
 			
 			/* if(location.href.indexOf("/chart/") == -1
 			&&location.href.indexOf("/stat/") == -1){
 				console.log("로그인 페이지로 이동");
 				alert("로그인이 필요한 서비스이므로 로그인 창으로 이동합니다");
 				logBfurl=location.href;
-				location.href="/login/login.do";
+				location.href="<%=request.getContextPath()%>/login/login.do";
 			} */
 		}
 		
-		$('.menu-inner').load("/cmn/menu.do");
-		$('#header').load("/cmn/header.do");
+		$('.menu-inner').load("<%=request.getContextPath()%>/cmn/menu.do");
+		$('#header').load("<%=request.getContextPath()%>/cmn/header.do");
 		//$('.menu-inner').hide();
 		// 메뉴 항목 클릭 시
 		$(".goUrlMenu").on("click", function() {

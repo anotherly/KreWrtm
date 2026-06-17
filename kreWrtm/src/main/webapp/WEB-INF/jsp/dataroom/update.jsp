@@ -58,13 +58,13 @@
 				if(validChk) {
 					let frm = $("#updateForm").serialize();
 				    var options = {
-			            url:'/dataroom/update.ajax',
+			            url:'<%=request.getContextPath()%>/dataroom/update.ajax',
 			            type:"post",
 			            dataType: "json",
 			            data : frm,
 			            success: function(res){
 			            	alert("저장되었습니다.");
-			            	location.href='/dataroom/list.do';
+			            	location.href='<%=request.getContextPath()%>/dataroom/list.do';
 			            } ,
 			            error: function(res,error){
 			                alert("에러가 발생했습니다."+error);
@@ -111,7 +111,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_doc_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_doc_title.png"/>
 						<div class="ttl_ctn">자료 수정</div>
 						<!-- 설명글 -->
 					</div>

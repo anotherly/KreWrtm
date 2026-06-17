@@ -29,14 +29,14 @@
 			$(this).addClass('selected');
 			
 			if(tagId=="monStat"){
-				$("#statContainer").load("/stat/monStat.do");
+				$("#statContainer").load("<%=request.getContextPath()%>/stat/monStat.do");
 			}else if(tagId=="yearStat"){
-				$("#statContainer").load("/stat/yearStat.do");
+				$("#statContainer").load("<%=request.getContextPath()%>/stat/yearStat.do");
 			}else{
-				$("#statContainer").load("/stat/dayStat.do");
+				$("#statContainer").load("<%=request.getContextPath()%>/stat/dayStat.do");
 			}
 		});
-		$("#statContainer").load("/stat/dayStat.do");
+		$("#statContainer").load("<%=request.getContextPath()%>/stat/dayStat.do");
 	});
 	
 	

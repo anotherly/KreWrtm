@@ -9,6 +9,9 @@
 	<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/css/import.css" media="all">
 	<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/css/user-form.css" media="all">
 	<!-- JS -->
+	<script>
+		window.APP_CONTEXT_PATH = "<%=request.getContextPath()%>";
+	</script>
 	<script src="<%=request.getContextPath()%>/js/jquery.js"></script>
 	<script src="<%=request.getContextPath()%>/js/jquery.migrate.js"></script>
 

@@ -16,7 +16,7 @@
 		
 		// 수정 화면으로 이동
 		$("#btnSave").on('click', function(){
-			window.location = '/dataroom/board/update.do?fileId=' + tagId;
+			window.location = '<%=request.getContextPath()%>/dataroom/board/update.do?fileId=' + tagId;
 		});
 		
 		// 취소 버튼 클릭 시 이전 페이지로 이동
@@ -98,7 +98,7 @@
 							        <c:otherwise>
 							            <div id="fileIcon" style="margin-left: 0px; margin-right: 0px;"></div>
 							            <a style="color: #59636b; text-decoration: none;"
-							               href="/dataroom/board/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">
+							               href="<%=request.getContextPath()%>/dataroom/board/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">
 							                ${data.fileName}
 							            </a>
 							        </c:otherwise>

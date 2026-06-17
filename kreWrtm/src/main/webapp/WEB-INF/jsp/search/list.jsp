@@ -23,7 +23,7 @@
 	/* 검색 함수 */
 	function search() {
 	    let frm = $("#searchFrm").serialize();
-	    var tagUrl = "/search/search.do";
+	    var tagUrl = "<%=request.getContextPath()%>/search/search.do";
 
 	    
 	    var form = document.forms["searchFrm"];
@@ -34,7 +34,7 @@
 	  		alert("검색어가 너무 짧습니다. 2글자 이상 입력해주세요.");
 	  		return false;
 	  	} else {
-	  		form.action = "/search/search.do";
+	  		form.action = "<%=request.getContextPath()%>/search/search.do";
 	  		form.submit();		    
 	  	}
 
@@ -61,7 +61,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page" style="justify-content : center; align-items : center;">
 				<div class="ctn_tbl_header">
-				<img class="list-title-img" src="/images/icons/ico_search_title.png"/>
+				<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_search_title.png"/>
 					<div class="ttl_ctn" style="font-size : 32px;">장치 검색</div>
 				</div>
                 <!-- search_box Start -->

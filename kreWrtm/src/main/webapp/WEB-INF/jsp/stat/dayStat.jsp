@@ -40,9 +40,9 @@ table.dataTable tbody tr{
 		//$("#container_chart").hide();
 		var userAuth='${login.userAuth}';
 		if(userAuth==0){
-			$("#chtImg").load("/stat/mainAdminChart.do");
+			$("#chtImg").load("<%=request.getContextPath()%>/stat/mainAdminChart.do");
 		}else{
-			$("#chtImg").load("/stat/mainUserChart.do");
+			$("#chtImg").load("<%=request.getContextPath()%>/stat/mainUserChart.do");
 		}
 		//데이트타임피커
 		 $('#datetimepicker1').datetimepicker({
@@ -50,8 +50,8 @@ table.dataTable tbody tr{
 			 defaultDate:moment().subtract(1, 'days'),
 			 maxDate : moment()
 		}).on('dp.change', function (e) {
-			$("#chtImg").load("/stat/mainAdminChart.do");
-			tbSearch("tableList","/stat/list.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
+			$("#chtImg").load("<%=request.getContextPath()%>/stat/mainAdminChart.do");
+			tbSearch("tableList","<%=request.getContextPath()%>/stat/list.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
 		});
 		
 		console.log("단말기 화면 진입1");
@@ -64,7 +64,7 @@ table.dataTable tbody tr{
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/stat/list.ajax",
+                "url":"<%=request.getContextPath()%>/stat/list.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  

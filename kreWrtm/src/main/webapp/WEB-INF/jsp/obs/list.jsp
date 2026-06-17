@@ -11,9 +11,9 @@
 <script>
 	var iidx;
 	var selectlang;
-	var updUrl="/obs/update.do";
-	var delUrl="/obs/delete.ajax";
-	var delbak="/obs/list.do";	
+	var updUrl="<%=request.getContextPath()%>/obs/update.do";
+	var delUrl="<%=request.getContextPath()%>/obs/delete.ajax";
+	var delbak="<%=request.getContextPath()%>/obs/list.do";	
 	
 	$(document).ready(function(){	
 		/* ▼ 데이터 테이블 관련 */
@@ -34,7 +34,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/obs/list.ajax",
+                "url":"<%=request.getContextPath()%>/obs/list.ajax",
                 "type":"POST",
                 "dataType": "json",
                 "data" : {"sDate" : nowDate , "eDate" : nextDate } 
@@ -196,7 +196,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/obs/insert.do";
+			location.href="<%=request.getContextPath()%>/obs/insert.do";
 		});
 		
 		//상세 화면 조회
@@ -204,7 +204,7 @@
 		    var tagId = $(this).parent().children().first().children().first().val();
 		    $(this).attr('id');
 
-		    window.location = "/obs/detail.do?obsId=" + tagId;
+		    window.location = "<%=request.getContextPath()%>/obs/detail.do?obsId=" + tagId;
 		});
 
 		//최초 상태에 신고일은 체크되어있는 것으로...
@@ -217,7 +217,7 @@
 	/* 검색 함수 */
 	function search() {
 	    let frm = $("#searchFrm").serialize();
-	    var tagUrl = "/obs/list.ajax";
+	    var tagUrl = "<%=request.getContextPath()%>/obs/list.ajax";
 	
 	    var sDate = $('#sDate').val();
 	    var eDate = $('#eDate').val();
@@ -272,7 +272,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-				<img class="list-title-img" src="/images/icons/ico_obs_title.png"/>
+				<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_obs_title.png"/>
 					<div class="ttl_ctn">장애이력 관리</div>
 				</div>
                 <!-- search_box Start -->

@@ -15,7 +15,7 @@
 		
 		// 수정 화면으로 이동
 		$("#btnSave").on('click', function(){
-			window.location = '/obs/update.do?obsId=' + tagId;
+			window.location = '<%=request.getContextPath()%>/obs/update.do?obsId=' + tagId;
 		});
 		
 		// 취소 버튼 클릭 시 이전 페이지로 이동
@@ -51,7 +51,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_obs_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_obs_title.png"/>
 						<div class="ttl_ctn">장애이력 상세정보</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->

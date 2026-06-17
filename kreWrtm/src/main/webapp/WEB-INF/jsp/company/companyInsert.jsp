@@ -39,7 +39,7 @@
 				} else {
 					reindexOrgRows();
 					let queryString = $("#insertForm").serialize();
-					ajaxMethod('/company/companyInsert.ajax',queryString,'/company/companyList.do','저장되었습니다');
+					ajaxMethod('<%=request.getContextPath()%>/company/companyInsert.ajax',queryString,'<%=request.getContextPath()%>/company/companyList.do','저장되었습니다');
 				}
 
 			}); 
@@ -83,7 +83,7 @@
 			});
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/company/companyList.do';
+				location.href='<%=request.getContextPath()%>/company/companyList.do';
 			});
 
 			updateOrgRemoveButtons();
@@ -137,7 +137,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 등록</div>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_company_title.png"/><div class="ttl_ctn">소속기관 등록</div>
 				</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->

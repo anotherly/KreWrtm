@@ -26,10 +26,10 @@
 		console.log("상세");
 		var tagId="${data.lteRIp}";
 		$("#btnSave").on('click', function(){
-			$("#contents").load('/terminal/update.do',{"lteRIp":tagId});
+			$("#contents").load('<%=request.getContextPath()%>/terminal/update.do',{"lteRIp":tagId});
 		});
 		$("#btnCancel").on('click', function(){
-			location.href='/terminal/list.do';
+			location.href='<%=request.getContextPath()%>/terminal/list.do';
 		});
 		//$(".ctn_tbl_row .ctn_tbl_th").css("flex","0 0 150px");
 	});

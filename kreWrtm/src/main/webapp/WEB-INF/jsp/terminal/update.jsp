@@ -30,7 +30,7 @@
 			//팀 변경시
 			$('#CPY_CODE').on("change",function(){
 				var tagId = $(this).val();
-				var ajaxData=ajaxMethod('/terminal/routerTeamCnt.ajax',{"departCode":tagId}).data;
+				var ajaxData=ajaxMethod('<%=request.getContextPath()%>/terminal/routerTeamCnt.ajax',{"departCode":tagId}).data;
 				$("#teamCnt").val(ajaxData[0].teamCnt);
 				$("#deviceCnt").val(ajaxData[0].deviceCnt);
 			});
@@ -61,7 +61,7 @@
 				if(validChk){
 					$("#lteRCode").val($("#CPY_CODE").val());
 					let queryString = $("#acDetailFrm").serialize();
-					ajaxMethod('/terminal/update.ajax',queryString,'/terminal/list.do','저장되었습니다');
+					ajaxMethod('<%=request.getContextPath()%>/terminal/update.ajax',queryString,'<%=request.getContextPath()%>/terminal/list.do','저장되었습니다');
 				}
 			}); 
 			
@@ -86,11 +86,11 @@
 			});
 			
 			$("#btnCancel").on('click',function(){
-				location.href='/terminal/list.do';
+				location.href='<%=request.getContextPath()%>/terminal/list.do';
 			});
 			
 			$("#btnReload").on('click',function(){
-				var rData=ajaxMethod('/terminal/deviceReload.ajax',{"lteRIp":$("#lteRIp").val()}).rData;
+				var rData=ajaxMethod('<%=request.getContextPath()%>/terminal/deviceReload.ajax',{"lteRIp":$("#lteRIp").val()}).rData;
 				console.log(rData);
 				//$("#lteRUsed").val(rData.lteRUsed);
 				//$("#insLocTxt").val(rData.insLocTxt);

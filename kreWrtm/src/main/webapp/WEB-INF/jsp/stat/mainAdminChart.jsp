@@ -16,7 +16,7 @@
 	$(document).ready(function(){
 		console.log("메인차트 관리자");
 		
-		var alData=ajaxMethod("/stat/mainAdminChart.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
+		var alData=ajaxMethod("<%=request.getContextPath()%>/stat/mainAdminChart.ajax",{"keyDate":$("#sDate").val(),"keyType":typeId});
 		
 		var pie1Data=alData.data1;
 		var pie2Data=alData.data2;

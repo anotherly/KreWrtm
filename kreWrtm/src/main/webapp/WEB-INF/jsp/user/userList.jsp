@@ -7,9 +7,9 @@
 	<meta charset="UTF-8">
     <jsp:include page="../cmn/top.jsp" flush="false" />
 <script>
-	var updUrl="/user/userUpdate.do";
-	var delUrl="/user/userDelete.ajax";
-	var delbak="/user/userList.do";
+	var updUrl="<%=request.getContextPath()%>/user/userUpdate.do";
+	var delUrl="<%=request.getContextPath()%>/user/userDelete.ajax";
+	var delbak="<%=request.getContextPath()%>/user/userList.do";
 	
 	
 	var sendFleg = true;
@@ -29,7 +29,7 @@
 		
 		var tb2=$("#tableList").DataTable({
 			ajax : {
-                "url":"/user/userList.ajax",
+                "url":"<%=request.getContextPath()%>/user/userList.ajax",
                 "type":"POST",
                 "dataType": "json",
             },  
@@ -99,7 +99,7 @@
 		
 		//등록 화면 조회
 		$("#btnInsert").click(function() {
-			location.href="/user/userInsert.do";
+			location.href="<%=request.getContextPath()%>/user/userInsert.do";
 		});
 		
 		//상세 화면 조회
@@ -108,8 +108,8 @@
 			var tagId = $(this).parent().children().first().children().first().val();
 			$(this).attr('id');
 			if(tagId!="chkTd"){
-				$("#contents").load("/user/userDetail.do",{"userId":tagId});
-				location.href="/user/userDetail.do?tagId="+tagId;
+				$("#contents").load("<%=request.getContextPath()%>/user/userDetail.do",{"userId":tagId});
+				location.href="<%=request.getContextPath()%>/user/userDetail.do?tagId="+tagId;
 			}
 		});
 
@@ -168,7 +168,7 @@
 		 
 		 if(sendFleg) {
 			let frm = $("#searchFrm").serialize();
-			var tagUrl="/user/userList.ajax";
+			var tagUrl="<%=request.getContextPath()%>/user/userList.ajax";
 			tbSearch("tableList",tagUrl,frm);
 		 } else {
 			 sendFleg = true;
@@ -200,7 +200,7 @@
 			<!-- work Start -->
 			<div id="work" class="work-wrap list_page">
 				<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 목록</div>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_user_title.png"/><div class="ttl_ctn">사용자 목록</div>
 				</div>
                 <!-- search_box Start -->
                 <div class="search_box list_search_box">

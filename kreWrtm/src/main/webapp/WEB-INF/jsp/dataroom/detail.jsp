@@ -15,7 +15,7 @@
 		
 		// 수정 화면으로 이동
 		$("#btnSave").on('click', function(){
-			window.location = '/dataroom/update.do?fileId=' + tagId;
+			window.location = '<%=request.getContextPath()%>/dataroom/update.do?fileId=' + tagId;
 		});
 		
 		// 취소 버튼 클릭 시 이전 페이지로 이동
@@ -74,7 +74,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_doc_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_doc_title.png"/>
 						<div class="ttl_ctn">자료 상세정보</div>
 					</div>
 					<!-- 컨텐츠 테이블 헤더 End -->
@@ -90,7 +90,7 @@
 							<div class="ctn_tbl_th ">첨부파일</div>
 							<div class="ctn_tbl_td" id="fileTd">
 								<div id="fileIcon" style="margin-left : 0px; margin-right : 0px;"></div>
-								<a style="color: #59636b; text-decoration: none;" href="/dataroom/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">${data.fileName}</a>
+								<a style="color: #59636b; text-decoration: none;" href="<%=request.getContextPath()%>/dataroom/fileDownload.ajax?fileId=${data.fileId}" title="다운로드">${data.fileName}</a>
 							</div>
 						</div>
 					</div>

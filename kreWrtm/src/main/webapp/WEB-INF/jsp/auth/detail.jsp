@@ -10,10 +10,10 @@
 		console.log("상세");
 		var tagId='${data.authLevel}';
 		$("#btnSave").on('click', function(){
-			$("#contents").load('/auth/update.do',{"authLevel":tagId});
+			$("#contents").load('<%=request.getContextPath()%>/auth/update.do',{"authLevel":tagId});
 		});
 		$("#btnCancel").on('click', function(){
-			location.href='/auth/list.do';
+			location.href='<%=request.getContextPath()%>/auth/list.do';
 		});
 	});
 

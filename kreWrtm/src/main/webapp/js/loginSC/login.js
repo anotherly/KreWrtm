@@ -6,58 +6,9 @@
 
 var logBfurl = "";
 
-/*
- * 정적 JS 파일에서는 request.getContextPath()를 직접 쓸 수 없으므로
- * JSP에서 window.APP_CONTEXT_PATH를 선언한 경우 그 값을 우선 사용한다.
- *
- * 중요:
- * window.location.pathname 이 "/" 인 경우 firstPath가 빈 문자열이 되므로
- * 반드시 ""을 반환해야 한다.
- * 이전 수정본처럼 "/"를 반환하면 location.href = "//login/login.do"가 되어
- * 브라우저가 http://login/login.do 로 이동해버린다.
- */
-function getContextPath() {
-    if (typeof window.APP_CONTEXT_PATH !== "undefined") {
-        return window.APP_CONTEXT_PATH || "";
-    }
-
-    var path = window.location.pathname || "";
-    var firstPath = path.split("/")[1] || "";
-
-    // ROOT 배포: /, /login/login.do, /chart/main.do 등
-    if (firstPath === ""
-            || firstPath === "login"
-            || firstPath === "chart"
-            || firstPath === "user"
-            || firstPath === "css"
-            || firstPath === "js"
-            || firstPath === "images"
-            || firstPath === "DataTables"
-            || firstPath === "calender"
-            || firstPath === "firmwareFile") {
-        return "";
-    }
-
-    // 컨텍스트 배포: /KreWrtm/login/login.do 등
-    return "/" + firstPath;
-}
-
-function toAppUrl(path) {
-    var contextPath = getContextPath();
-
-    if (!path) {
-        return contextPath || "/";
-    }
-
-    if (path.charAt(0) !== "/") {
-        path = "/" + path;
-    }
-
-    return contextPath + path;
-}
-
 function stMainIdx(sessionVo, url) {
     console.log("세션 체크");
+    var contextPath = window.APP_CONTEXT_PATH || "";
 
     window.onunload = function() {
         console.log("unload");
@@ -67,9 +18,9 @@ function stMainIdx(sessionVo, url) {
     if (sessionVo == "") {
         // 로그인 안 되어 있음
         console.log("로그인 페이지로 이동");
-        location.href = toAppUrl("/login/login.do");
+        location.href = contextPath + "/login/login.do";
     } else {
-        location.href = toAppUrl("/user/userList.do");
+        location.href = contextPath + "/user/userList.do";
     }
 
     // 탭이나 창 닫기시 로그아웃 처리
@@ -87,9 +38,10 @@ function stMainIdx(sessionVo, url) {
 function inputLogin(inputVal, loginurl) {
     console.log("입력값에 따른 로그인 처리");
     console.log("loginurl : " + loginurl);
+    var contextPath = window.APP_CONTEXT_PATH || "";
 
     $.ajax({
-        url: loginurl,
+        url: contextPath + loginurl,
         type: "POST",
         dataType: "json",
         data: inputVal,
@@ -100,11 +52,11 @@ function inputLogin(inputVal, loginurl) {
 
             // 서버측으로부터 받은 별도의 에러메시지가 없을 경우 로그인 처리
             if (json.msg == "" || typeof json.msg === "undefined") {
-                location.href = toAppUrl(json.url);
+                location.href = contextPath + json.url;
             } else {
                 if (json.msg == "중복로그인") {
-                    ajaxMethod(toAppUrl("/login/loginPost.do?relgn=1"), inputVal);
-                    location.href = toAppUrl(json.url);
+                    ajaxMethod("/login/loginPost.do?relgn=1", inputVal);
+                    location.href = contextPath + json.url;
                 } else {
                     alert(json.msg);
                 }
@@ -117,7 +69,7 @@ function inputLogin(inputVal, loginurl) {
             console.log("error : " + error);
             console.log("responseText : " + xhr.responseText);
 
-            alert("로그인 요청 중 오류가 발생했습니다. 서버 로그를 확인하세요.");
+            alert("로그인 요청 중 오류가 발생했습니다.");
         },
 
         // finally 기능 수행

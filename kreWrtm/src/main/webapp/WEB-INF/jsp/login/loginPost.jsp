@@ -8,7 +8,7 @@
 </head>
 <script>
 	alert("가입되지 않은 사용자이거나 정보를 잘못 입력하셨습니다");
-	location.href="/login/login.do"
+	location.href="<%=request.getContextPath()%>/login/login.do"
 </script>
 <body>
 </body>

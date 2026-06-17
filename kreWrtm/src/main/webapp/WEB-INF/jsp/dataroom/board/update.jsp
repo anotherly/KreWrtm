@@ -63,13 +63,13 @@
 				if(validChk) {
 					let frm = $("#updateForm").serialize();
 				    var options = {
-			            url:'/dataroom/board/update.ajax',
+			            url:'<%=request.getContextPath()%>/dataroom/board/update.ajax',
 			            type:"post",
 			            dataType: "json",
 			            data : frm,
 			            success: function(res){
 			            	alert("저장되었습니다.");
-			            	location.href='/dataroom/board/list.do';
+			            	location.href='<%=request.getContextPath()%>/dataroom/board/list.do';
 			            } ,
 			            error: function(res,error){
 			                alert("에러가 발생했습니다."+error);

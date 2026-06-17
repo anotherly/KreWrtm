@@ -82,13 +82,13 @@
 					
 					let frm = $("#insertForm").serialize();
 				    var options = {
-			            url:'/obs/insert.ajax',
+			            url:'<%=request.getContextPath()%>/obs/insert.ajax',
 			            type:"post",
 			            dataType: "json",
 			            data : frm,
 			            success: function(res){
 			            	alert("저장되었습니다.");
-			            	location.href='/obs/list.do';
+			            	location.href='<%=request.getContextPath()%>/obs/list.do';
 			            } ,
 			            error: function(res,error){
 			                alert("에러가 발생했습니다."+error);
@@ -149,7 +149,7 @@
 				<div id="contents_box" class="contents_box">
 					<!-- 컨텐츠 테이블 헤더 Start -->
 					<div class="ctn_tbl_header">
-					<img class="list-title-img" src="/images/icons/ico_obs_title.png"/>
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_obs_title.png"/>
 						<div class="ttl_ctn">장애이력 등록</div>
 						<!-- 설명글 -->
 					</div>
