@@ -1,6 +1,9 @@
 package kr.co.hivesys.user.web;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.hivesys.comm.SessionListener;
+import kr.co.hivesys.auth.service.AuthService;
 import kr.co.hivesys.user.service.UserService;
 import kr.co.hivesys.user.vo.UserVO;
 
@@ -29,6 +33,9 @@ public class LoginController {
 
 	@Resource(name = "userService")
 	private UserService userService;
+
+	@Resource(name = "authService")
+	private AuthService authService;
 
 	public boolean isClose = false;
 
@@ -133,6 +140,14 @@ public class LoginController {
 
 				// 세션에 값 주입
 				httpSession.setAttribute("login", userVo);
+				Set<String> authUrlSet = authService.selectAllowedUrls(userVo.getAuthId());
+				Map<String, Boolean> authUrlMap = new HashMap<String, Boolean>();
+				for (String authUrl : authUrlSet) {
+					authUrlMap.put(authUrl, Boolean.TRUE);
+				}
+				httpSession.setAttribute("authId", userVo.getAuthId());
+				httpSession.setAttribute("authUrlSet", authUrlSet);
+				httpSession.setAttribute("authUrlMap", authUrlMap);
 				// 세션 + 시간 해쉬맵에 로그인 세션과 현 시간을 저장
 				SessionListener.getInstance().setSession(loginSession, userVo.getUserId());
 				// ${}세션

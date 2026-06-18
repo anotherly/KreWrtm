@@ -38,9 +38,10 @@ public class RouterServiceImpl implements RouterService {
 	}
 
 	@Override
-	public void deleteChk(List<String> paramArr) {
+	public void deleteChk(List<String> paramArr, String companyId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("chkList",paramArr);
+		map.put("companyId", companyId);
 		routerMapper.deleteChk(map);		
 	}
 	

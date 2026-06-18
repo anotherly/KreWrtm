@@ -9,6 +9,7 @@
 	</settings>
     <!-- jdb : 쿼리에 맞는 vo 설정 -->
 	<typeAliases>
+		<typeAlias alias="authVo" type="kr.co.hivesys.auth.vo.AuthVO" />
 	    <!-- 회사 -->
 		<typeAlias alias="companyVo" type="kr.co.hivesys.company.vo.CompanyVO" />
 	    <!-- 부서 -->

@@ -15,7 +15,7 @@
 			changeSelect(userTypeVal);
 			
 			console.log("장비 등록 화면");
-			var comid = '${login.companyId}';
+			var comcode = '${login.companyCode}';
 			 /** 1. 장치명 입력 시 모델명 옆에 표시 */
 			  $("#deviceName").on("input", function(){
 			    $("#modelNameDisplay").text($(this).val());
@@ -114,27 +114,27 @@
 			var comData = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax",{"userType":userType}).data;
 			
 			// option 요소 동적 생성
-			$('#companyCode').empty(); 
+			$('#companyId').empty();
 			
-			var loginComid = '${login.companyId}';
+			var loginComcode = '${login.companyCode}';
 			var userType = '${login.userType}';
 			
 			if(userType != '코레일') {
 				comData.forEach(function(company) {
-				    if (company.companyId == loginComid) {  
-				        $('#companyCode').append(
-				            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
+				    if (company.companyCode == loginComcode) {  
+				        $('#companyId').append(
+				            '<option value="' + company.companyId + '" data-code="' + company.companyCode + '">' + company.companyName + '</option>'
 				        );
 				    }
 				});
 			} else {
 				comData.forEach(function(company) {
-			        $('#companyCode').append(
-			            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
+			        $('#companyId').append(
+			            '<option value="' + company.companyId + '" data-code="' + company.companyCode + '">' + company.companyName + '</option>'
 			        );
 			    });
 			}
-		
+			$('#companyId').trigger('change');
 		}
 	</script>
 
@@ -257,9 +257,10 @@
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyId">
+			                            <select class="table_sel" style="width: 164px; height:100%;" id="companyId" name="companyId" onchange="document.getElementById('companyCode').value=this.options[this.selectedIndex].getAttribute('data-code')">
  
 									</select>
+									<input type="hidden" id="companyCode" name="companyCode" value="${login.companyCode}">
 								</div>
 							</div>
 						

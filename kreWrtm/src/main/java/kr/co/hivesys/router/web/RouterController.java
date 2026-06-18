@@ -59,6 +59,7 @@ public class RouterController{
 		ModelAndView mav = new ModelAndView("jsonView");
 		RouterVO sList= null;
 		try {
+			applyCompanyScope(inputVo, (UserVO) request.getSession().getAttribute("login"));
 			sList = routerService.select(inputVo);
 			if (sList == null) {
 		        mav.addObject("result", 0);
@@ -134,6 +135,7 @@ public class RouterController{
 			) throws Exception{
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
+			applyCompanyScope(inputVo, (UserVO) request.getSession().getAttribute("login"));
 			routerService.insert(inputVo);
 		} catch (Exception e) {
 			logger.debug("에러메시지 : "+e.toString());
@@ -160,6 +162,7 @@ public class RouterController{
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
 		try {
+			applyCompanyScope(inputVo, nlvo);
 			orgList = routerService.userTypeSelect(ovo);
 			data = routerService.select(inputVo);
 			
@@ -184,6 +187,9 @@ public class RouterController{
 		ModelAndView mav = new ModelAndView("jsonView");
 		RouterVO thvo= null;
 		try {
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			applyCompanyScope(inputVo, login);
+			if (!"코레일".equals(login.getUserType())) inputVo.setScopeCompanyId(login.getCompanyId());
 			routerService.update(inputVo);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -203,7 +209,9 @@ public class RouterController{
 		 
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
-			routerService.deleteChk(dataArr);
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			String companyId = "코레일".equals(login.getUserType()) ? null : login.getCompanyId();
+			routerService.deleteChk(dataArr, companyId);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
@@ -225,6 +233,8 @@ public class RouterController{
 		List<RouterVO> comList = null;
 		
 		try {
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			if (!"코레일".equals(login.getUserType())) inputVo.setCompanyId(login.getCompanyId());
 			comList = routerService.selectCompany(inputVo);
 			mav.addObject("data",comList);
 		} catch (Exception e) {
@@ -233,6 +243,14 @@ public class RouterController{
 			mav.addObject("msg","에러가 발생했습니다.");
 		}
 		return mav;
+	}
+
+	private void applyCompanyScope(RouterVO inputVo, UserVO login) {
+		if (!"코레일".equals(login.getUserType())) {
+			inputVo.setCompanyId(login.getCompanyId());
+			inputVo.setCompanyCode(login.getCompanyCode());
+			inputVo.setScopeCompanyId(login.getCompanyId());
+		}
 	}
 	
 	

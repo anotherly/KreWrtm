@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.hivesys.auth.mapper.AuthMapper">
+	<resultMap id="authMap" type="authVo">
+		<id property="authId" column="AUTH_ID"/>
+		<result property="authDefine" column="AUTH_DEFINE"/>
+		<result property="usedYn" column="USED_YN"/>
+	</resultMap>
+
+	<select id="selectAuthList" resultMap="authMap">
+		SELECT AUTH_ID, AUTH_DEFINE, USED_YN
+		FROM TBL_AUTH_INFO
+		WHERE USED_YN = 1 AND AUTH_ID BETWEEN 1 AND 4
+		ORDER BY AUTH_ID
+	</select>
+
+	<select id="selectAllowedUrls" parameterType="int" resultType="string">
+		SELECT URL
+		FROM TBL_AUTH_URL
+		WHERE AUTH_ID = #{_parameter}
+		  AND USE_YN = 'Y'
+		  AND URL IS NOT NULL
+	</select>
+</mapper>

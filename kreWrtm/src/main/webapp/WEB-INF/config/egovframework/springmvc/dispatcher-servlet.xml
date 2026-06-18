@@ -97,9 +97,7 @@
 	
 	<!-- jdb : 로그인 인터셉터 관련 기능 추가 -->    
     <bean id="loginInterceptor" class="kr.co.hivesys.comm.LoginInterceptor"/>
-    <bean id="authInterceptor" class="kr.co.hivesys.comm.AuthInterceptor">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+	<bean id="authInterceptor" class="kr.co.hivesys.comm.AuthInterceptor"/>
     <mvc:interceptors>
         <!-- loginInterceptor -->
 		<mvc:interceptor>
@@ -110,13 +108,19 @@
 			<ref bean="loginInterceptor"/>		     
 		</mvc:interceptor>        
 		<mvc:interceptor>
-			<mvc:mapping path="/**/*.do"/>
-			<mvc:mapping path="/**/*.ajax"/>
-			<mvc:exclude-mapping path="/login/**"/>
-			<mvc:exclude-mapping path="/cmn/**"/>
+			<mvc:mapping path="/chart/**"/>
+			<mvc:mapping path="/user/**"/>
+			<mvc:mapping path="/company/**"/>
+			<mvc:mapping path="/org/**"/>
+			<mvc:mapping path="/router/**"/>
+			<mvc:mapping path="/search/**"/>
+			<mvc:mapping path="/remote/**"/>
+			<mvc:mapping path="/obs/**"/>
+			<mvc:mapping path="/dataroom/**"/>
+			<mvc:exclude-mapping path="/user/reloadOrKill.do"/>
 			<ref bean="authInterceptor"/>
 		</mvc:interceptor>
-    </mvc:interceptors>
+	</mvc:interceptors>
 	
 	<!-- json START -->
 	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">

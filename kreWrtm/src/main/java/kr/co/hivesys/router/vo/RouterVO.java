@@ -41,6 +41,7 @@ public class RouterVO extends OrgVO {
 	private String updatedBy;
 	
 	private String routerCount;
+	private String scopeCompanyId;
 
 	// ===== Getter / Setter =====
 	
@@ -55,6 +56,8 @@ public class RouterVO extends OrgVO {
 	public void setRouterCount(String routerCount) {
 		this.routerCount = routerCount;
 	}
+	public String getScopeCompanyId() { return scopeCompanyId; }
+	public void setScopeCompanyId(String scopeCompanyId) { this.scopeCompanyId = scopeCompanyId; }
 
 	public void setDeviceId(String deviceId) {
 		this.deviceId = deviceId;

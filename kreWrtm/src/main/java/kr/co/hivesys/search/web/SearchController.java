@@ -80,17 +80,18 @@ public class SearchController {
 		List<SearchVo> deviceNameList = null;
 		
 		try {				
-			String beforeComCode = inputVo.getCompanyId();
+			applyCompanyScope(inputVo, request);
+			String beforeComCode = inputVo.getCompanyCode();
 			//beforeComCode가 비어있다면, 첫 진입
 			if(beforeComCode == null || beforeComCode.isEmpty()) {
 				UserVO reqLoginVo = (UserVO) request.getSession().getAttribute("login");
-				String companyId = reqLoginVo.getCompanyId();
+				String companyCode = reqLoginVo.getCompanyCode();
 				String userT = reqLoginVo.getUserType();
 				
 				if(userT.equals("코레일")) { // 관리자 계정이라면 all로 전부 조회
-					inputVo.setCompanyId("all");
+					inputVo.setCompanyCode("all");
 				} else {
-					inputVo.setCompanyId(companyId);
+					inputVo.setCompanyCode(companyCode);
 				}
 				
 			} 
@@ -120,6 +121,7 @@ public class SearchController {
 		List<SearchVo> sList = null;
 		
 		try {				
+			applyCompanyScope(inputVo, request);
 			sList = searchService.searchRouterDataList(inputVo);  // 검색 결과
 			mav.addObject("data", sList);
 		} catch (Exception e) {
@@ -141,6 +143,7 @@ public class SearchController {
 			ModelAndView mav = new ModelAndView("jsonView");
 			SearchVo data= null;
 			try {
+				applyCompanyScope(inputVo, request);
 				data = searchService.selectDetail(inputVo);
 				mav.addObject("data", data);
 				mav.setViewName(url);
@@ -162,6 +165,7 @@ public class SearchController {
 			ModelAndView mav = new ModelAndView("jsonView");
 			SearchVo data= null;
 			try {
+				applyCompanyScope(inputVo, request);
 				data = searchService.selectDetail(inputVo);
 				
 				// datetime type 포맷팅
@@ -192,6 +196,7 @@ public class SearchController {
 		ModelAndView mav = new ModelAndView("jsonView");
 
 		try {			
+			applyCompanyScope(inputVo, request);
 			//수정 -> ip port pw 입력하여 로그인 처리
 			SearchVo rvo = new SearchVo();
 			rvo=searchService.findVnc(inputVo);
@@ -227,6 +232,14 @@ public class SearchController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug("에러메시지 : "+e.toString());
+		}
+	}
+
+	private void applyCompanyScope(SearchVo inputVo, HttpServletRequest request) {
+		UserVO login = (UserVO) request.getSession().getAttribute("login");
+		if (!"코레일".equals(login.getUserType())) {
+			inputVo.setScopeCompanyId(login.getCompanyId());
+			inputVo.setCompanyCode(login.getCompanyCode());
 		}
 	}
 }

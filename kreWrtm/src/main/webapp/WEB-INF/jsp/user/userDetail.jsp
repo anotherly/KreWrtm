@@ -1,11 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="java.util.Set" %>
-<%
-	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
-	boolean canUserUpdate = authUrlSet == null || authUrlSet.contains("/user/userUpdate");
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,8 +68,8 @@
 						</div>
 
 						<div class="ctn_tbl_row">
-							<div class="ctn_tbl_th fm_rep">사용자 유형</div>
-							<div class="ctn_tbl_td user_detail_value">${data.userType}</div>
+							<div class="ctn_tbl_th fm_rep">사용자 권한</div>
+							<div class="ctn_tbl_td user_detail_value">${data.authDefine}</div>
 							<div class="ctn_tbl_th fm_rep">소속</div>
 							<div class="ctn_tbl_td user_detail_value">${data.companyName}</div>
 						</div>
@@ -103,9 +98,7 @@
 					<!-- btn_box Start -->
 					<div class="btn_box">
 						<div class="right">
-							<% if (canUserUpdate) { %>
-							<input type="button" class="btn btn_primary" id="btnSave" alt="수정" value="수정" />
-							<% } %>
+							<c:if test="${sessionScope.authUrlMap['/user/userUpdate']}"><input type="button" class="btn btn_primary" id="btnSave" alt="수정" value="수정" /></c:if>
 							<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
 						</div>
 					</div>

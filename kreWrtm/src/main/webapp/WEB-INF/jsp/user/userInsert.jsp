@@ -11,18 +11,16 @@
 		var dupChkFlag = false;
 		$(document).ready(function() {
 			console.log("사용자 등록 화면");
-			// 최초 진입: 사용자 권한 → 소속기관 → 본부/처/실 순서로 구성
-			syncUserTypeByAuth();
-			loadCompanyList($("#userType").val(), '${login.companyId}', null);
+			// 최초 진입: 사용자 유형 → 소속기관 → 본부/처/실 순서로 구성
+			loadCompanyList($("#authId").val(), '${login.companyId}', null);
 
-			// 사용자 권한 변경 → 소속기관 목록 변경
+			// 사용자 유형 변경 → 소속기관 목록 변경
 			$("#authId").on("change", function(){
-				syncUserTypeByAuth();
-				loadCompanyList($("#userType").val(), null, null);
+				loadCompanyList($(this).val(), null, null);
 			});
 
 			// 소속기관 변경 → 본부/처/실 목록 변경
-			$("#companyCode").on("change", function(){
+			$("#companyId").on("change", function(){
 				loadOrgList($(this).val(), null);
 			});
 
@@ -72,22 +70,18 @@
 			});
 		});
 
-		function syncUserTypeByAuth() {
-			var authId = $("#authId").val();
-			$("#userType").val((authId == '1' || authId == '2') ? '코레일' : '제조사');
-		}
-
-		function loadCompanyList(userType, selectedCompanyId, selectedOrgId) {
-			var result = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax", {"userType": userType});
+		function loadCompanyList(authId, selectedCompanyId, selectedOrgId) {
+			var companyType = Number(authId) <= 2 ? "코레일" : "제조사";
+			var result = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax", {"userType": companyType});
 			var comData = result.data || [];
-			var loginComid = '${login.companyId}';
+			var loginComcode = '${login.companyCode}';
 			var loginUserType = '${login.userType}';
-			var $companyCode = $("#companyCode");
+			var $companyCode = $("#companyId");
 
 			$companyCode.empty();
 
 			$(comData).each(function(i, company){
-				if (loginUserType != '코레일' && company.companyId != loginComid) {
+				if (loginUserType != '코레일' && company.companyCode != loginComcode) {
 					return true;
 				}
 
@@ -248,27 +242,19 @@
 							</div>
 
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">사용자 권한</div>
-								<div class="ctn_tbl_td">
-									<input type="hidden" id="userType" name="userType" value="코레일">
-									<select class="table_sel" id="authId" name="authId">
-										<c:choose>
-											<c:when test="${login.userType ne '코레일'}">
-												<option value="3">소속기관 관리자</option>
-												<option value="4" selected>소속기관 일반사용자</option>
-											</c:when>
-											<c:otherwise>
-												<option value="1">코레일 관리자</option>
-												<option value="2" selected>코레일 일반사용자</option>
-												<option value="3">소속기관 관리자</option>
-												<option value="4">소속기관 일반사용자</option>
-											</c:otherwise>
-										</c:choose>
-									</select>
+				<div class="ctn_tbl_th fm_rep">사용자 권한</div>
+				<div class="ctn_tbl_td">
+					<select class="table_sel" id="authId" name="authId">
+						<c:forEach var="auth" items="${authList}">
+							<c:if test="${login.userType eq '코레일' or auth.authId ge 3}">
+								<option value="${auth.authId}">${auth.authDefine}</option>
+							</c:if>
+						</c:forEach>
+					</select>
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-									<select class="table_sel" id="companyCode" name="companyId">
+					<select class="table_sel" id="companyId" name="companyId">
 										<option value="">선택</option>
 									</select>
 								</div>

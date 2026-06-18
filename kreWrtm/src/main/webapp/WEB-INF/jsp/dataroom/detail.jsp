@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.Set" %>
-<%
-	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
-	boolean canDataroomUpdate = authUrlSet == null || authUrlSet.contains("/dataroom/update");
-%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -102,9 +98,7 @@
 					<!-- btn_box Start -->
 					<div class="btn_box">
 						<div class="right">
-							<% if (canDataroomUpdate) { %>
-							<input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" />
-							<% } %>
+							<c:if test="${sessionScope.authUrlMap['/dataroom/update']}"><input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" /></c:if>
 							<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
 						</div>
 					</div>

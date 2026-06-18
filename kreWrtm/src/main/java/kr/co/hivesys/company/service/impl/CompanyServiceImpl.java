@@ -2,6 +2,8 @@ package kr.co.hivesys.company.service.impl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.annotation.Resource;
 
@@ -33,6 +35,9 @@ public class CompanyServiceImpl implements CompanyService {
 	
 	@Override
 	public void insert(CompanyVO thVo) {
+		if (thVo.getCompanyId() == null || thVo.getCompanyId().trim().equals("")) {
+			thVo.setCompanyId(thVo.getCompanyCode() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+		}
 		companyMapper.insert(thVo);
 		insertOrgList(thVo);
 	}

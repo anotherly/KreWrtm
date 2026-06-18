@@ -26,6 +26,7 @@ import kr.co.hivesys.company.vo.CompanyVO;
 import kr.co.hivesys.company.vo.OrgVO;
 import kr.co.hivesys.user.service.UserService;
 import kr.co.hivesys.user.vo.UserVO;
+import kr.co.hivesys.auth.service.AuthService;
 
 /**
  * 사용자 컨트롤러 클래스
@@ -56,22 +57,9 @@ public class UserController {
 	@Resource(name = "companyService")
 	private CompanyService companyService;
 
-	private boolean isKorailUser(UserVO userVo) {
-		return userVo != null && "코레일".equals(userVo.getUserType());
-	}
+	@Resource(name = "authService")
+	private AuthService authService;
 
-	private Integer normalizeAuthId(UserVO loginUser, Integer authId) {
-		if (isKorailUser(loginUser)) {
-			if (authId != null && authId >= 1 && authId <= 4) {
-				return authId;
-			}
-			return 2;
-		}
-		if (authId != null && authId == 3) {
-			return 3;
-		}
-		return 4;
-	}
 	
 	//주소에 맞게 매핑
 	@RequestMapping(value= "/user/*.do")
@@ -114,11 +102,9 @@ public class UserController {
 		List<UserVO> sList= null;
 		//로그인한 세션을 받아와 주입
 		UserVO nlvo = (UserVO) request.getSession().getAttribute("login");
-		CompanyVO ovo = nlvo;
-		inputVo.setUserType(ovo.getUserType());
-		//코레일만 전 사용자 조회 , 제조사는 제조사만 조회
-		if(!isKorailUser(nlvo)) {
-			inputVo.setCompanyId(ovo.getCompanyId());
+		inputVo.setUserType(nlvo.getUserType());
+		if (!"코레일".equals(nlvo.getUserType())) {
+			inputVo.setCompanyId(nlvo.getCompanyId());
 		}
 		try {
 			sList = userService.selectList(inputVo);
@@ -150,6 +136,7 @@ public class UserController {
 
 			mav.addObject("orgList", orgList);
 			mav.addObject("comList", comList);
+			mav.addObject("authList", authService.selectAuthList());
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
@@ -166,11 +153,8 @@ public class UserController {
 			) throws Exception{
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
-			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
-			inputVo.setAuthId(normalizeAuthId(loginUser, inputVo.getAuthId()));
-			if (!isKorailUser(loginUser)) {
-				inputVo.setCompanyId(loginUser.getCompanyId());
-			}
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			applyCompanyScope(inputVo, login);
 			//패스워드 암호화 처리
 			String hashedPw = BCrypt.hashpw(inputVo.getUserPw(), BCrypt.gensalt());
 			//vo에 암호화된 password 삽입
@@ -201,8 +185,8 @@ public class UserController {
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
 		inputVo.setUserId(inputVo.getTagId());
-		if (!isKorailUser(nlvo)) {
-			inputVo.setScopeCompanyId(nlvo.getCompanyId());
+		if (!"코레일".equals(nlvo.getUserType())) {
+			inputVo.setCompanyId(nlvo.getCompanyId());
 		}
 		try {
 			orgList = orgService.select(ovo);
@@ -211,6 +195,7 @@ public class UserController {
 			mav.addObject("orgList", orgList);
 			mav.addObject("comList", comList);
 			mav.addObject("data", data);
+			mav.addObject("authList", authService.selectAuthList());
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
@@ -230,11 +215,10 @@ public class UserController {
 		ModelAndView mav = new ModelAndView("jsonView");
 		UserVO thvo= null;
 		try {
-			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
-			inputVo.setAuthId(normalizeAuthId(loginUser, inputVo.getAuthId()));
-			if (!isKorailUser(loginUser)) {
-				inputVo.setCompanyId(loginUser.getCompanyId());
-				inputVo.setScopeCompanyId(loginUser.getCompanyId());
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			applyCompanyScope(inputVo, login);
+			if (!"코레일".equals(login.getUserType())) {
+				inputVo.setScopeCompanyId(login.getCompanyId());
 			}
 			//패스워드 암호화 처리
 			if (inputVo.getUserPw()!=null && !inputVo.getUserPw().equals("")) {
@@ -262,16 +246,22 @@ public class UserController {
 		
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
-			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
-			if (isKorailUser(loginUser)) {
-				userService.deleteChk(dataArr);
-			} else {
-				userService.deleteChk(dataArr, loginUser.getCompanyId());
-			}
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			String companyId = "코레일".equals(login.getUserType()) ? null : login.getCompanyId();
+			userService.deleteChk(dataArr, companyId);
 		} catch (Exception e) {
 			mav.addObject("msg","에러가 발생하였습니다");
 		}
 		return mav;
+	}
+
+	private void applyCompanyScope(UserVO inputVo, UserVO login) {
+		if (!"코레일".equals(login.getUserType())) {
+			inputVo.setCompanyId(login.getCompanyId());
+			if (inputVo.getAuthId() == null || (inputVo.getAuthId() != 3 && inputVo.getAuthId() != 4)) {
+				inputVo.setAuthId(4);
+			}
+		}
 	}
 	
 }

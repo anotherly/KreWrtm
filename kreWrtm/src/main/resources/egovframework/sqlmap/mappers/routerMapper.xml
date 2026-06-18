@@ -8,6 +8,7 @@
 	<!-- RouterInfoVO 매핑 -->
 	<resultMap id="routerInfoMap" type="routerVo">
     <id property="deviceId" column="DEVICE_ID"/>
+	<result property="companyId" column="COMPANY_ID"/>
     <!-- BaseVO -->
     <result property="regDate" column="REG_DATE"/>
     <result property="createdAt" column="CREATED_AT"/>
@@ -18,10 +19,9 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
-    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
-    <result property="userType" column="USER_TYPE"/>
+    <result property="userType" column="COMPANY_TYPE"/>
     <result property="dirMb" column="DIR_MB"/>
     <result property="dirRegDt" column="DIR_REG_DT"/>
     <result property="todayCnt" column="TODAY_CNT"/>
@@ -47,6 +47,7 @@
 	
 	<resultMap id="CompanyInfoMap" type="companyVo">
     <id property="companyId" column="COMPANY_ID"/>
+	<result property="companyCode" column="COMPANY_CODE"/>
     <!-- BaseVO -->
     <result property="regDate" column="REG_DATE"/>
     <result property="createdAt" column="CREATED_AT"/>
@@ -57,9 +58,9 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
-    <result property="companyCode" column="COMPANY_CODE"/>
+    
     <result property="companyName" column="COMPANY_NAME"/>
-    <result property="userType" column="USER_TYPE"/>
+    <result property="userType" column="COMPANY_TYPE"/>
     <result property="dirMb" column="DIR_MB"/>
     <result property="dirRegDt" column="DIR_REG_DT"/>
     <result property="todayCnt" column="TODAY_CNT"/>
@@ -69,23 +70,8 @@
 	<!-- SELECT: PK 단건 -->
 	<select id="select" parameterType="routerVo" resultMap="routerInfoMap">
 	    SELECT 
-	        A.device_id,
-	        A.device_name,
-	        A.model_name,
-	        A.volte_num,
-	        A.keywords,
-	        A.company_id,
-	        B.company_code,
-	        A.car_num,
-	        A.update_date,
-	        A.maker_phone_1,
-	        A.maker_phone_2,
-	        A.reg_date,
-	        A.extra_info,
-	        A.created_by,
-	        A.updated_by,
-	        B.company_type AS user_type,
-	        B.company_name
+	        A.*, 
+	        B.company_code, B.company_type, B.company_name
 	    FROM 
 	        TBL_ROUTER_INFO A
 	    LEFT JOIN 
@@ -99,30 +85,26 @@
 		<if test="volteNum != null and volteNum neq ''">
 			AND volte_num = #{volteNum}
 		</if>
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">
+			AND A.COMPANY_ID = #{scopeCompanyId}
+		</if>
 	</select>
 	
 	<select id="userTypeSelect" parameterType="companyVo" resultMap="CompanyInfoMap">
-		SELECT COMPANY_TYPE AS USER_TYPE FROM tbl_company_info
+		SELECT DISTINCT COMPANY_TYPE FROM tbl_company_info
 		WHERE 1=1
 		<if test="userType neq '코레일' and companyId !=null and companyId neq ''">
 			AND COMPANY_ID = #{companyId}
 		</if>
-		GROUP BY COMPANY_TYPE;
+		ORDER BY COMPANY_TYPE
 	</select>
 	
 	
 	<select id="selectCompany" parameterType="routerVo" resultMap="routerInfoMap">
-		SELECT
-			company_id,
-			company_code,
-			company_name,
-			company_type AS user_type,
-			reg_date,
-			created_at,
-			updated_at
-		FROM TBL_COMPANY_INFO
+		SELECT * FROM TBL_COMPANY_INFO
 		where 1=1
 		and company_type = #{userType}
+		<if test="companyId != null and companyId != ''">AND COMPANY_ID = #{companyId}</if>
 	</select>
 
 	<!-- SELECT: 소속별 목록 -->
@@ -130,25 +112,7 @@
 	<select id="selectList" parameterType="routerVo" resultMap="routerInfoMap">
 		SELECT J2.* FROM
 		(
-			SELECT
-				A.device_id,
-				A.device_name,
-				A.model_name,
-				A.volte_num,
-				A.keywords,
-				A.company_id,
-				B.company_code,
-				A.car_num,
-				A.update_date,
-				A.maker_phone_1,
-				A.maker_phone_2,
-				A.reg_date,
-				A.extra_info,
-				A.created_by,
-				A.updated_by,
-				B.COMPANY_NAME,
-				B.COMPANY_TYPE AS USER_TYPE
-			FROM 
+			SELECT A.*,B.COMPANY_CODE,B.COMPANY_NAME,B.COMPANY_TYPE FROM
 			TBL_ROUTER_INFO A
 			LEFT JOIN
 			(select * from TBL_COMPANY_INFO) B
@@ -200,13 +164,14 @@
 		company_id, car_num,
 		update_date, maker_phone_1, maker_phone_2,
 		reg_date, extra_info, created_by)
-		SELECT
-			concat(C.company_code,'_',#{deviceName},DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')),
-			concat(C.company_code,'_',#{deviceName}),
-			concat(#{modelName},'-',C.company_code,'_',#{deviceName}), 
+		VALUES
+		(
+			concat(#{companyCode},'_',#{deviceName},DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')),
+			concat(#{companyCode},'_',#{deviceName}),
+			concat(#{modelName},'-',#{companyCode},'_',#{deviceName}), 
 			#{volteNum}, 
 			#{keywords},
-			#{companyId}, 
+			#{companyId},
 			#{carNum},
 			#{updateDate}, 
 			#{makerPhone1}, 
@@ -214,28 +179,26 @@
 			curdate(), 
 			#{extraInfo}, 
 			now()
-		FROM TBL_COMPANY_INFO C
-		WHERE C.company_id = #{companyId}
+		)
 	</insert>
 
 	<!-- UPDATE: PK 기준 -->
 	<update id="update" parameterType="routerVo">
-		UPDATE TBL_ROUTER_INFO R
-		JOIN TBL_COMPANY_INFO C
-		  ON C.company_id = #{companyId}
+		UPDATE TBL_ROUTER_INFO
 		SET
-		R.device_name = concat(C.company_code,'_',#{deviceName}),
-		R.model_name = concat(#{modelName},'-',C.company_code,'_',#{deviceName}),
-		R.volte_num = #{volteNum},
-		R.keywords = #{keywords},
-		R.company_id = #{companyId},
-		R.car_num = #{carNum},
-		R.update_date = #{updateDate},
-		R.maker_phone_1 = #{makerPhone1},
-		R.maker_phone_2 = #{makerPhone2},
-		R.extra_info = #{extraInfo},
-		R.updated_by = now()
-		WHERE R.device_id = #{deviceId}
+		device_name = concat(#{companyCode},'_',#{deviceName}),
+		model_name = concat(#{modelName},'-',#{companyCode},'_',#{deviceName}),
+		volte_num = #{volteNum},
+		keywords = #{keywords},
+		company_id = #{companyId},
+		car_num = #{carNum},
+		update_date = #{updateDate},
+		maker_phone_1 = #{makerPhone1},
+		maker_phone_2 = #{makerPhone2},
+		extra_info = #{extraInfo},
+		updated_by = now()
+		WHERE device_id = #{deviceId}
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND company_id = #{scopeCompanyId}</if>
 	</update>
 
 	<!-- DELETE: PK 기준 -->
@@ -253,6 +216,7 @@
 	    <foreach collection="chkList" item="id" open="(" separator="," close=")">
 	        #{id}
 	    </foreach>
+		<if test="companyId != null and companyId != ''">AND company_id = #{companyId}</if>
 	</delete>
 	
 	<delete id="deleteCompany" parameterType="map">

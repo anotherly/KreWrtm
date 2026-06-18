@@ -8,6 +8,7 @@
   <!-- CompanyInfoVO 매핑 -->
   <resultMap id="CompanyInfoMap" type="companyVo">
     <id property="companyId" column="COMPANY_ID"/>
+	<result property="companyCode" column="COMPANY_CODE"/>
     <!-- BaseVO -->
     <result property="regDate" column="REG_DATE"/>
     <result property="createdAt" column="CREATED_AT"/>
@@ -19,9 +20,8 @@
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
     
-    <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
-    <result property="userType" column="USER_TYPE"/>
+    <result property="userType" column="COMPANY_TYPE"/>
     <result property="dirMb" column="DIR_MB"/>
     <result property="dirRegDt" column="DIR_REG_DT"/>
     <result property="todayCnt" column="TODAY_CNT"/>
@@ -30,23 +30,9 @@
 
   <!-- SELECT: PK 단건 -->
   <select id="select" parameterType="companyVo" resultMap="CompanyInfoMap">
-    SELECT
-      company_id,
-      company_code,
-      company_name,
-      company_type AS user_type,
-      reg_date,
-      created_at,
-      updated_at
-    FROM TBL_COMPANY_INFO
+    SELECT * FROM TBL_COMPANY_INFO
     WHERE 1=1 
-    <if test="companyId != null and companyId neq ''">
-        and company_id = #{companyId}
-    </if>
-    <if test="companyCode != null and companyCode neq ''">
-        and company_code = #{companyCode}
-    </if>
-    <if test="userType neq '코레일'">
+    <if test="userType neq '코레일' and companyId != null and companyId != ''">
 	    and company_id = #{companyId}
     </if>
     order by company_type desc
@@ -54,22 +40,11 @@
 
   <!-- SELECT: 전체 목록 -->
   <select id="selectList" resultMap="CompanyInfoMap">
-    SELECT
-      company_id,
-      company_code,
-      company_name,
-      company_type AS user_type,
-      reg_date,
-      created_at,
-      updated_at
-    FROM TBL_COMPANY_INFO
+    SELECT * FROM TBL_COMPANY_INFO
     where 1=1
     <!-- pk -->
     <if test="tagId != null and tagId neq ''">
         and company_id=#{tagId}
-    </if>
-    <if test="companyId != null and companyId neq ''">
-        and company_id=#{companyId}
     </if>
     <!-- 시간 -->
     <if test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
@@ -98,26 +73,23 @@
 		    </otherwise>  
         </choose>
     </if>
-    ORDER BY reg_date DESC, created_at DESC
+    ORDER BY reg_date DESC
   </select>
 
   <!-- INSERT -->
   <insert id="insert" parameterType="companyVo">
-    <selectKey keyProperty="companyId" resultType="string" order="BEFORE">
-      SELECT CONCAT(#{companyCode}, '_', DATE_FORMAT(NOW(), '%Y%m%d%H%i%s'))
-    </selectKey>
     INSERT INTO TBL_COMPANY_INFO
       (company_id, company_code, company_name, company_type, reg_date)
     VALUES
-      (#{companyId}, #{companyCode}, #{companyName}, #{userType}, curdate())
+      (#{companyId}, #{companyCode}, #{companyName}, #{userType}, CURDATE())
   </insert>
 
   <!-- UPDATE: PK 기준 -->
   <update id="update" parameterType="companyVo">
     UPDATE TBL_COMPANY_INFO
     SET
-      company_code = #{companyCode},
       company_name = #{companyName},
+      company_code = #{companyCode},
       company_type = #{userType}
     WHERE company_id = #{companyId}
   </update>

@@ -5,7 +5,7 @@
     <!--
         대시보드 공통 권한 범위.
         - tbl_company_info.user_type = 코레일인 사용자는 전체 등록 단말 조회
-        - 제조사 사용자는 로그인 company_id의 등록 단말만 조회
+        - 제조사 사용자는 로그인 company_code의 등록 단말만 조회
         - 미등록 부하테스트 데이터는 tbl_router_info INNER JOIN에서 제외됨
     -->
 

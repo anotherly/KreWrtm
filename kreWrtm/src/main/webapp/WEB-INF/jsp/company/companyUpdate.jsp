@@ -145,11 +145,11 @@
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
+						<input type="hidden" name="companyId" value="${data.companyId}">
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
 								<input type="hidden" id="departCode" name ="departCode" class="form-control">
-								<input type="hidden" id="companyId" name="companyId" value="${data.companyId}">
 								<div class="ctn_tbl_th fm_rep">소속기관명</div>
 								<div class="ctn_tbl_td">
 									<input type="text" 
@@ -163,15 +163,17 @@
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속기관 코드</div>
 								<div class="ctn_tbl_td">
-									<input type="text" 
+								
+								<input type="hidden" 
 										id="companyCode" 
 										name ="companyCode" 
 										placeholder="4자리 영문 대문자" 
-										class="form-control input_base_require"
+										class="form-control"
 										oninput="valComCode(event)"
 										maxLength="4"
 										value="${data.companyCode}"
 									>
+									${data.companyCode}
 								</div>
 							</div>
 						

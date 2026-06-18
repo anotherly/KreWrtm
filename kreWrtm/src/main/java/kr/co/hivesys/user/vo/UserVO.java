@@ -16,8 +16,8 @@ public class UserVO extends OrgVO{
 	public String userEmail;
 	
 	public String usedYn;
-
 	private Integer authId;
+	private String authDefine;
 	private String scopeCompanyId;
 	
 	//아래는 DB에 없는것들
@@ -87,6 +87,12 @@ public class UserVO extends OrgVO{
 	public void setAuthId(Integer authId) {
 		this.authId = authId;
 	}
+	public String getAuthDefine() {
+		return authDefine;
+	}
+	public void setAuthDefine(String authDefine) {
+		this.authDefine = authDefine;
+	}
 	public String getScopeCompanyId() {
 		return scopeCompanyId;
 	}
@@ -115,8 +121,7 @@ public class UserVO extends OrgVO{
 	public String toString() {
 		return "UserVO [userId=" + userId + ", userPw=" + userPw + ", userPw2=" + userPw2 + ", userName=" + userName
 				+ ", userRank=" + userRank + ", userPhone=" + userPhone + ", userPhone2=" + userPhone2 + ", userEmail="
-				+ userEmail + ", usedYn=" + usedYn + ", authId=" + authId + ", scopeCompanyId=" + scopeCompanyId
-				+ ", stDt=" + stDt + ", fnDt=" + fnDt + ", cnYn=" + cnYn + "]";
+				+ userEmail + ", usedYn=" + usedYn + ", stDt=" + stDt + ", fnDt=" + fnDt + ", cnYn=" + cnYn + "]";
 	}
 	
 }

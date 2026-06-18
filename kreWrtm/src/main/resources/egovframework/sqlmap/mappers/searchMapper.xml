@@ -40,7 +40,6 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
-    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
@@ -109,7 +108,7 @@
 	    LEFT JOIN 
 	        tbl_last_data l ON r.volte_num = l.volte_num
 	    LEFT JOIN 
-	        tbl_company_info c ON r.company_id = c.company_id  
+	        tbl_company_info c ON r.company_id = c.company_id
 	
 	    <where>
 	        <if test="searchVal != null and searchVal != ''">
@@ -123,9 +122,10 @@
 	                OR c.company_name LIKE CONCAT('%', #{searchVal}, '%') 
 	            )
 	        </if>
-	        <if test="companyId != null and companyId != '' and companyId != 'all'">
-	            AND r.company_id = #{companyId}
+	        <if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode != 'all'">
+	            AND c.company_code = #{companyCode}
 	        </if>
+			<if test="scopeCompanyId != null and scopeCompanyId != ''">AND r.company_id = #{scopeCompanyId}</if>
 	    </where>
 	
 	    ORDER BY r.car_num DESC
@@ -162,9 +162,10 @@
 	        <if test="deviceName != 'all'">
 	            AND r.device_name = #{deviceName}
 	        </if>
-	        <if test="companyId != null and companyId != '' and companyId != 'all'">
-	            AND r.company_id = #{companyId}
+	        <if test="companyCode != 'all'">
+	            AND r.company_id = (SELECT company_id FROM tbl_company_info WHERE company_code = #{companyCode})
 	        </if>
+			<if test="scopeCompanyId != null and scopeCompanyId != ''">AND r.company_id = #{scopeCompanyId}</if>
 	    ORDER BY r.car_num DESC
 	</select>
 	
@@ -174,18 +175,20 @@
 		SELECT COMPANY_ID, COMPANY_NAME, COMPANY_CODE
 		FROM TBL_COMPANY_INFO
 		WHERE 1 = 1
-		<if test="companyId != null and companyId != '' and companyId != 'all'" >
-			AND COMPANY_ID = #{companyId}
+		<if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode !='all'" >
+			AND COMPANY_CODE = #{companyCode}
 		</if>
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND COMPANY_ID = #{scopeCompanyId}</if>
 	</select>
 	
 	<select id="deviceNameTypeList" parameterType="searchVo" resultMap="searchVoMap">
 		SELECT DEVICE_NAME
 		FROM TBL_ROUTER_INFO
 		WHERE 1=1
-		<if test="companyId != null and companyId != '' and companyId != 'all'">
-			and company_id = #{companyId}
+		<if test="companyCode != 'all'">
+			and company_id = (SELECT company_id FROM tbl_company_info WHERE company_code = #{companyCode})
 		</if>
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND company_id = #{scopeCompanyId}</if>
 		GROUP BY DEVICE_NAME
 	</select>
 	
@@ -221,12 +224,16 @@
 		LEFT JOIN 
 		    tbl_last_data l
 		    ON r.volte_num = l.volte_num
-		WHERE r.device_id = #{deviceId}	
+		WHERE r.device_id = #{deviceId}
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND r.company_id = #{scopeCompanyId}</if>
 	</select>
 
 	<!-- 받아온 voltenum 으로 ip port pw 조회 -->
 	<select id="findVnc" parameterType="searchVo" resultMap="searchVoMap">
-	    SELECT vnc_ip,vnc_port,vnc_pw from tbl_last_data
-	    WHERE VoLTE_NUM = #{volteNum}	
+	    SELECT L.vnc_ip,L.vnc_port,L.vnc_pw
+		FROM tbl_last_data L
+		INNER JOIN tbl_router_info R ON L.VoLTE_NUM = R.volte_num
+	    WHERE L.VoLTE_NUM = #{volteNum}
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND R.company_id = #{scopeCompanyId}</if>
 	</select>
 </mapper>

@@ -16,6 +16,7 @@ import org.stringtemplate.v4.compiler.CodeGenerator.list_return;
 
 import kr.co.hivesys.company.service.OrgService;
 import kr.co.hivesys.company.vo.OrgVO;
+import kr.co.hivesys.user.vo.UserVO;
 
 @Controller
 public class OrgController {
@@ -66,6 +67,8 @@ public class OrgController {
 		ModelAndView mav = new ModelAndView("jsonView");
 		List<OrgVO> sList= null;
 		try {
+			UserVO login = (UserVO) request.getSession().getAttribute("login");
+			if (!"코레일".equals(login.getUserType())) inputVo.setCompanyId(login.getCompanyId());
 			sList = orgService.select(inputVo);
 			mav.addObject("data", sList);
 		} catch (Exception e) {

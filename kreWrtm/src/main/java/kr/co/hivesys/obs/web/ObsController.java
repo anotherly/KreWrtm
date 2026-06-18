@@ -182,7 +182,7 @@ public class ObsController {
 	
 	
 	// 장애이력 관리 삭제
-	@RequestMapping(value="obs/delete.ajax")
+	@RequestMapping(value="/obs/delete.ajax")
 	public @ResponseBody ModelAndView obsDelete
 	( @RequestParam(value="idArr[]")List<String> dataArr, HttpServletRequest request) throws Exception{
 		url = request.getRequestURI().substring(request.getContextPath().length()).split(".do")[0];

@@ -1,223 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.hivesys.user.mapper.UserMapper">
-<!-- 
-수정일           수정자         수정내용 
-========= ======= ================================================= 
-2020.07.23 정다빈     최초 생성 
--->
-
-	<!-- 전체 사용자 조회 -->
 	<resultMap type="userVo" id="selectUserList">
-    <id property="userId" column="USER_ID"/>
-    <!-- BaseVO -->
-    <result property="regDate" column="REG_DATE"/>
-    <result property="createdAt" column="CREATED_AT"/>
-    <result property="updatedAt" column="UPDATED_AT"/>
-    <result property="tagId" column="TAG_ID"/>
-    <result property="searchType" column="SEARCH_TYPE"/>
-    <result property="searchValue" column="SEARCH_VALUE"/>
-    <result property="sDate" column="S_DATE"/>
-    <result property="eDate" column="E_DATE"/>
-    <!-- CompanyVO -->
-    <result property="companyId" column="COMPANY_ID"/>
-    <result property="companyCode" column="COMPANY_CODE"/>
-    <result property="companyName" column="COMPANY_NAME"/>
-    <result property="userType" column="USER_TYPE"/>
-    <result property="dirMb" column="DIR_MB"/>
-    <result property="dirRegDt" column="DIR_REG_DT"/>
-    <result property="todayCnt" column="TODAY_CNT"/>
-    <result property="rsrqAvg" column="RSRQ_AVG"/>
-    <!-- OrgVO -->
-    <result property="orgId" column="ORG_ID"/>
-    <result property="orgName" column="ORG_NAME"/>
+		<id property="userId" column="USER_ID"/>
+		<result property="userPw" column="USER_PW"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="userRank" column="USER_RANK"/>
+		<result property="companyId" column="COMPANY_ID"/>
+		<result property="companyCode" column="COMPANY_CODE"/>
+		<result property="companyName" column="COMPANY_NAME"/>
+		<result property="userType" column="USER_TYPE"/>
+		<result property="orgId" column="ORG_ID"/>
+		<result property="orgName" column="ORG_NAME"/>
+		<result property="userPhone" column="USER_PHONE"/>
+		<result property="userPhone2" column="USER_PHONE2"/>
+		<result property="userEmail" column="USER_EMAIL"/>
+		<result property="usedYn" column="USED_YN"/>
+		<result property="authId" column="AUTH_ID"/>
+		<result property="authDefine" column="AUTH_DEFINE"/>
+		<result property="regDate" column="REG_DATE"/>
+		<result property="updatedAt" column="UPDATED_AT"/>
+	</resultMap>
 
-    <!-- UserVO -->
-    <result property="userPw" column="USER_PW"/>
-    <result property="userPw2" column="USER_PW2"/>
-    <result property="userName" column="USER_NAME"/>
-    <result property="userRank" column="USER_RANK"/>
-    <result property="userPhone" column="USER_PHONE"/>
-    <result property="userPhone2" column="USER_PHONE2"/>
-    <result property="userEmail" column="USER_EMAIL"/>
-    <result property="usedYn" column="USED_YN"/>
-    <result property="authId" column="AUTH_ID"/>
-    <result property="stDt" column="ST_DT"/>
-    <result property="fnDt" column="FN_DT"/>
-    <result property="cnYn" column="CN_YN"/>
-</resultMap>	
+	<sql id="userJoin">
+		SELECT U.USER_ID, U.USER_PW, U.USER_NAME, U.USER_RANK, U.ORG_ID,
+		       U.COMPANY_ID, U.USER_PHONE, U.USER_PHONE2, U.USER_EMAIL,
+		       U.USED_YN, U.REG_DATE, U.UPDATED_AT, U.AUTH_ID,
+		       C.COMPANY_CODE, C.COMPANY_NAME, C.COMPANY_TYPE AS USER_TYPE,
+		       O.ORG_NAME, A.AUTH_DEFINE
+		FROM TBL_USER_INFO U
+		INNER JOIN TBL_COMPANY_INFO C ON U.COMPANY_ID = C.COMPANY_ID
+		LEFT JOIN TBL_ORG_INFO O ON U.ORG_ID = O.ORG_ID
+		LEFT JOIN TBL_AUTH_INFO A ON U.AUTH_ID = A.AUTH_ID
+	</sql>
+
 	<select id="selectList" parameterType="userVo" resultMap="selectUserList">
-		SELECT J1.*,C.ORG_NAME FROM
-		(
-			SELECT
-				A.USER_ID,
-				A.USER_PW,
-				A.USER_NAME,
-				A.USER_RANK,
-				A.ORG_ID,
-				A.COMPANY_ID,
-				B.COMPANY_CODE,
-				B.COMPANY_NAME,
-				B.COMPANY_TYPE AS USER_TYPE,
-				A.USER_PHONE,
-				A.USER_PHONE2,
-				A.USER_EMAIL,
-				A.USED_YN,
-				A.AUTH_ID,
-				A.REG_DATE,
-				A.updated_at
-			FROM
-			(
-				SELECT
-					USER_ID,
-					USER_PW,
-					USER_NAME,
-					USER_RANK,
-					ORG_ID,
-					COMPANY_ID,
-					USER_PHONE,
-					USER_PHONE2,
-					USER_EMAIL,
-					USED_YN,
-					AUTH_ID,
-					REG_DATE,
-					updated_at
-				FROM tbl_user_info where 1=1
-				<if test="companyId !=null and companyId neq ''">
-	    			and company_id = #{companyId}
-	    		</if> 
-			)A
-			INNER JOIN 
-			tbl_company_info B
-			ON A.COMPANY_ID=B.COMPANY_ID
-		)J1
-		LEFT JOIN TBL_ORG_INFO C
-		ON J1.ORG_ID=C.ORG_ID
-		WHERE 1=1 	
-		<if test="sDate!=null and sDate neq '' and eDate!=null and eDate neq ''">
-	        and reg_date between #{sDate} and  #{eDate} 
-	    </if>
-	   	<!-- 검색조건 타입/검색어 -->
-		<if test="searchType!=null and searchType neq ''">
-	        <choose>
-	            <when test="searchType eq 'companyName' ">
-					and company_name LIKE CONCAT('%',#{searchValue},'%')
-	            </when>
-	            <when test="searchType eq 'orgName' ">
-					and org_name LIKE CONCAT('%',#{searchValue},'%')
-	            </when>
-	            <when test="searchType eq 'userName' ">
-					and user_name LIKE CONCAT('%',#{searchValue},'%')
-	            </when>
-	            <otherwise>
-			        and 
-			        (
-				        company_name LIKE CONCAT('%',#{searchValue},'%') 
-				        or 
-				        org_name LIKE CONCAT('%',#{searchValue},'%')
-				        or 
-				        user_name LIKE CONCAT('%',#{searchValue},'%')
-			        )
-			    </otherwise>  
-	        </choose>
-	    </if>
-		ORDER BY reg_date desc
+		<include refid="userJoin"/>
+		WHERE 1=1
+		<if test="companyId != null and companyId != ''">
+			AND U.COMPANY_ID = #{companyId}
+		</if>
+		<if test="sDate != null and sDate != '' and eDate != null and eDate != ''">
+			AND U.REG_DATE BETWEEN #{sDate} AND #{eDate}
+		</if>
+		<if test="searchType != null and searchType != '' and searchValue != null and searchValue != ''">
+			<choose>
+				<when test="searchType == 'companyName'">AND C.COMPANY_NAME LIKE CONCAT('%',#{searchValue},'%')</when>
+				<when test="searchType == 'orgName'">AND O.ORG_NAME LIKE CONCAT('%',#{searchValue},'%')</when>
+				<when test="searchType == 'userName'">AND U.USER_NAME LIKE CONCAT('%',#{searchValue},'%')</when>
+				<otherwise>AND (C.COMPANY_NAME LIKE CONCAT('%',#{searchValue},'%') OR O.ORG_NAME LIKE CONCAT('%',#{searchValue},'%') OR U.USER_NAME LIKE CONCAT('%',#{searchValue},'%'))</otherwise>
+			</choose>
+		</if>
+		ORDER BY U.REG_DATE DESC
 	</select>
 
-	<!-- 특정 사용자 조회 -->
 	<select id="select" parameterType="userVo" resultMap="selectUserList">
-		SELECT J1.*,C.ORG_NAME FROM
-		(
-			SELECT
-				A.USER_ID,
-				A.USER_PW,
-				A.USER_NAME,
-				A.USER_RANK,
-				A.ORG_ID,
-				A.COMPANY_ID,
-				B.COMPANY_CODE,
-				B.COMPANY_NAME,
-				B.COMPANY_TYPE AS USER_TYPE,
-				A.USER_PHONE,
-				A.USER_PHONE2,
-				A.USER_EMAIL,
-				A.USED_YN,
-				A.AUTH_ID,
-				A.REG_DATE,
-				A.updated_at
-			FROM
-			tbl_user_info A
-			INNER JOIN 
-			tbl_company_info B
-			ON A.COMPANY_ID=B.COMPANY_ID
-		)J1
-		LEFT JOIN TBL_ORG_INFO C
-		ON J1.ORG_ID=C.ORG_ID
-		WHERE USER_ID=#{userId}
-		<if test="scopeCompanyId !=null and scopeCompanyId neq ''">
-			AND J1.COMPANY_ID = #{scopeCompanyId}
+		<include refid="userJoin"/>
+		WHERE U.USER_ID = #{userId}
+		<if test="companyId != null and companyId != ''">
+			AND U.COMPANY_ID = #{companyId}
 		</if>
 	</select>
-	
-	<!-- 사용자 등록 -->
+
 	<insert id="insert" parameterType="userVo">
 		INSERT INTO TBL_USER_INFO
-		(
-			 user_id
-			,user_pw
-			,user_name
-			,company_id
-			,org_id
-			,user_phone
-			,user_phone2
-			,auth_id
-		)
+		(USER_ID, USER_PW, USER_NAME, COMPANY_ID, ORG_ID, USER_PHONE, USER_PHONE2, AUTH_ID)
 		VALUES
-		(
-			 #{userId}
-			,#{userPw}
-			,#{userName}
-			,#{companyId}
-			,#{orgId}
-			,#{userPhone}
-			,#{userPhone2}
-			,#{authId}
-		)
+		(#{userId}, #{userPw}, #{userName}, #{companyId}, #{orgId}, #{userPhone}, #{userPhone2}, #{authId})
 	</insert>
-	
-	<!-- 사용자 정보 수정-->
+
 	<update id="update" parameterType="userVo">
 		UPDATE TBL_USER_INFO
-		SET
-			USER_NAME=#{userName}
-			<if test="userPw !=null and userPw  neq '' ">
-				,USER_PW=#{userPw}
-			</if>
-			,company_id=#{companyId}
-			,org_id=#{orgId}
-			,user_phone=#{userPhone}
-			,user_phone2=#{userPhone2}
-			,auth_id=#{authId}
-			,updated_at=curdate()
-			
-		WHERE `USER_ID` =#{userId}
-		<if test="scopeCompanyId !=null and scopeCompanyId neq ''">
-			AND company_id = #{scopeCompanyId}
+		SET USER_NAME = #{userName}
+		<if test="userPw != null and userPw != ''">, USER_PW = #{userPw}</if>
+		, COMPANY_ID = #{companyId}
+		, ORG_ID = #{orgId}
+		, USER_PHONE = #{userPhone}
+		, USER_PHONE2 = #{userPhone2}
+		, AUTH_ID = #{authId}
+		, UPDATED_AT = CURDATE()
+		WHERE USER_ID = #{userId}
+		<if test="scopeCompanyId != null and scopeCompanyId != ''">
+			AND COMPANY_ID = #{scopeCompanyId}
 		</if>
 	</update>
-	
-	<!-- 사용자 삭제 -->
+
 	<delete id="deleteChk" parameterType="map">
-		DELETE FROM TBL_USER_INFO 
+		DELETE FROM TBL_USER_INFO
 		WHERE USER_ID IN
-		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
-            #{item}
-        </foreach>
-		<if test="companyId !=null and companyId neq ''">
-			AND company_id = #{companyId}
+		<foreach collection="chkList" item="item" separator="," open="(" close=")">#{item}</foreach>
+		<if test="companyId != null and companyId != ''">
+			AND COMPANY_ID = #{companyId}
 		</if>
 	</delete>
-
 </mapper>

@@ -1,11 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="java.util.Set" %>
-<%
-	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
-	boolean canUserInsert = authUrlSet == null || authUrlSet.contains("/user/userInsert");
-	boolean canUserDelete = authUrlSet == null || authUrlSet.contains("/user/userDelete");
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +10,7 @@
 	var updUrl="<%=request.getContextPath()%>/user/userUpdate.do";
 	var delUrl="<%=request.getContextPath()%>/user/userDelete.ajax";
 	var delbak="<%=request.getContextPath()%>/user/userList.do";
-	var canUserDelete = <%=canUserDelete%>;
+	var canUserDelete = ${sessionScope.authUrlMap['/user/userDelete'] == true};
 	
 	
 	var sendFleg = true;
@@ -49,7 +43,7 @@
 	                },
                 },
                 {data:"userId"},
-                {data:"userType"},
+                {data:"authDefine"},
                 {data:"companyName"},
                 {data:"userName"},
                 {data:"userPhone"},
@@ -85,8 +79,8 @@
 			
 			//행개수에 따라 수정삭제버튼 생성여부
 			//행 개수 0개일때
-			if(canUserDelete && $('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
-				if(typeof $("#btnDelete").val()==="undefined"){
+			if($('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
+				if(canUserDelete && typeof $("#btnDelete").val()==="undefined"){
 					$("#btnIns").append("<input type='button' id='btnDelete' class='btn btn_primary' value='삭제' onclick='tbDelete(this,delUrl,delbak)'>");
 				}
 			}else{
@@ -262,7 +256,7 @@
 									<tr>
 										<th><input type="checkbox" id="chkAll" class="chk"></th>
 										<th>사용자 ID</th>
-										<th>사용자 구분</th>
+						<th>사용자 권한</th>
 										<th>소속</th>
 										<th>사용자명</th>
 										<th>연락처</th>
@@ -275,9 +269,7 @@
 					
 					<div id ="btnDiv" class="btn_box" style="display: flex;flex-direction: row-reverse;float:right;">
 						<div id="btnIns" style="display: flex;justify-content: space-around;width: 230px;">
-							<% if (canUserInsert) { %>
-							<input type='button' class="btn btn_primary" id='btnInsert' value='등록'>
-							<% } %>
+							<c:if test="${sessionScope.authUrlMap['/user/userInsert']}"><input type='button' class="btn btn_primary" id='btnInsert' value='등록'></c:if>
 						</div>
 					</div>
 				</div>

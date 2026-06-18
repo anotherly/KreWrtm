@@ -54,7 +54,6 @@ public class CompanyController{
 		UserVO nlvo = (UserVO) request.getSession().getAttribute("login");
 		CompanyVO ovo = nlvo;
 		inputVo.setUserType(ovo.getUserType());
-		inputVo.setCompanyCode(ovo.getCompanyCode());
 		inputVo.setCompanyId(ovo.getCompanyId());
 		try {
 			sList = companyService.selectList(inputVo);
@@ -117,7 +116,7 @@ public class CompanyController{
 			data = companyService.selectList(inputVo).get(0);
 			
 			OrgVO orgVo = new OrgVO();
-			orgVo.setCompanyCode(data.getCompanyCode());
+			orgVo.setCompanyId(data.getCompanyId());
 			List<OrgVO> orgList = orgService.select(orgVo);
 			data.setOrgList(orgList);
 			

@@ -14,7 +14,7 @@ public interface RouterService {
 
 	void update(RouterVO thvo);
 	
-	void deleteChk(List<String> paramArr);
+	void deleteChk(List<String> paramArr, String companyId);
 	
 	void deleteCompany(List<String> paramArr);
 	

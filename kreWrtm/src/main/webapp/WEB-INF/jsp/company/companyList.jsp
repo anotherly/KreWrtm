@@ -1,11 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page import="java.util.Set" %>
-<%
-	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
-	boolean canCompanyInsert = authUrlSet == null || authUrlSet.contains("/company/companyInsert");
-	boolean canCompanyDelete = authUrlSet == null || authUrlSet.contains("/company/companyDelete");
-%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +10,7 @@
 	var updUrl="<%=request.getContextPath()%>/company/companyUpdate.do";
 	var delUrl="<%=request.getContextPath()%>/company/companyDelete.ajax";
 	var delbak="<%=request.getContextPath()%>/company/companyList.do";
-	var canCompanyDelete = <%=canCompanyDelete%>;
+	var canCompanyDelete = ${sessionScope.authUrlMap['/company/companyDelete'] == true};
 	
 	//데이터 테이블 관련
 	var iidx;//날짜컬럼 인덱스
@@ -40,7 +34,7 @@
             },  
             columns: [
             	{
-            		data:   "companyId",
+	            		data:   "companyId",
 	            	"render": function (data, type, row, meta) {
 	            		//console.log(meta.row+"	/	"+meta.col);
                         return '<input type="checkbox" id="chk" name="chk" value="'+data+'">';
@@ -80,11 +74,11 @@
 			
 			//행개수에 따라 수정삭제버튼 생성여부
 			//행 개수 0개일때
-			if(canCompanyDelete && $('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
+			if($('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
 				/* if(typeof $("#btnUpdate").val()==="undefined"){
 					$("#btnIns").append("<input type='button' id='btnUpdate' class='btn btn_primary' value='수정' onclick='tbUpdate(this,updUrl)'>");
 				} */
-				if(typeof $("#btnDelete").val()==="undefined"){
+				if(canCompanyDelete && typeof $("#btnDelete").val()==="undefined"){
 					$("#btnIns").append("<input type='button' id='btnDelete' class='btn btn_primary' value='삭제' onclick='companyDeleteBefore(this)'>");
 				}
 				
@@ -263,9 +257,7 @@
 					
 					<div id ="btnDiv" class="btn_box" style="display: flex;flex-direction: row-reverse;float:right;">
 						<div id="btnIns" style="display: flex;justify-content: space-around;width: 230px;">
-							<% if (canCompanyInsert) { %>
-							<input type='button' class="btn btn_primary" id='btnInsert' value='등록'>
-							<% } %>
+							<c:if test="${sessionScope.authUrlMap['/company/companyInsert']}"><input type='button' class="btn btn_primary" id='btnInsert' value='등록'></c:if>
 						</div>
 					</div>
 				</div>

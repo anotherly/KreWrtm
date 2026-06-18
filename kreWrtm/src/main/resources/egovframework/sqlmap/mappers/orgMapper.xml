@@ -8,6 +8,7 @@
   <!-- OrgInfoVO 매핑 -->
   <resultMap id="OrgInfoMap" type="orgVo">
     <id property="orgId" column="ORG_ID"/>
+	<result property="companyId" column="COMPANY_ID"/>
     <!-- BaseVO -->
     <result property="regDate" column="REG_DATE"/>
     <result property="createdAt" column="CREATED_AT"/>
@@ -18,10 +19,9 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
-    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
-    <result property="userType" column="USER_TYPE"/>
+    <result property="userType" column="COMPANY_TYPE"/>
     <result property="dirMb" column="DIR_MB"/>
     <result property="dirRegDt" column="DIR_REG_DT"/>
     <result property="todayCnt" column="TODAY_CNT"/>
@@ -34,10 +34,10 @@
   <select id="select" parameterType="orgVo" resultMap="OrgInfoMap">
     SELECT
       o.org_id,
-      o.company_id,
-      c.company_code,
+	  o.company_id,
+	  c.company_code,
       c.company_name,
-      c.company_type AS user_type,
+	  c.company_type,
       o.org_name,
       o.created_at,
       o.updated_at
@@ -58,10 +58,10 @@
   <select id="selectList" parameterType="orgVo" resultMap="OrgInfoMap">
     SELECT
       o.org_id,
-      o.company_id,
-      c.company_code,
+	  o.company_id,
+	  c.company_code,
       c.company_name,
-      c.company_type AS user_type,
+	  c.company_type,
       o.org_name,
       o.created_at,
       o.updated_at

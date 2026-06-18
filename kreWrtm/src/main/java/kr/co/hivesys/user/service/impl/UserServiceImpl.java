@@ -52,17 +52,11 @@ public class UserServiceImpl implements UserService{
 	}
 
 	//사용자 삭제
-	public void deleteChk(List<String> userArr) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("chkList",userArr);
-		userMapper.deleteChk(map);		
-	}
-
 	public void deleteChk(List<String> userArr, String companyId) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("chkList", userArr);
+		map.put("chkList",userArr);
 		map.put("companyId", companyId);
-		userMapper.deleteChk(map);
+		userMapper.deleteChk(map);		
 	}
 
 }
