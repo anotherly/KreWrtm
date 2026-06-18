@@ -1,5 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ page import="java.util.Set" %>
+<%@ page import="javax.servlet.http.HttpSession" %>
+<%!
+	private boolean hasAuthUrl(HttpSession session, String url) {
+		Object authUrlObj = session.getAttribute("authUrlSet");
+		if (!(authUrlObj instanceof Set)) {
+			return true;
+		}
+		return ((Set<?>) authUrlObj).contains(url);
+	}
+%>
 <!DOCTYPE html>
 <script>
 $(document).ready(function() {
@@ -37,30 +48,39 @@ $(document).ready(function() {
 });
 </script>
 
+<% if (hasAuthUrl(session, "/chart/main")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/chart/main.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n01"></i>
 		<div>운용/사용률 현황</div>
 	</a>
 </li>
+<% } %>
+<% if (hasAuthUrl(session, "/user/userList")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/user/userList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n07"></i>
 		<div>사용자 관리</div>
 	</a>
 </li>
+<% } %>
+<% if (hasAuthUrl(session, "/company/companyList")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/company/companyList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n09"></i>
 		<div>소속기관 관리</div>
 	</a>
 </li>	
+<% } %>
+<% if (hasAuthUrl(session, "/router/routerList")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/router/routerList.do" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n02"></i>
 		<div>장치 관리</div>
 	</a>
 </li>
+<% } %>
+<% if (hasAuthUrl(session, "/search/list")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/search/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
 		<i style="
@@ -79,12 +99,16 @@ $(document).ready(function() {
 		<li class="menu-item" style="cursor:pointer;"><a id="#" class="menu-link"><div>실시간 상태 조회</div></a></li>
 	</ul>
 </li>	
+<% } %>
+<% if (hasAuthUrl(session, "/obs/list")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a href="<%=request.getContextPath()%>/obs/list.do?" class="menu-link" style="color: rgb(255, 255, 255);">
 		<i class="menu-icon n03"></i>
 		<div>장애 관리</div>
 	</a>
 </li>
+<% } %>
+<% if (hasAuthUrl(session, "/dataroom/list")) { %>
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a id="/dataroom/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
 		<i class="menu-icon n06"></i>
@@ -95,4 +119,4 @@ $(document).ready(function() {
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/board/list.do" class="menu-link"><div>게시판</div></a></li>
 	</ul>
 </li>
-
+<% } %>

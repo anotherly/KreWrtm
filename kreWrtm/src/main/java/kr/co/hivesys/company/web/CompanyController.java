@@ -55,6 +55,7 @@ public class CompanyController{
 		CompanyVO ovo = nlvo;
 		inputVo.setUserType(ovo.getUserType());
 		inputVo.setCompanyCode(ovo.getCompanyCode());
+		inputVo.setCompanyId(ovo.getCompanyId());
 		try {
 			sList = companyService.selectList(inputVo);
 			mav.addObject("data", sList);

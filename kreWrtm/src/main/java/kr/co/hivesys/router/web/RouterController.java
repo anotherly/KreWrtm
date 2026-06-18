@@ -87,7 +87,7 @@ public class RouterController{
 		UserVO nlvo = (UserVO) request.getSession().getAttribute("login");
 		CompanyVO ovo = nlvo;
 		inputVo.setUserType(ovo.getUserType());
-		inputVo.setCompanyCode(ovo.getCompanyCode());
+		inputVo.setCompanyId(ovo.getCompanyId());
 		try {
 			sList = routerService.selectList(inputVo);
 			mav.addObject("data", sList);

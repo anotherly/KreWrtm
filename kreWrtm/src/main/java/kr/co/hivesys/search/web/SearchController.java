@@ -80,17 +80,17 @@ public class SearchController {
 		List<SearchVo> deviceNameList = null;
 		
 		try {				
-			String beforeComCode = inputVo.getCompanyCode();
+			String beforeComCode = inputVo.getCompanyId();
 			//beforeComCode가 비어있다면, 첫 진입
 			if(beforeComCode == null || beforeComCode.isEmpty()) {
 				UserVO reqLoginVo = (UserVO) request.getSession().getAttribute("login");
-				String companyCode = reqLoginVo.getCompanyCode();
+				String companyId = reqLoginVo.getCompanyId();
 				String userT = reqLoginVo.getUserType();
 				
 				if(userT.equals("코레일")) { // 관리자 계정이라면 all로 전부 조회
-					inputVo.setCompanyCode("all");
+					inputVo.setCompanyId("all");
 				} else {
-					inputVo.setCompanyCode(companyCode);
+					inputVo.setCompanyId(companyId);
 				}
 				
 			} 

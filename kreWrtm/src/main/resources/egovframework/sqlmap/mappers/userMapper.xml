@@ -22,6 +22,7 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
+    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
@@ -42,6 +43,7 @@
     <result property="userPhone2" column="USER_PHONE2"/>
     <result property="userEmail" column="USER_EMAIL"/>
     <result property="usedYn" column="USED_YN"/>
+    <result property="authId" column="AUTH_ID"/>
     <result property="stDt" column="ST_DT"/>
     <result property="fnDt" column="FN_DT"/>
     <result property="cnYn" column="CN_YN"/>
@@ -49,17 +51,47 @@
 	<select id="selectList" parameterType="userVo" resultMap="selectUserList">
 		SELECT J1.*,C.ORG_NAME FROM
 		(
-			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE 
+			SELECT
+				A.USER_ID,
+				A.USER_PW,
+				A.USER_NAME,
+				A.USER_RANK,
+				A.ORG_ID,
+				A.COMPANY_ID,
+				B.COMPANY_CODE,
+				B.COMPANY_NAME,
+				B.COMPANY_TYPE AS USER_TYPE,
+				A.USER_PHONE,
+				A.USER_PHONE2,
+				A.USER_EMAIL,
+				A.USED_YN,
+				A.AUTH_ID,
+				A.REG_DATE,
+				A.updated_at
 			FROM
 			(
-				select * from tbl_user_info where 1=1
-				<if test="companyCode !=null and companyCode neq ''">
-	    			and company_code = #{companyCode}
+				SELECT
+					USER_ID,
+					USER_PW,
+					USER_NAME,
+					USER_RANK,
+					ORG_ID,
+					COMPANY_ID,
+					USER_PHONE,
+					USER_PHONE2,
+					USER_EMAIL,
+					USED_YN,
+					AUTH_ID,
+					REG_DATE,
+					updated_at
+				FROM tbl_user_info where 1=1
+				<if test="companyId !=null and companyId neq ''">
+	    			and company_id = #{companyId}
 	    		</if> 
 			)A
 			INNER JOIN 
 			tbl_company_info B
-			ON A.COMPANY_CODE=B.COMPANY_CODE
+			ON A.COMPANY_ID=B.COMPANY_ID
 		)J1
 		LEFT JOIN TBL_ORG_INFO C
 		ON J1.ORG_ID=C.ORG_ID
@@ -98,16 +130,35 @@
 	<select id="select" parameterType="userVo" resultMap="selectUserList">
 		SELECT J1.*,C.ORG_NAME FROM
 		(
-			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE  
+			SELECT
+				A.USER_ID,
+				A.USER_PW,
+				A.USER_NAME,
+				A.USER_RANK,
+				A.ORG_ID,
+				A.COMPANY_ID,
+				B.COMPANY_CODE,
+				B.COMPANY_NAME,
+				B.COMPANY_TYPE AS USER_TYPE,
+				A.USER_PHONE,
+				A.USER_PHONE2,
+				A.USER_EMAIL,
+				A.USED_YN,
+				A.AUTH_ID,
+				A.REG_DATE,
+				A.updated_at
 			FROM
 			tbl_user_info A
 			INNER JOIN 
 			tbl_company_info B
-			ON A.COMPANY_CODE=B.COMPANY_CODE
+			ON A.COMPANY_ID=B.COMPANY_ID
 		)J1
 		LEFT JOIN TBL_ORG_INFO C
 		ON J1.ORG_ID=C.ORG_ID
 		WHERE USER_ID=#{userId}
+		<if test="scopeCompanyId !=null and scopeCompanyId neq ''">
+			AND J1.COMPANY_ID = #{scopeCompanyId}
+		</if>
 	</select>
 	
 	<!-- 사용자 등록 -->
@@ -117,20 +168,22 @@
 			 user_id
 			,user_pw
 			,user_name
-			,company_code
+			,company_id
 			,org_id
 			,user_phone
 			,user_phone2
+			,auth_id
 		)
 		VALUES
 		(
 			 #{userId}
 			,#{userPw}
 			,#{userName}
-			,#{companyCode}
+			,#{companyId}
 			,#{orgId}
 			,#{userPhone}
 			,#{userPhone2}
+			,#{authId}
 		)
 	</insert>
 	
@@ -142,22 +195,29 @@
 			<if test="userPw !=null and userPw  neq '' ">
 				,USER_PW=#{userPw}
 			</if>
-			,company_code=#{companyCode}
+			,company_id=#{companyId}
 			,org_id=#{orgId}
 			,user_phone=#{userPhone}
 			,user_phone2=#{userPhone2}
+			,auth_id=#{authId}
 			,updated_at=curdate()
 			
 		WHERE `USER_ID` =#{userId}
+		<if test="scopeCompanyId !=null and scopeCompanyId neq ''">
+			AND company_id = #{scopeCompanyId}
+		</if>
 	</update>
 	
 	<!-- 사용자 삭제 -->
-	<delete id="deleteChk" parameterType="userVo">
+	<delete id="deleteChk" parameterType="map">
 		DELETE FROM TBL_USER_INFO 
 		WHERE USER_ID IN
 		<foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
             #{item}
         </foreach>
+		<if test="companyId !=null and companyId neq ''">
+			AND company_id = #{companyId}
+		</if>
 	</delete>
 
 </mapper>

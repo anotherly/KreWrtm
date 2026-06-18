@@ -7,7 +7,10 @@ import kr.co.hivesys.comm.BaseVO;
 
 public class CompanyVO extends BaseVO {
 
-	/** 회사 코드 (영문 대문자 4자리, PK) */
+	/** 회사 고유 ID (회사코드_yyyyMMddHHmmss, PK) */
+	private String companyId;
+
+	/** 회사 코드 (영문 대문자 4자리) */
 	private String companyCode;
 
 	/** 회사명 */
@@ -27,6 +30,14 @@ public class CompanyVO extends BaseVO {
 	
 
 	// ===== Getter / Setter =====
+	public String getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+
 	public String getCompanyCode() {
 		return companyCode;
 	}
@@ -93,8 +104,8 @@ public class CompanyVO extends BaseVO {
 
 	@Override
 	public String toString() {
-		return "CompanyVO [companyCode=" + companyCode + ", companyName=" + companyName + ", userType=" + userType
-				+ "]";
+		return "CompanyVO [companyId=" + companyId + ", companyCode=" + companyCode + ", companyName=" + companyName
+				+ ", userType=" + userType + "]";
 	}
 	
 }

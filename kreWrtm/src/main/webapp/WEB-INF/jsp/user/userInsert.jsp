@@ -11,12 +11,14 @@
 		var dupChkFlag = false;
 		$(document).ready(function() {
 			console.log("사용자 등록 화면");
-			// 최초 진입: 사용자 유형 → 소속기관 → 본부/처/실 순서로 구성
-			loadCompanyList($("#userType").val(), '${login.companyCode}', null);
+			// 최초 진입: 사용자 권한 → 소속기관 → 본부/처/실 순서로 구성
+			syncUserTypeByAuth();
+			loadCompanyList($("#userType").val(), '${login.companyId}', null);
 
-			// 사용자 유형 변경 → 소속기관 목록 변경
-			$("#userType").on("change", function(){
-				loadCompanyList($(this).val(), null, null);
+			// 사용자 권한 변경 → 소속기관 목록 변경
+			$("#authId").on("change", function(){
+				syncUserTypeByAuth();
+				loadCompanyList($("#userType").val(), null, null);
 			});
 
 			// 소속기관 변경 → 본부/처/실 목록 변경
@@ -70,22 +72,27 @@
 			});
 		});
 
-		function loadCompanyList(userType, selectedCompanyCode, selectedOrgId) {
+		function syncUserTypeByAuth() {
+			var authId = $("#authId").val();
+			$("#userType").val((authId == '1' || authId == '2') ? '코레일' : '제조사');
+		}
+
+		function loadCompanyList(userType, selectedCompanyId, selectedOrgId) {
 			var result = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax", {"userType": userType});
 			var comData = result.data || [];
-			var loginComcode = '${login.companyCode}';
+			var loginComid = '${login.companyId}';
 			var loginUserType = '${login.userType}';
 			var $companyCode = $("#companyCode");
 
 			$companyCode.empty();
 
 			$(comData).each(function(i, company){
-				if (loginUserType != '코레일' && company.companyCode != loginComcode) {
+				if (loginUserType != '코레일' && company.companyId != loginComid) {
 					return true;
 				}
 
-				var $option = $("<option></option>").val(company.companyCode).text(company.companyName);
-				if (selectedCompanyCode != null && selectedCompanyCode != '' && company.companyCode == selectedCompanyCode) {
+				var $option = $("<option></option>").val(company.companyId).text(company.companyName);
+				if (selectedCompanyId != null && selectedCompanyId != '' && company.companyId == selectedCompanyId) {
 					$option.prop("selected", true);
 				}
 				$companyCode.append($option);
@@ -101,16 +108,16 @@
 			loadOrgList($companyCode.val(), selectedOrgId);
 		}
 
-		function loadOrgList(companyCode, selectedOrgId) {
+		function loadOrgList(companyId, selectedOrgId) {
 			var $orgSel = $("#orgSel");
 			$orgSel.empty();
 
-			if (companyCode == null || companyCode == '') {
+			if (companyId == null || companyId == '') {
 				$orgSel.append("<option value=''>소속을 먼저 선택하세요</option>").prop("disabled", true);
 				return;
 			}
 
-			var result = ajaxMethod("<%=request.getContextPath()%>/org/comCodeOrg.ajax", {"companyCode": companyCode});
+			var result = ajaxMethod("<%=request.getContextPath()%>/org/comCodeOrg.ajax", {"companyId": companyId});
 			var selectList = result.data || [];
 
 			if (selectList.length <= 0) {
@@ -241,23 +248,27 @@
 							</div>
 
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">사용자 유형</div>
+								<div class="ctn_tbl_th fm_rep">사용자 권한</div>
 								<div class="ctn_tbl_td">
-									<select class="table_sel" id="userType" name="userType">
+									<input type="hidden" id="userType" name="userType" value="코레일">
+									<select class="table_sel" id="authId" name="authId">
 										<c:choose>
 											<c:when test="${login.userType ne '코레일'}">
-												<option value="${login.userType}" selected>${login.userType}</option>
+												<option value="3">소속기관 관리자</option>
+												<option value="4" selected>소속기관 일반사용자</option>
 											</c:when>
 											<c:otherwise>
-												<option value="코레일" selected>코레일</option>
-												<option value="제조사">제조사</option>
+												<option value="1">코레일 관리자</option>
+												<option value="2" selected>코레일 일반사용자</option>
+												<option value="3">소속기관 관리자</option>
+												<option value="4">소속기관 일반사용자</option>
 											</c:otherwise>
 										</c:choose>
 									</select>
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-									<select class="table_sel" id="companyCode" name="companyCode">
+									<select class="table_sel" id="companyCode" name="companyId">
 										<option value="">선택</option>
 									</select>
 								</div>

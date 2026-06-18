@@ -58,4 +58,11 @@ public class UserServiceImpl implements UserService{
 		userMapper.deleteChk(map);		
 	}
 
+	public void deleteChk(List<String> userArr, String companyId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("chkList", userArr);
+		map.put("companyId", companyId);
+		userMapper.deleteChk(map);
+	}
+
 }

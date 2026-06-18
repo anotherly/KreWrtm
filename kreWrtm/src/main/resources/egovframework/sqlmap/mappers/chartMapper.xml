@@ -5,7 +5,7 @@
     <!--
         대시보드 공통 권한 범위.
         - tbl_company_info.user_type = 코레일인 사용자는 전체 등록 단말 조회
-        - 제조사 사용자는 로그인 company_code의 등록 단말만 조회
+        - 제조사 사용자는 로그인 company_id의 등록 단말만 조회
         - 미등록 부하테스트 데이터는 tbl_router_info INNER JOIN에서 제외됨
     -->
 
@@ -16,7 +16,7 @@
                 FROM tbl_router_info R_CNT
                 WHERE 1=1
                 <if test='!"코레일".equals(userType)'>
-                    AND R_CNT.company_code = #{companyCode}
+                    AND R_CNT.company_id = #{companyId}
                 </if>
             ) AS manageDeviceCnt,
             COUNT(*) AS totalDeviceCnt,
@@ -36,7 +36,7 @@
             ON A.VoLTE_NUM = R.volte_num
         WHERE 1=1
         <if test='!"코레일".equals(userType)'>
-            AND R.company_code = #{companyCode}
+            AND R.company_id = #{companyId}
         </if>
     </select>
 <!-- 전체 시간 훑어서 가져옴 -->
@@ -56,11 +56,11 @@
                 ON A2.VoLTE_NUM = R2.volte_num
             WHERE 1=1
             <if test='!"코레일".equals(userType)'>
-                AND R2.company_code = #{companyCode}
+                AND R2.company_id = #{companyId}
             </if>
         )
         <if test='!"코레일".equals(userType)'>
-            AND R.company_code = #{companyCode}
+            AND R.company_id = #{companyId}
         </if>
         GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
         ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
@@ -78,7 +78,7 @@
 	        ON A.VoLTE_NUM = R.volte_num
 	    WHERE A.RCV_DT <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 12 MINUTE)
 	    <if test='!"코레일".equals(userType)'>
-	        AND R.company_code = #{companyCode}
+	        AND R.company_id = #{companyId}
 	    </if>
 	    GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
 	    ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
@@ -103,7 +103,7 @@
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='!"코레일".equals(userType)'>
-                AND R.company_code = #{companyCode}
+                AND R.company_id = #{companyId}
             </if>
             GROUP BY CASE
                     WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 'LTE-R'
@@ -141,7 +141,7 @@
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='!"코레일".equals(userType)'>
-                AND R.company_code = #{companyCode}
+                AND R.company_id = #{companyId}
             </if>
             GROUP BY CASE
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRP), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -110 THEN 4
@@ -180,7 +180,7 @@
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='!"코레일".equals(userType)'>
-                AND R.company_code = #{companyCode}
+                AND R.company_id = #{companyId}
             </if>
             GROUP BY CASE
                     WHEN CAST(NULLIF(TRIM(REPLACE(REPLACE(UPPER(A.RSRQ), 'DBM', ''), 'DB', '')), '') AS SIGNED) <![CDATA[ < ]]> -18 THEN 4
@@ -242,7 +242,7 @@
                 ON A.VoLTE_NUM = R.volte_num
             WHERE 1=1
             <if test='!"코레일".equals(userType)'>
-                AND R.company_code = #{companyCode}
+                AND R.company_id = #{companyId}
             </if>
         ) T
         ORDER BY

@@ -18,6 +18,7 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
+    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
@@ -33,21 +34,22 @@
   <select id="select" parameterType="orgVo" resultMap="OrgInfoMap">
     SELECT
       o.org_id,
-      o.company_code,
+      o.company_id,
+      c.company_code,
       c.company_name,
-      c.user_type,
+      c.company_type AS user_type,
       o.org_name,
       o.created_at,
       o.updated_at
     FROM TBL_ORG_INFO o
     LEFT JOIN TBL_COMPANY_INFO c
-           ON o.company_code = c.company_code
+           ON o.company_id = c.company_id
     WHERE 1=1
     <if test="orgId != null and orgId neq '' ">
        AND o.org_id = #{orgId}
     </if>
-    <if test="companyCode != null and companyCode neq '' ">
-       AND o.company_code = #{companyCode}
+    <if test="companyId != null and companyId neq '' ">
+       AND o.company_id = #{companyId}
     </if>
     ORDER BY o.org_name ASC
   </select>
@@ -56,18 +58,19 @@
   <select id="selectList" parameterType="orgVo" resultMap="OrgInfoMap">
     SELECT
       o.org_id,
-      o.company_code,
+      o.company_id,
+      c.company_code,
       c.company_name,
-      c.user_type,
+      c.company_type AS user_type,
       o.org_name,
       o.created_at,
       o.updated_at
     FROM TBL_ORG_INFO o
     LEFT JOIN TBL_COMPANY_INFO c
-           ON o.company_code = c.company_code
+           ON o.company_id = c.company_id
     WHERE 1=1
-    <if test="companyCode != null and companyCode neq '' ">
-       AND o.company_code = #{companyCode}
+    <if test="companyId != null and companyId neq '' ">
+       AND o.company_id = #{companyId}
     </if>
     <if test="searchType!=null and searchType neq '' and searchValue!=null and searchValue neq ''">
       <choose>
@@ -93,16 +96,16 @@
   <!-- INSERT: org_id 직접 입력 -->
   <insert id="insert" parameterType="orgVo">
     INSERT INTO TBL_ORG_INFO
-      (org_id, company_code, org_name)
+      (org_id, company_id, org_name)
     VALUES
-      (#{orgId}, #{companyCode}, #{orgName})
+      (#{orgId}, #{companyId}, #{orgName})
   </insert>
 
   <!-- UPDATE: PK 기준 -->
   <update id="update" parameterType="orgVo">
     UPDATE TBL_ORG_INFO
     SET
-      company_code = #{companyCode},
+      company_id = #{companyId},
       org_name     = #{orgName}
     WHERE org_id = #{orgId}
   </update>
@@ -119,13 +122,13 @@
   <!-- DELETE: 회사 코드 기준 단건 삭제 -->
   <delete id="deleteByCompanyCode" parameterType="string">
     DELETE FROM TBL_ORG_INFO
-    WHERE company_code = #{_parameter}
+    WHERE company_id = #{_parameter}
   </delete>
 
   <!-- DELETE: 회사 코드 기준 다건 삭제 -->
   <delete id="deleteByCompanyChk" parameterType="java.util.HashMap">
     DELETE FROM TBL_ORG_INFO
-    WHERE company_code IN
+    WHERE company_id IN
     <foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
        #{item}
     </foreach>

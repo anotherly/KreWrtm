@@ -56,6 +56,22 @@ public class UserController {
 	@Resource(name = "companyService")
 	private CompanyService companyService;
 
+	private boolean isKorailUser(UserVO userVo) {
+		return userVo != null && "코레일".equals(userVo.getUserType());
+	}
+
+	private Integer normalizeAuthId(UserVO loginUser, Integer authId) {
+		if (isKorailUser(loginUser)) {
+			if (authId != null && authId >= 1 && authId <= 4) {
+				return authId;
+			}
+			return 2;
+		}
+		if (authId != null && authId == 3) {
+			return 3;
+		}
+		return 4;
+	}
 	
 	//주소에 맞게 매핑
 	@RequestMapping(value= "/user/*.do")
@@ -101,8 +117,8 @@ public class UserController {
 		CompanyVO ovo = nlvo;
 		inputVo.setUserType(ovo.getUserType());
 		//코레일만 전 사용자 조회 , 제조사는 제조사만 조회
-		if(!nlvo.getCompanyCode().equals("KREG")) {
-			inputVo.setCompanyCode(ovo.getCompanyCode());
+		if(!isKorailUser(nlvo)) {
+			inputVo.setCompanyId(ovo.getCompanyId());
 		}
 		try {
 			sList = userService.selectList(inputVo);
@@ -150,6 +166,11 @@ public class UserController {
 			) throws Exception{
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
+			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
+			inputVo.setAuthId(normalizeAuthId(loginUser, inputVo.getAuthId()));
+			if (!isKorailUser(loginUser)) {
+				inputVo.setCompanyId(loginUser.getCompanyId());
+			}
 			//패스워드 암호화 처리
 			String hashedPw = BCrypt.hashpw(inputVo.getUserPw(), BCrypt.gensalt());
 			//vo에 암호화된 password 삽입
@@ -180,6 +201,9 @@ public class UserController {
 		List<OrgVO> orgList = new ArrayList<>();
 		List<CompanyVO> comList = new ArrayList<>();
 		inputVo.setUserId(inputVo.getTagId());
+		if (!isKorailUser(nlvo)) {
+			inputVo.setScopeCompanyId(nlvo.getCompanyId());
+		}
 		try {
 			orgList = orgService.select(ovo);
 			comList=companyService.select(ovo);
@@ -206,6 +230,12 @@ public class UserController {
 		ModelAndView mav = new ModelAndView("jsonView");
 		UserVO thvo= null;
 		try {
+			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
+			inputVo.setAuthId(normalizeAuthId(loginUser, inputVo.getAuthId()));
+			if (!isKorailUser(loginUser)) {
+				inputVo.setCompanyId(loginUser.getCompanyId());
+				inputVo.setScopeCompanyId(loginUser.getCompanyId());
+			}
 			//패스워드 암호화 처리
 			if (inputVo.getUserPw()!=null && !inputVo.getUserPw().equals("")) {
 				String hashedPw = BCrypt.hashpw(inputVo.getUserPw(), BCrypt.gensalt());
@@ -232,7 +262,12 @@ public class UserController {
 		
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
-			userService.deleteChk(dataArr);
+			UserVO loginUser = (UserVO) request.getSession().getAttribute("login");
+			if (isKorailUser(loginUser)) {
+				userService.deleteChk(dataArr);
+			} else {
+				userService.deleteChk(dataArr, loginUser.getCompanyId());
+			}
 		} catch (Exception e) {
 			mav.addObject("msg","에러가 발생하였습니다");
 		}

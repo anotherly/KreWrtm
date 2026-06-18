@@ -12,7 +12,7 @@
 		var dupChkFlag = true;
 		$(document).ready(function() {
 			console.log("단말기 수정 화면");
-			var comcode = '${login.companyCode}';
+			var comid = '${login.companyId}';
 			var bfVolte = '${data.volteNum}';
 			var modNm = '${data.modelName}';
 			var devNm = '${data.deviceName}';
@@ -20,10 +20,10 @@
 			var userTypeVal = $('#userType').val();
 			changeSelect(userTypeVal);
 			
-			var companyCodeVal = '${data.companyCode}';
+			var companyIdVal = '${data.companyId}';
 			var userType = '${data.userType}';
 			
-			selectDropBox(companyCodeVal , userType);
+			selectDropBox(companyIdVal , userType);
 			
 			//모델명 치환
 			modNm=modNm.replaceAll('-'+devNm,'');
@@ -139,21 +139,21 @@
 			// option 요소 동적 생성
 			$('#companyCode').empty(); 
 			
-			var loginComcode = '${login.companyCode}';
+			var loginComid = '${login.companyId}';
 			var userType = '${login.userType}';
 			
 			if(userType != '코레일') {
 				comData.forEach(function(company) {
-				    if (company.companyCode == loginComcode) {  
+				    if (company.companyId == loginComid) {  
 				        $('#companyCode').append(
-				            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+				            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
 				        );
 				    }
 				});
 			} else {
 				comData.forEach(function(company) {
 			        $('#companyCode').append(
-			            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+			            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
 			        );
 			    });
 			}
@@ -162,8 +162,8 @@
 		
 		
 		
-		function selectDropBox(companyCode, userType) {
-			$("#companyCode").val(companyCode);
+		function selectDropBox(companyId, userType) {
+			$("#companyCode").val(companyId);
 		}
 		
 	</script>
@@ -291,7 +291,7 @@
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyCode">
+		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyId">
 
 									</select>
 								</div>

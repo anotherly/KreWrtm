@@ -34,5 +34,6 @@ public interface UserService {
 
 	//사용자 삭제
 	public void deleteChk(List<String> userArr);
+	public void deleteChk(List<String> userArr, String companyId);
 	
 }

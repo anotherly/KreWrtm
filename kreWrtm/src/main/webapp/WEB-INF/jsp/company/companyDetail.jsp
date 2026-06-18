@@ -1,6 +1,11 @@
-]<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page import="java.util.Set" %>
+<%
+	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
+	boolean canCompanyUpdate = authUrlSet == null || authUrlSet.contains("/company/companyUpdate");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +25,7 @@
 
 	$(document).ready(function(){
 		console.log("상세");
-		var tagId='${data.companyCode}';
+		var tagId='${data.companyId}';
 		$("#btnSave").on('click', function(){
 			location.href='<%=request.getContextPath()%>/company/companyUpdate.do?tagId='+tagId;
 		});
@@ -116,7 +121,9 @@
 						<!-- btn_box Start -->
 						<div class="btn_box">
 							<div class="right">
+								<% if (canCompanyUpdate) { %>
 								<input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" />
+								<% } %>
 								<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
 							</div>
 						</div>

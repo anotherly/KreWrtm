@@ -40,6 +40,7 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
+    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
@@ -108,7 +109,7 @@
 	    LEFT JOIN 
 	        tbl_last_data l ON r.volte_num = l.volte_num
 	    LEFT JOIN 
-	        tbl_company_info c ON r.company_code = c.company_code  
+	        tbl_company_info c ON r.company_id = c.company_id  
 	
 	    <where>
 	        <if test="searchVal != null and searchVal != ''">
@@ -122,8 +123,8 @@
 	                OR c.company_name LIKE CONCAT('%', #{searchVal}, '%') 
 	            )
 	        </if>
-	        <if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode != 'all'">
-	            AND r.company_code = #{companyCode}
+	        <if test="companyId != null and companyId != '' and companyId != 'all'">
+	            AND r.company_id = #{companyId}
 	        </if>
 	    </where>
 	
@@ -161,8 +162,8 @@
 	        <if test="deviceName != 'all'">
 	            AND r.device_name = #{deviceName}
 	        </if>
-	        <if test="companyCode != 'all'">
-	            AND r.company_code = #{companyCode}
+	        <if test="companyId != null and companyId != '' and companyId != 'all'">
+	            AND r.company_id = #{companyId}
 	        </if>
 	    ORDER BY r.car_num DESC
 	</select>
@@ -170,11 +171,11 @@
 	
 	<!-- 실시간 데이터 조회 - 단말기 검색 조건 옵션 셋팅 -->
 	<select id="companyTypeList" parameterType="searchVo" resultMap="searchVoMap">
-		SELECT COMPANY_NAME , COMPANY_CODE
+		SELECT COMPANY_ID, COMPANY_NAME, COMPANY_CODE
 		FROM TBL_COMPANY_INFO
 		WHERE 1 = 1
-		<if test="companyCode != 'KREG' and companyCode != 'KREM' and companyCode !='all'" >
-			AND COMPANY_CODE = #{companyCode}
+		<if test="companyId != null and companyId != '' and companyId != 'all'" >
+			AND COMPANY_ID = #{companyId}
 		</if>
 	</select>
 	
@@ -182,8 +183,8 @@
 		SELECT DEVICE_NAME
 		FROM TBL_ROUTER_INFO
 		WHERE 1=1
-		<if test="companyCode != 'all'">
-			and company_code = #{companyCode}
+		<if test="companyId != null and companyId != '' and companyId != 'all'">
+			and company_id = #{companyId}
 		</if>
 		GROUP BY DEVICE_NAME
 	</select>

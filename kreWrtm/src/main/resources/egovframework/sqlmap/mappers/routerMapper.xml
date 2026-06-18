@@ -18,6 +18,7 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
+    <result property="companyId" column="COMPANY_ID"/>
     <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
@@ -45,7 +46,7 @@
 </resultMap>
 	
 	<resultMap id="CompanyInfoMap" type="companyVo">
-    <id property="companyCode" column="COMPANY_CODE"/>
+    <id property="companyId" column="COMPANY_ID"/>
     <!-- BaseVO -->
     <result property="regDate" column="REG_DATE"/>
     <result property="createdAt" column="CREATED_AT"/>
@@ -56,7 +57,7 @@
     <result property="sDate" column="S_DATE"/>
     <result property="eDate" column="E_DATE"/>
     <!-- CompanyVO -->
-    
+    <result property="companyCode" column="COMPANY_CODE"/>
     <result property="companyName" column="COMPANY_NAME"/>
     <result property="userType" column="USER_TYPE"/>
     <result property="dirMb" column="DIR_MB"/>
@@ -68,14 +69,29 @@
 	<!-- SELECT: PK 단건 -->
 	<select id="select" parameterType="routerVo" resultMap="routerInfoMap">
 	    SELECT 
-	        A.*, 
-	        B.user_type,B.company_name
+	        A.device_id,
+	        A.device_name,
+	        A.model_name,
+	        A.volte_num,
+	        A.keywords,
+	        A.company_id,
+	        B.company_code,
+	        A.car_num,
+	        A.update_date,
+	        A.maker_phone_1,
+	        A.maker_phone_2,
+	        A.reg_date,
+	        A.extra_info,
+	        A.created_by,
+	        A.updated_by,
+	        B.company_type AS user_type,
+	        B.company_name
 	    FROM 
 	        TBL_ROUTER_INFO A
 	    LEFT JOIN 
 	        TBL_COMPANY_INFO B
 	    ON 
-	        A.COMPANY_CODE = B.COMPANY_CODE
+	        A.COMPANY_ID = B.COMPANY_ID
 	    WHERE 1=1
 	    <if test="tagId != null and tagId != ''">
 			AND device_id = #{tagId}
@@ -86,19 +102,27 @@
 	</select>
 	
 	<select id="userTypeSelect" parameterType="companyVo" resultMap="CompanyInfoMap">
-		SELECT USER_TYPE FROM tbl_company_info
+		SELECT COMPANY_TYPE AS USER_TYPE FROM tbl_company_info
 		WHERE 1=1
-		<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
-			AND COMPANY_CODE = #{companyCode}
+		<if test="userType neq '코레일' and companyId !=null and companyId neq ''">
+			AND COMPANY_ID = #{companyId}
 		</if>
-		GROUP BY USER_TYPE;
+		GROUP BY COMPANY_TYPE;
 	</select>
 	
 	
 	<select id="selectCompany" parameterType="routerVo" resultMap="routerInfoMap">
-		SELECT * FROM TBL_COMPANY_INFO
+		SELECT
+			company_id,
+			company_code,
+			company_name,
+			company_type AS user_type,
+			reg_date,
+			created_at,
+			updated_at
+		FROM TBL_COMPANY_INFO
 		where 1=1
-		and user_type = #{userType}
+		and company_type = #{userType}
 	</select>
 
 	<!-- SELECT: 소속별 목록 -->
@@ -106,17 +130,35 @@
 	<select id="selectList" parameterType="routerVo" resultMap="routerInfoMap">
 		SELECT J2.* FROM
 		(
-			SELECT A.*,B.COMPANY_NAME,B.USER_TYPE FROM 
+			SELECT
+				A.device_id,
+				A.device_name,
+				A.model_name,
+				A.volte_num,
+				A.keywords,
+				A.company_id,
+				B.company_code,
+				A.car_num,
+				A.update_date,
+				A.maker_phone_1,
+				A.maker_phone_2,
+				A.reg_date,
+				A.extra_info,
+				A.created_by,
+				A.updated_by,
+				B.COMPANY_NAME,
+				B.COMPANY_TYPE AS USER_TYPE
+			FROM 
 			TBL_ROUTER_INFO A
 			LEFT JOIN
 			(select * from TBL_COMPANY_INFO) B
-			ON A.COMPANY_CODE=B.COMPANY_CODE
+			ON A.COMPANY_ID=B.COMPANY_ID
 		)J2
 		where 1=1
 
 		<!-- 권한 -->
-		<if test="userType neq '코레일' and companyCode !=null and companyCode neq ''">
-		    and J2.company_code = #{companyCode}
+		<if test="userType neq '코레일' and companyId !=null and companyId neq ''">
+		    and J2.company_id = #{companyId}
 	    </if>
 		<!-- 시간 -->
 		<if
@@ -155,17 +197,16 @@
 	<insert id="insert" parameterType="routerVo">
 		INSERT INTO TBL_ROUTER_INFO
 		(device_id,device_name, model_name, volte_num, keywords,
-		company_code, car_num,
+		company_id, car_num,
 		update_date, maker_phone_1, maker_phone_2,
 		reg_date, extra_info, created_by)
-		VALUES
-		(
-			concat(#{companyCode},'_',#{deviceName},DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')),
-			concat(#{companyCode},'_',#{deviceName}),
-			concat(#{modelName},'-',#{companyCode},'_',#{deviceName}), 
+		SELECT
+			concat(C.company_code,'_',#{deviceName},DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')),
+			concat(C.company_code,'_',#{deviceName}),
+			concat(#{modelName},'-',C.company_code,'_',#{deviceName}), 
 			#{volteNum}, 
 			#{keywords},
-			#{companyCode}, 
+			#{companyId}, 
 			#{carNum},
 			#{updateDate}, 
 			#{makerPhone1}, 
@@ -173,25 +214,28 @@
 			curdate(), 
 			#{extraInfo}, 
 			now()
-		)
+		FROM TBL_COMPANY_INFO C
+		WHERE C.company_id = #{companyId}
 	</insert>
 
 	<!-- UPDATE: PK 기준 -->
 	<update id="update" parameterType="routerVo">
-		UPDATE TBL_ROUTER_INFO
+		UPDATE TBL_ROUTER_INFO R
+		JOIN TBL_COMPANY_INFO C
+		  ON C.company_id = #{companyId}
 		SET
-		device_name = concat(#{companyCode},'_',#{deviceName}),
-		model_name = concat(#{modelName},'-',#{companyCode},'_',#{deviceName}),
-		volte_num = #{volteNum},
-		keywords = #{keywords},
-		company_code = #{companyCode},
-		car_num = #{carNum},
-		update_date = #{updateDate},
-		maker_phone_1 = #{makerPhone1},
-		maker_phone_2 = #{makerPhone2},
-		extra_info = #{extraInfo},
-		updated_by = now()
-		WHERE device_id = #{deviceId}
+		R.device_name = concat(C.company_code,'_',#{deviceName}),
+		R.model_name = concat(#{modelName},'-',C.company_code,'_',#{deviceName}),
+		R.volte_num = #{volteNum},
+		R.keywords = #{keywords},
+		R.company_id = #{companyId},
+		R.car_num = #{carNum},
+		R.update_date = #{updateDate},
+		R.maker_phone_1 = #{makerPhone1},
+		R.maker_phone_2 = #{makerPhone2},
+		R.extra_info = #{extraInfo},
+		R.updated_by = now()
+		WHERE R.device_id = #{deviceId}
 	</update>
 
 	<!-- DELETE: PK 기준 -->
@@ -213,7 +257,7 @@
 	
 	<delete id="deleteCompany" parameterType="map">
 	    DELETE FROM TBL_ROUTER_INFO
-	    WHERE company_code IN
+	    WHERE company_id IN
 	    <foreach collection="chkList" item="id" open="(" separator="," close=")">
 	        #{id}
 	    </foreach>

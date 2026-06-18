@@ -223,7 +223,7 @@
     	
     	$('#companyCode').change(function() {
     		var selectedValue = $(this).val();
-    		var dataList = ajaxMethod("<%=request.getContextPath()%>/search/list.ajax",{"companyCode":selectedValue});
+    		var dataList = ajaxMethod("<%=request.getContextPath()%>/search/list.ajax",{"companyId":selectedValue});
     		changeOption(dataList.dnData);
         });
     	
@@ -269,7 +269,7 @@
 	    
 	    comData.forEach(function(company) {
 	        $('#companyCode').append(
-	            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+	            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
 	        );
 	    });
 
@@ -556,7 +556,7 @@
 								<div class="searchType1_container">
 									<div class="searchType1_title">소속</div>
 									<div class="searchType1">
-										<select id="companyCode" name="companyCode" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">										
+										<select id="companyCode" name="companyId" style="min-width: 150px; min-height: 30px; padding-left: 5px; border-radius: 5px;">										
 										</select>
 									</div>
 								</div>

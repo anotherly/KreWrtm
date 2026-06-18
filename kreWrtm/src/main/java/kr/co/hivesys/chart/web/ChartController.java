@@ -92,7 +92,7 @@ public class ChartController {
     /*
      * 로그인 사용자 기준 대시보드 조회 범위 생성.
      * - 코레일: router_info에 등록된 전체 단말기 조회
-     * - 제조사: 로그인 사용자의 company_code에 등록된 단말기만 조회
+     * - 제조사: 로그인 사용자의 company_id에 등록된 단말기만 조회
      *
      * tbl_receive_data / tbl_last_data에는 부하테스트용 미등록 단말 데이터가 들어갈 수 있으므로
      * mapper에서 tbl_router_info와 VoLTE_NUM 기준으로 INNER JOIN하여 등록 단말만 집계한다.
@@ -109,15 +109,15 @@ public class ChartController {
         }
 
         String userType = login == null ? "" : nvl(login.getUserType());
-        String companyCode = login == null ? "" : nvl(login.getCompanyCode());
+        String companyId = login == null ? "" : nvl(login.getCompanyId());
 
         boolean korailUser = "코레일".equals(userType);
 
         param.put("userType", userType);
-        param.put("companyCode", companyCode);
+        param.put("companyId", companyId);
         param.put("isKorail", korailUser ? "Y" : "N");
 
-        logger.debug("대시보드 조회 범위 - userType: " + userType + ", companyCode: " + companyCode + ", isKorail: " + (korailUser ? "Y" : "N"));
+        logger.debug("대시보드 조회 범위 - userType: " + userType + ", companyId: " + companyId + ", isKorail: " + (korailUser ? "Y" : "N"));
         return param;
     }
 

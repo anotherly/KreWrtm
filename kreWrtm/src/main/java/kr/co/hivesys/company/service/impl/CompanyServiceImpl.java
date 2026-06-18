@@ -45,7 +45,7 @@ public class CompanyServiceImpl implements CompanyService {
 	@Override
 	public void update(CompanyVO thVo) {
 		companyMapper.update(thVo);
-		orgMapper.deleteByCompanyCode(thVo.getCompanyCode());
+		orgMapper.deleteByCompanyCode(thVo.getCompanyId());
 		insertOrgList(thVo);
 	}
 
@@ -83,7 +83,7 @@ public class CompanyServiceImpl implements CompanyService {
 			
 			orgVo.setOrgId(orgId.trim());
 			orgVo.setOrgName(orgName.trim());
-			orgVo.setCompanyCode(thVo.getCompanyCode());
+			orgVo.setCompanyId(thVo.getCompanyId());
 			orgMapper.insert(orgVo);
 		}
 	}

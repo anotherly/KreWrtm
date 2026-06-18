@@ -97,6 +97,9 @@
 	
 	<!-- jdb : 로그인 인터셉터 관련 기능 추가 -->    
     <bean id="loginInterceptor" class="kr.co.hivesys.comm.LoginInterceptor"/>
+    <bean id="authInterceptor" class="kr.co.hivesys.comm.AuthInterceptor">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
     <mvc:interceptors>
         <!-- loginInterceptor -->
 		<mvc:interceptor>
@@ -106,6 +109,13 @@
 			<mvc:mapping path="/login/logout.do"/>
 			<ref bean="loginInterceptor"/>		     
 		</mvc:interceptor>        
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*.do"/>
+			<mvc:mapping path="/**/*.ajax"/>
+			<mvc:exclude-mapping path="/login/**"/>
+			<mvc:exclude-mapping path="/cmn/**"/>
+			<ref bean="authInterceptor"/>
+		</mvc:interceptor>
     </mvc:interceptors>
 	
 	<!-- json START -->

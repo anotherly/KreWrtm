@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.Set" %>
+<%
+	Set<?> authUrlSet = (Set<?>) session.getAttribute("authUrlSet");
+	boolean canDataroomInsert = authUrlSet == null || authUrlSet.contains("/dataroom/insert");
+	boolean canDataroomDelete = authUrlSet == null || authUrlSet.contains("/dataroom/delete");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,6 +20,7 @@
 	var updUrl="<%=request.getContextPath()%>/dataroom/update.do";
 	var delUrl="<%=request.getContextPath()%>/dataroom/delete.ajax";
 	var delbak="<%=request.getContextPath()%>/dataroom/list.do";	
+	var canDataroomDelete = <%=canDataroomDelete%>;
 	
 	$(document).ready(function(){	
 		/* ▼ 데이터 테이블 관련 */
@@ -123,7 +130,7 @@
 			
 			//행개수에 따라 수정삭제버튼 생성여부
 			//행 개수 0개일때
-			if($('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
+			if(canDataroomDelete && $('input:checkbox[name="chk"]').length !=0 && typeof $('input:checkbox[name="chk"]').length !== "undefined"){
 				/* if(typeof $("#btnUpdate").val()==="undefined"){
 					$("#btnIns").append("<input type='button' id='btnUpdate' class='btn btn_primary' value='수정' onclick='tbUpdate(this,updUrl)'>");
 				} */
@@ -294,7 +301,9 @@
 					
 					<div id ="btnDiv" class="btn_box" style="display: flex;flex-direction: row-reverse;float:right;">
 						<div id="btnIns" style="display: flex;justify-content: space-around;width: 230px;">
+							<% if (canDataroomInsert) { %>
 							<input type='button' class="btn btn_primary" id='btnInsert' value='등록'>
+							<% } %>
 						</div>
 					</div>
 				</div>

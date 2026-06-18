@@ -15,7 +15,7 @@
 			changeSelect(userTypeVal);
 			
 			console.log("장비 등록 화면");
-			var comcode = '${login.companyCode}';
+			var comid = '${login.companyId}';
 			 /** 1. 장치명 입력 시 모델명 옆에 표시 */
 			  $("#deviceName").on("input", function(){
 			    $("#modelNameDisplay").text($(this).val());
@@ -116,21 +116,21 @@
 			// option 요소 동적 생성
 			$('#companyCode').empty(); 
 			
-			var loginComcode = '${login.companyCode}';
+			var loginComid = '${login.companyId}';
 			var userType = '${login.userType}';
 			
 			if(userType != '코레일') {
 				comData.forEach(function(company) {
-				    if (company.companyCode == loginComcode) {  
+				    if (company.companyId == loginComid) {  
 				        $('#companyCode').append(
-				            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+				            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
 				        );
 				    }
 				});
 			} else {
 				comData.forEach(function(company) {
 			        $('#companyCode').append(
-			            '<option value="' + company.companyCode + '">' + company.companyName + '</option>'
+			            '<option value="' + company.companyId + '">' + company.companyName + '</option>'
 			        );
 			    });
 			}
@@ -257,7 +257,7 @@
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyCode">
+		                            <select class="table_sel"  style="width: 164px; height:100%;" id="companyCode" name="companyId">
  
 									</select>
 								</div>
