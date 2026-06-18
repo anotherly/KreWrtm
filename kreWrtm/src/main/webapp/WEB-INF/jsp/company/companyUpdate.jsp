@@ -96,8 +96,8 @@
 			let idx = $("#orgTbody tr").length;
 			let html = '';
 			html += '<tr>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control org-id-input" maxlength="20" value="'+orgId+'" placeholder="예: CTRL"></td>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control" maxlength="100" value="'+orgName+'" placeholder="예: 관제실"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control org-id-input" maxlength="10" value="'+orgId+'" placeholder="예: CTRL"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control" maxlength="20" value="'+orgName+'" placeholder="예: 관제실"></td>';
 			html += '  <td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>';
 			html += '</tr>';
 			$("#orgTbody").append(html);
@@ -146,6 +146,7 @@
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="companyId" value="${data.companyId}">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
@@ -161,7 +162,7 @@
 										value="${data.companyName}"
 									>
 								</div>
-								<div class="ctn_tbl_th fm_rep">소속기관 코드</div>
+								<div class="ctn_tbl_th">소속기관 코드</div>
 								<div class="ctn_tbl_td">
 								
 								<input type="hidden" 
@@ -177,8 +178,8 @@
 								</div>
 							</div>
 						
-							<div class="ctn_tbl_row fm_rep">
-								<div class="ctn_tbl_th">사용자 구분</div>
+							<div class="ctn_tbl_row">
+								<div class="ctn_tbl_th fm_rep">사용자 구분</div>
 								<div class="ctn_tbl_td">
 									<select name ="userType" class="form-control input_base_require">
 										<option value='코레일' <c:if test="${data.userType eq '코레일'}">selected</c:if>>
@@ -191,7 +192,7 @@
 								</div>
 							</div>
 							
-							<div class="ctn_tbl_row fm_rep">
+							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th">본부/처/실</div>
 								<div class="ctn_tbl_td" style="width: calc(100% - 160px);">
 									<div class="org_btn_area">
@@ -214,7 +215,7 @@
 											<c:choose>
 												<c:when test="${empty orgList}">
 													<tr>
-														<td><input type="text" name="orgList[0].orgId" class="form-control org-id-input" maxlength="4" placeholder="예: CTRL"></td>
+														<td><input type="text" name="orgList[0].orgId" class="form-control org-id-input" maxlength="10" placeholder="예: CTRL"></td>
 														<td><input type="text" name="orgList[0].orgName" class="form-control" maxlength="20" placeholder="예: 관제실"></td>
 														<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
 													</tr>
@@ -222,8 +223,8 @@
 												<c:otherwise>
 													<c:forEach var="org" items="${orgList}" varStatus="st">
 														<tr>
-															<td><input type="text" name="orgList[${st.index}].orgId" class="form-control org-id-input" maxlength="20" value="${org.orgId}" placeholder="예: CTRL"></td>
-															<td><input type="text" name="orgList[${st.index}].orgName" class="form-control" maxlength="100" value="${org.orgName}" placeholder="예: 관제실"></td>
+															<td><input type="text" name="orgList[${st.index}].orgId" class="form-control org-id-input" maxlength="10" value="${org.orgId}" placeholder="예: CTRL"></td>
+															<td><input type="text" name="orgList[${st.index}].orgName" class="form-control" maxlength="20" value="${org.orgName}" placeholder="예: 관제실"></td>
 															<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
 														</tr>
 													</c:forEach>

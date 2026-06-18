@@ -208,8 +208,7 @@
                     <form id="searchFrm" name="searchFrm" class="search_form list_search_form" method="post" enctype="multipart/form-data">
                         <div class="form-group search_keyword_group">
                             <select class="table_sel" name="searchType">
-                                <option value="companyName">제조사</option>
-                                <option value="orgName">소속</option>
+                                <option value="companyName">소속기관명</option>
                                 <option value="userName">사용자명</option>
                             </select>
                             <input type="text"

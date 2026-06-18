@@ -1244,6 +1244,15 @@ input:focus{
     border-top:1px solid #c8cacc;
     margin-top:45px;
 }
+.required-field-guide {
+    margin: 24px 0 0;
+    color: #e60012;
+    font-size: 14px;
+    line-height: 1.4;
+}
+.required-field-guide + .ctn_tbl_area {
+    margin-top: 16px;
+}
 .ctn_tbl_row{
     display: flex;
     flex-flow: row nowrap;

@@ -19,9 +19,9 @@
 			window.location = '<%=request.getContextPath()%>/dataroom/update.do?fileId=' + tagId;
 		});
 		
-		// 취소 버튼 클릭 시 이전 페이지로 이동
+		// 상세 화면에서 목록으로 이동
 		$("#btnCancel").on('click', function(){
-			history.back();
+			location.href='<%=request.getContextPath()%>/dataroom/list.do';
 		});
 		
 		
@@ -98,8 +98,13 @@
 					<!-- btn_box Start -->
 					<div class="btn_box">
 						<div class="right">
-							<c:if test="${sessionScope.authUrlMap['/dataroom/update']}"><input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" /></c:if>
-							<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
+							<c:choose>
+								<c:when test="${sessionScope.authUrlMap['/dataroom/update']}">
+									<input type="button" class="btn btn_primary" id="btnSave" alt="수정" value="수정" />
+									<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
+								</c:when>
+								<c:otherwise><input type="button" class="btn btn_primary" id="btnCancel" alt="목록으로" value="목록으로" /></c:otherwise>
+							</c:choose>
 						</div>
 					</div>
 					<!-- btn_box End -->

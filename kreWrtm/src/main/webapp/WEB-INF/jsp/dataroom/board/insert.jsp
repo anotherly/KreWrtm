@@ -131,6 +131,7 @@
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
@@ -140,7 +141,7 @@
 								</div>
 							</div>
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th">첨부파일</div>
+								<div class="ctn_tbl_th fm_rep">첨부파일</div>
 								<div class="ctn_tbl_td" style="display : flex; flex-direction: column; align-items: flex-start;">
 									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control input_base_require" accept=".xls,.xlsx,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.hwp" multiple>
 									<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀 , PPT, 한글 , 워드, PDF </p>

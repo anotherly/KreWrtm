@@ -95,7 +95,7 @@
 			var selectList = result.data || [];
 
 			if (selectList.length <= 0) {
-				$orgSel.append("<option value=''>선택 가능한 본부/처/실 없음</option>").prop("disabled", true);
+				$orgSel.append("<option value=''>미등록</option>").prop("disabled", true);
 				return;
 			}
 
@@ -141,9 +141,10 @@
 
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="userId" name="userId" value="${data.userId}">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row user-form-id-row">
-								<div class="ctn_tbl_th fm_rep">ID</div>
+								<div class="ctn_tbl_th">ID</div>
 								<div class="ctn_tbl_td">${data.userId}</div>
 								<div class="ctn_tbl_td"></div>
 								<div class="ctn_tbl_td"></div>
@@ -234,7 +235,7 @@
 							</div>
 
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">본부/처/실</div>
+								<div class="ctn_tbl_th">본부/처/실</div>
 								<div class="ctn_tbl_td">
 									<select class="table_sel" id="orgSel" name="orgId">
 										<option value="">선택</option>

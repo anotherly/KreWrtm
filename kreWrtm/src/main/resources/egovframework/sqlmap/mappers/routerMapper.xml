@@ -103,7 +103,7 @@
 	<select id="selectCompany" parameterType="routerVo" resultMap="routerInfoMap">
 		SELECT * FROM TBL_COMPANY_INFO
 		where 1=1
-		and company_type = #{userType}
+		<if test="userType != null and userType != ''">and company_type = #{userType}</if>
 		<if test="companyId != null and companyId != ''">AND COMPANY_ID = #{companyId}</if>
 	</select>
 

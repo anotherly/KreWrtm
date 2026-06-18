@@ -123,10 +123,11 @@
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="updateForm" name="updateForm" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="fileId" name="fileId" value="${data.fileId}">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">							
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th ">제목</div>
+								<div class="ctn_tbl_th fm_rep">제목</div>
 								<div class="ctn_tbl_td">
 									<input type="text" id="fileTitle" name ="fileTitle" value="${data.fileTitle}"  placeholder="" class="form-control input_base_require">
 								</div>
@@ -143,13 +144,13 @@
 								</div>
 								<div class="ctn_tbl_th ">첨부파일 <br>(변경시에만 선택)</div>
 								<div class="ctn_tbl_td" style="display : flex; flex-direction: column; align-items: flex-start;">
-									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control input_base_require" accept=".xls,.xlsx,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.hwp" multiple>
+									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control" accept=".xls,.xlsx,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.hwp" multiple>
 									<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀 , PPT, 한글 , 워드, PDF </p>
 								</div>
 							</div>
 							
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th ">게시판 내용</div>
+								<div class="ctn_tbl_th fm_rep">게시판 내용</div>
 								<div class="ctn_tbl_td">
 									<textarea id="boardContent" name="boardContent" style="resize : none; height : 100px;" class="form-control input_base_require" maxlength="2000" wrap="hard">${data.boardContent}</textarea>
 								</div>

@@ -80,7 +80,7 @@
 							</div>
 							
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">키워드</div>
+								<div class="ctn_tbl_th">키워드</div>
 								<div class="ctn_tbl_td">
 										${data.keywords}								
 								</div>
@@ -91,14 +91,12 @@
 							</div>
 						
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th  fm_rep">사용자 유형</div>
-								<div class="ctn_tbl_td">
-										${data.userType}
-								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
 									 ${data.companyName}
 								</div>
+								<div class="ctn_tbl_td"></div>
+								<div class="ctn_tbl_td"></div>
 							</div>
 						
 							<div class="ctn_tbl_row">
@@ -121,8 +119,13 @@
 						<!-- btn_box Start -->
 						<div class="btn_box">
 							<div class="right">
-								<input type="button" class="btn btn_primary" id="btnSave" alt="저장" value="수정" />
-								<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
+								<c:choose>
+									<c:when test="${sessionScope.authUrlMap['/router/routerUpdate']}">
+										<input type="button" class="btn btn_primary" id="btnSave" alt="수정" value="수정" />
+										<input type="button" class="btn" id="btnCancel" alt="취소" value="취소" />
+									</c:when>
+									<c:otherwise><input type="button" class="btn btn_primary" id="btnCancel" alt="목록으로" value="목록으로" /></c:otherwise>
+								</c:choose>
 							</div>
 						</div>
 						<!-- btn_box End -->

@@ -156,6 +156,7 @@
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
@@ -213,7 +214,7 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th">기타</div>
 								<div class="ctn_tbl_td">
-									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control input_base_require" maxlength="1000" placeholder="예: 추가 확인 사항 입력 (최대 1000자)" wrap="hard"></textarea>
+									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control" maxlength="1000" placeholder="예: 추가 확인 사항 입력 (최대 1000자)" wrap="hard"></textarea>
 								</div>
 							</div>
 							

@@ -93,8 +93,8 @@
 			let idx = $("#orgTbody tr").length;
 			let html = '';
 			html += '<tr>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control  org-id-input" maxlength="20" value="'+orgId+'" placeholder="예: CTRL"></td>';
-			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control " maxlength="100" value="'+orgName+'" placeholder="예: 관제실"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control  org-id-input" maxlength="10" value="'+orgId+'" placeholder="예: CTRL"></td>';
+			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control " maxlength="20" value="'+orgName+'" placeholder="예: 관제실"></td>';
 			html += '  <td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>';
 			html += '</tr>';
 			$("#orgTbody").append(html);
@@ -142,6 +142,7 @@
 					<!-- 컨텐츠 테이블 헤더 End -->
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
@@ -169,8 +170,8 @@
 								</div>
 							</div>
 						
-							<div class="ctn_tbl_row fm_rep">
-								<div class="ctn_tbl_th">사용자 구분</div>
+							<div class="ctn_tbl_row">
+								<div class="ctn_tbl_th fm_rep">사용자 구분</div>
 								<div class="ctn_tbl_td">
 									<select name ="userType" class="form-control input_base_require">
 										<option value='코레일'>코레일</option>
@@ -179,7 +180,7 @@
 								</div>
 							</div>
 							
-							<div class="ctn_tbl_row fm_rep">
+							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th">본부/처/실</div>
 								<div class="ctn_tbl_td" style="width: calc(100% - 160px);">
 									<div class="org_btn_area">
@@ -200,7 +201,7 @@
 										</thead>
 										<tbody id="orgTbody">
 											<tr>
-												<td><input type="text" name="orgList[0].orgId" class="form-control  org-id-input" maxlength="4" placeholder="예: CTRL"></td>
+												<td><input type="text" name="orgList[0].orgId" class="form-control  org-id-input" maxlength="10" placeholder="예: CTRL"></td>
 												<td><input type="text" name="orgList[0].orgName" class="form-control " maxlength="20" placeholder="예: 관제실"></td>
 												<td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>
 											</tr>

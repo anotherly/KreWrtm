@@ -17,13 +17,10 @@
 			var modNm = '${data.modelName}';
 			var devNm = '${data.deviceName}';
 			
-			var userTypeVal = $('#userType').val();
-			changeSelect(userTypeVal);
+			changeSelect();
 			
 			var companyIdVal = '${data.companyId}';
-			var userType = '${data.userType}';
-			
-			selectDropBox(companyIdVal , userType);
+			selectDropBox(companyIdVal);
 			
 			//모델명 치환
 			modNm=modNm.replaceAll('-'+devNm,'');
@@ -124,25 +121,19 @@
 				history.back(); // 기존 상세 페이지로 이동하도록 변경
 			});
 			
-			//select 변경할 때 마다 실행하는 함수
-			$('#userType').on('change', function () {
-			      var userValue = $(this).val();
-			      changeSelect(userValue);
-			});
 		});
 		
-		// ajax 요청하는 함수
-		function changeSelect(userType) {
-			event.preventDefault(); 
-			var comData = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax",{"userType":userType}).data;
+		// 로그인 사용자의 조회 범위에 맞는 소속기관 목록 구성
+		function changeSelect() {
+			var comData = ajaxMethod("<%=request.getContextPath()%>/router/selectCompany.ajax",{}).data;
 			
 			// option 요소 동적 생성
 			$('#companyId').empty();
 			
 			var loginComcode = '${login.companyCode}';
-			var userType = '${login.userType}';
+			var loginUserType = '${login.userType}';
 			
-			if(userType != '코레일') {
+			if(loginUserType != '코레일') {
 				comData.forEach(function(company) {
 				    if (company.companyCode == loginComcode) {  
 				        $('#companyId').append(
@@ -162,7 +153,7 @@
 		
 		
 		
-		function selectDropBox(companyId, userType) {
+		function selectDropBox(companyId) {
 			$("#companyId").val(companyId).trigger('change');
 		}
 		
@@ -201,6 +192,7 @@
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="insertForm" name="insertForm" method="post" enctype="multipart/form-data">
 					<input type="hidden" id="deviceId" name ="deviceId" value="${data.deviceId}" >
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">
 							<div class="ctn_tbl_row">
@@ -256,13 +248,13 @@
 							</div>
 							
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th fm_rep">키워드</div>
+								<div class="ctn_tbl_th">키워드</div>
 								<div class="ctn_tbl_td">
 									<input type="text" 
 										id="keywords" 
 										name ="keywords" 
 										placeholder="예: 서해선|SDM845" 
-										class="form-control input_base_require"
+										class="form-control"
 										maxLength="20"
 										value="${data.keywords}"
 									>
@@ -281,14 +273,6 @@
 							</div>
 						
 							<div class="ctn_tbl_row">
-								<div class="ctn_tbl_th  fm_rep">사용자 유형</div>
-								<div class="ctn_tbl_td">
-									<select class="table_sel"  style="width: 164px; height:100%;" id="userType" name ="userType">
-										<c:forEach var="orgVo" items="${orgList}">
-									        <option value="${orgVo.userType}" <c:if test="${orgVo.userType eq data.userType}">selected</c:if>>${orgVo.userType}</option>
-									    </c:forEach>
-									</select>
-								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
 			                            <select class="table_sel" style="width: 164px; height:100%;" id="companyId" name="companyId" onchange="document.getElementById('companyCode').value=this.options[this.selectedIndex].getAttribute('data-code')">
@@ -296,6 +280,8 @@
 									</select>
 									<input type="hidden" id="companyCode" name="companyCode" value="${data.companyCode}">
 								</div>
+								<div class="ctn_tbl_td"></div>
+								<div class="ctn_tbl_td"></div>
 							</div>
 						
 							<div class="ctn_tbl_row">

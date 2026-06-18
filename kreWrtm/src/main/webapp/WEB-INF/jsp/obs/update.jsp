@@ -178,6 +178,7 @@
 					<!-- 컨텐츠 테이블 영역 Start -->
 					<form id="updateForm" name="updateForm" method="post" enctype="multipart/form-data">
 						<input type="hidden" id="obsId" name="obsId" value="${data.obsId}">
+						<p class="required-field-guide">* 표시는 필수 입력 항목입니다.</p>
 						<!-- 컨텐츠 테이블 영역 Start -->
 						<div class="ctn_tbl_area">							
 							<div class="ctn_tbl_row">
@@ -235,7 +236,7 @@
 							<div class="ctn_tbl_row">
 								<div class="ctn_tbl_th">기타</div>
 								<div class="ctn_tbl_td">
-									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control input_base_require" maxlength="1000" placeholder="예: 추가 확인 사항 입력 (최대 1000자)" wrap="hard">${data.etc}</textarea>
+									<textarea id="etc" name="etc" style="resize : none; height : 100px;" class="form-control" maxlength="1000" placeholder="예: 추가 확인 사항 입력 (최대 1000자)" wrap="hard">${data.etc}</textarea>
 								</div>
 							</div>
 						</div>
