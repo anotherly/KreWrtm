@@ -155,6 +155,29 @@
         cursor: pointer;
     }
 
+    /* 긴 데이터가 줄바꿈되어 상세표 행 높이가 달라지는 현상 방지 */
+    .monitoring-contents .table_area .table_td.monitoring-ellipsis {
+        display: block;
+        min-width: 0;
+        line-height: 35px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* 헤더와 데이터 행의 열 너비 계산 방식을 통일하여 세로선 정렬 */
+    .monitoring-contents .table_area .table_row {
+        display: grid;
+        grid-template-columns: 200px 300px 200px 300px;
+        width: 1000px;
+    }
+
+    .monitoring-contents .table_area .table_row > div {
+        width: auto;
+        min-width: 0;
+        flex: none;
+    }
+
 </style>
 <script>
 	var nowTagId = '${data.deviceId}';	
@@ -204,6 +227,11 @@
 		
 		// 검색 조건(소속 / 장치명) 옵션 설정
 		searchTypeOne(alData.comData , alData.dnData);
+
+		$('#searchFrm').on('submit', function(event) {
+			event.preventDefault();
+			search();
+		});
 		
     	// 행 클릭 시    	
     	$(document).on('click','#router_table td',function(){
@@ -329,8 +357,6 @@
 		let frm = $("#searchFrm").serialize();
 		var tagUrl="<%=request.getContextPath()%>/search/routerlist.ajax";
 		
-		event.preventDefault();  // ajax 제출 이후 form 전송 방지
-		
 		var dataList;
 		
 		$.ajax({
@@ -443,7 +469,7 @@
 						</div>
 						<div class="table_row">
 						    <div class="table_th">모델명</div>
-						    <div class="table_td">
+						    <div class="table_td monitoring-ellipsis" title="${data.modelName}">
 						        ${empty data.modelName ? '정보 없음' : data.modelName}
 						    </div>						    
 						    <div class="table_th">현재 무선방식</div>
@@ -513,7 +539,7 @@
 						    </div>
 						    
 						    <div class="table_th tbl_cc">키워드</div>
-						    <div class="table_td tbl_cc">
+						    <div class="table_td tbl_cc monitoring-ellipsis" title="${data.keywords}">
 						        ${empty data.keywords ? '정보 없음' : data.keywords}
 						    </div>
 						</div>

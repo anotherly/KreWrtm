@@ -215,9 +215,9 @@
             data: {
                 labels: labels,
                 datasets: [
-                    {
-                        label: "RSRP",
-                        data: rsrpData,
+                	{
+                        label: "RSRQ",
+                        data: rsrqData,
                         fill: true,
                         backgroundColor: "rgba(47,128,237,0.18)",
                         borderColor: "#2f80ed",
@@ -228,8 +228,8 @@
                         borderWidth: chartUiSize().radarBorderWidth
                     },
                     {
-                        label: "RSRQ",
-                        data: rsrqData,
+                        label: "RSRP",
+                        data: rsrpData,
                         fill: true,
                         backgroundColor: "rgba(255,159,26,0.16)",
                         borderColor: "#ff9f1a",

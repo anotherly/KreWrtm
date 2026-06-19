@@ -59,7 +59,12 @@ public class RouterController{
 		ModelAndView mav = new ModelAndView("jsonView");
 		RouterVO sList= null;
 		try {
-			applyCompanyScope(inputVo, (UserVO) request.getSession().getAttribute("login"));
+			normalizeVolteNum(inputVo);
+			// VoLTE 번호는 테이블 전체에서 UNIQUE이므로 중복 확인 시 회사 범위를 적용하지 않는다.
+			// 장치 PK로 조회하는 경우에만 로그인 사용자의 회사 범위를 적용한다.
+			if (inputVo.getTagId() != null && !inputVo.getTagId().isEmpty()) {
+				applyCompanyScope(inputVo, (UserVO) request.getSession().getAttribute("login"));
+			}
 			sList = routerService.select(inputVo);
 			if (sList == null) {
 		        mav.addObject("result", 0);
@@ -135,6 +140,7 @@ public class RouterController{
 			) throws Exception{
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
+			normalizeVolteNum(inputVo);
 			applyCompanyScope(inputVo, (UserVO) request.getSession().getAttribute("login"));
 			routerService.insert(inputVo);
 		} catch (Exception e) {
@@ -187,6 +193,7 @@ public class RouterController{
 		ModelAndView mav = new ModelAndView("jsonView");
 		RouterVO thvo= null;
 		try {
+			normalizeVolteNum(inputVo);
 			UserVO login = (UserVO) request.getSession().getAttribute("login");
 			applyCompanyScope(inputVo, login);
 			if (!"코레일".equals(login.getUserType())) inputVo.setScopeCompanyId(login.getCompanyId());
@@ -250,6 +257,12 @@ public class RouterController{
 			inputVo.setCompanyId(login.getCompanyId());
 			inputVo.setCompanyCode(login.getCompanyCode());
 			inputVo.setScopeCompanyId(login.getCompanyId());
+		}
+	}
+
+	private void normalizeVolteNum(RouterVO inputVo) {
+		if (inputVo.getVolteNum() != null) {
+			inputVo.setVolteNum(inputVo.getVolteNum().replaceAll("[^0-9]", ""));
 		}
 	}
 	

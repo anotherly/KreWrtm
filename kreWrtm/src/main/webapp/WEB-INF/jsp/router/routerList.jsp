@@ -54,6 +54,11 @@
                 {data:"carNum"},
                 {data:"companyName"},
             ],
+			"createdRow": function(row) {
+				$('td', row).each(function() {
+					$(this).attr('title', $(this).text().trim());
+				});
+			},
             "lengthMenu": [ [5, 10, 20], [5, 10, 20] ],
             "pageLength": 10,
             pagingType : "full_numbers",
@@ -236,7 +241,7 @@
 				<div class="datatable-list-01">
 					<div class="page-description">
 						<div class="rows">
-							<table id="tableList" class="table table-bordered" style="width: 100%;">
+							<table id="tableList" class="table table-bordered router-list-table" style="width: 100%;">
 								<thead>
 									<tr>
 										<th><input type="checkbox" id="chkAll" class="chk"></th>

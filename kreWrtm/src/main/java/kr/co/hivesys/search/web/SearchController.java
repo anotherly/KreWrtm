@@ -143,6 +143,10 @@ public class SearchController {
 			ModelAndView mav = new ModelAndView("jsonView");
 			SearchVo data= null;
 			try {
+				if (inputVo.getDeviceId() == null || inputVo.getDeviceId().isEmpty()
+						|| "undefined".equals(inputVo.getDeviceId())) {
+					return new ModelAndView("redirect:/search/list.do");
+				}
 				applyCompanyScope(inputVo, request);
 				data = searchService.selectDetail(inputVo);
 				mav.addObject("data", data);

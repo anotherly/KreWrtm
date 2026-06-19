@@ -25,9 +25,9 @@
 				dupChkFlag = false;
 			});
 			$("#dupChk").on('click',function(){
-				var volteVal =$('input[name ="volteNum"]').val();
+				var volteVal =$('input[name ="volteNum"]').val().replace(/[^0-9]/g, '');
 				var volteVal2 = volteVal;
-				  if(volteVal.length<11){
+				  if(volteVal.length !== 11){
 					  alert("유효한 volte 값을 입력하세요");
 				  }else{
 					  var selectOne = ajaxMethod("<%=request.getContextPath()%>/router/selectOne.ajax",{"volteNum":volteVal}).result;

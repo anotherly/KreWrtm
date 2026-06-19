@@ -82,8 +82,8 @@
 	    <if test="tagId != null and tagId != ''">
 			AND device_id = #{tagId}
 		</if> 
-		<if test="volteNum != null and volteNum neq ''">
-			AND volte_num = #{volteNum}
+	    <if test="volteNum != null and volteNum neq ''">
+			AND REPLACE(volte_num, '-', '') = REPLACE(#{volteNum}, '-', '')
 		</if>
 		<if test="scopeCompanyId != null and scopeCompanyId != ''">
 			AND A.COMPANY_ID = #{scopeCompanyId}

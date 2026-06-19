@@ -50,9 +50,14 @@
 				dupChkFlag = false;
 			});
 			$("#dupChk").on('click',function(){
-				var volteVal =$('input[name ="volteNum"]').val();
-				  if(volteVal.length<11){
+				var volteVal =$('input[name ="volteNum"]').val().replace(/[^0-9]/g, '');
+				var bfVolteNormalized = bfVolte.replace(/[^0-9]/g, '');
+				  if(volteVal.length !== 11){
 					  alert("유효한 volte 값을 입력하세요");
+				  }else if(volteVal === bfVolteNormalized){
+					  dupChkFlag = true;
+					  $("#dupComment").empty().css('color','blue').append("현재 장치에서 사용 중인 volte 번호입니다");
+					  $('#phoneCell').val(volteVal);
 				  }else{
 					  var selectOne = ajaxMethod("<%=request.getContextPath()%>/router/selectOne.ajax",{"volteNum":volteVal}).result;
 					  if(selectOne != 0){
@@ -69,7 +74,7 @@
 						  $("#dupComment").css('color','blue');
 						  $("#dupComment").append("사용 가능한 volte 번호입니다");
 
-						  $('#phoneCell').val(volteVal2);
+						  $('#phoneCell').val(volteVal);
 					  }
 				  }
 			});

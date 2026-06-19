@@ -8,9 +8,13 @@
 <jsp:include page="../cmn/top.jsp" flush="false" />
 </head>
 <style>
-	td {
-		cursor : pointer;
+	/* 검색 결과 영역을 화면 너비에 맞게 넓히되 과도하게 커지지 않도록 제한 */
+	.search-result-list {
+		width: calc(100vw - 160px);
+		max-width: 1500px;
+		min-width: 1200px;
 	}
+
 </style>
 <script>
 	var searchSendValue = '${searchVal}';
@@ -43,6 +47,14 @@
 				{ data: "volteNum" },
 				{ data: "keywords" }
 			],
+			createdRow: function(row, data) {
+				if (data && data.deviceId) {
+					$(row).addClass('clickable-row');
+					$('td', row).each(function() {
+						$(this).attr('title', $(this).text().trim());
+					});
+				}
+			},
             lengthChange: false, 
             "pageLength": 5,
             pagingType : "full_numbers",
@@ -69,11 +81,13 @@
 		
 		
 		//상세 화면 조회
-		$("#tableList").on("click","tr",function () {			
+		$("#tableList").on("click","tbody tr.clickable-row",function () {			
 			var tagUrl = "<%=request.getContextPath()%>/search/monitering.do";
 		    var tagId = $(this).find("td:eq(2) input[type='hidden']").val(); // 장치명에 hidden 처리 된 deviceId 가져오기
-
-		    window.location = tagUrl + "?deviceId=" + tagId;  // 모니터링(상세)으로 이동
+		    if (!tagId) {
+		    	return;
+		    }
+		    window.location = tagUrl + "?deviceId=" + encodeURIComponent(tagId);  // 모니터링(상세)으로 이동
 		});
 		
 		
@@ -128,10 +142,10 @@
                 </div>
                 <!-- search_box End --> 
                 
-                <div class="datatable-list-01">
+				<div class="datatable-list-01 search-result-list">
 					<div class="page-description">
 						<div class="rows">
-							<table id="tableList" class="table table-bordered" style="min-width: 1200px;">
+							<table id="tableList" class="table table-bordered search-monitoring-table">
 								<thead>
 									<tr>
 										<th>SW 버전</th>

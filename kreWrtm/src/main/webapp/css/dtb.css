@@ -3,6 +3,7 @@
 #tableList{
 	width:100%;
 	border-collapse: collapse;
+	table-layout: fixed;
 }
 
 #tableList thead{
@@ -12,6 +13,63 @@
 
 #tableList tbody tr{
 	border-bottom:1px solid black;
+}
+
+/* 모든 공통 목록 테이블의 긴 데이터는 한 줄 말줄임 처리 */
+#tableList tbody td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#tableList thead th {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* 장치 목록: 선택 / 장치명 / 모델명 / VoLTE / 키워드 / 차량번호 / 제조사 */
+#tableList.router-list-table th:nth-child(1),
+#tableList.router-list-table td:nth-child(1) { width: 4% !important; }
+#tableList.router-list-table th:nth-child(2),
+#tableList.router-list-table td:nth-child(2) { width: 12% !important; }
+#tableList.router-list-table th:nth-child(3),
+#tableList.router-list-table td:nth-child(3) { width: 18% !important; }
+#tableList.router-list-table th:nth-child(4),
+#tableList.router-list-table td:nth-child(4) { width: 14% !important; }
+#tableList.router-list-table th:nth-child(5),
+#tableList.router-list-table td:nth-child(5) { width: 30% !important; }
+#tableList.router-list-table th:nth-child(6),
+#tableList.router-list-table td:nth-child(6) { width: 11% !important; }
+#tableList.router-list-table th:nth-child(7),
+#tableList.router-list-table td:nth-child(7) { width: 11% !important; }
+
+/* 검색·모니터링 목록: SW / 회사 / 장치 / 모델 / 차량 / 위치 / VoLTE / 키워드 */
+#tableList.search-monitoring-table th:nth-child(1),
+#tableList.search-monitoring-table td:nth-child(1) { width: 12% !important; }
+#tableList.search-monitoring-table th:nth-child(2),
+#tableList.search-monitoring-table td:nth-child(2) { width: 10% !important; }
+#tableList.search-monitoring-table th:nth-child(3),
+#tableList.search-monitoring-table td:nth-child(3) { width: 12% !important; }
+#tableList.search-monitoring-table th:nth-child(4),
+#tableList.search-monitoring-table td:nth-child(4) { width: 16% !important; }
+#tableList.search-monitoring-table th:nth-child(5),
+#tableList.search-monitoring-table td:nth-child(5) { width: 10% !important; }
+#tableList.search-monitoring-table th:nth-child(6),
+#tableList.search-monitoring-table td:nth-child(6) { width: 8% !important; }
+#tableList.search-monitoring-table th:nth-child(7),
+#tableList.search-monitoring-table td:nth-child(7) { width: 14% !important; }
+#tableList.search-monitoring-table th:nth-child(8),
+#tableList.search-monitoring-table td:nth-child(8) { width: 18% !important; }
+
+/* 클릭 이벤트가 연결된 데이터 행에만 사용 */
+table tbody tr.clickable-row > td {
+	cursor: pointer;
+}
+
+/* DataTables 조회 결과가 없을 때는 모든 화면에서 일반 커서 표시 */
+table.dataTable tbody td.dataTables_empty {
+	cursor: default !important;
 }
 
 .simpleTb{
