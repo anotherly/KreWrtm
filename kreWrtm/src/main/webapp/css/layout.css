@@ -446,14 +446,14 @@ aside.lnb {
     padding: 0 4px 0 30px;
     font-size: 14px;
     font-weight: 400;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
-.header_util .username:hover,
+/* .header_util .username:hover,
 .header_util .username:focus,
 .header_util .username:focus-within,
 .header_util .username:active{
     color:#0082c7;
-}
+} */
 .header_util .sect{
     color:#cccccc;
     font-size: 13px;

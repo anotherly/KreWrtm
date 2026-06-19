@@ -25,9 +25,9 @@
                     <section class="kpi-grid">
                         <article class="kpi-card"><div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">장치 관리 등록 단말 기준</div></article>
                         <article class="kpi-card"><div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
-                        <article class="kpi-card"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
-                        <article class="kpi-card"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
-                        <article class="kpi-card warning"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
+                        <article id="kpiAvgRsrpCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
+                        <article id="kpiAvgRsrqCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
+                        <article id="kpiCautionDeviceCard" class="kpi-card kpi-status-normal"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
                     </section>
 
                     <section class="dashboard-grid">
@@ -48,12 +48,12 @@
                             <div class="card-header"><span class="bar"></span><strong>RSRQ/RSRP 상태 분포</strong><em>전체 <span id="rsrpTotalText">0</span>대 기준</em></div>
                             <div class="radar-layout split-radar-layout">
                                 <div class="radar-side radar-side-left">
-                                    <div class="metric-title">RSRQ</div>
+                                    <div class="metric-title" style="color: #2f80ed !important;">RSRQ</div>
                                     <div id="rsrqStatusSummary" class="status-summary metric-status-summary"></div>
                                 </div>
                                 <div class="chart-box radar-box"><canvas id="rsrpRadarChart"></canvas></div>
                                 <div class="radar-side radar-side-right">
-                                    <div class="metric-title">RSRP</div>
+                                    <div class="metric-title" style="color: #ff8f1a !important;">RSRP</div>
                                     <div id="rsrpStatusSummary" class="status-summary metric-status-summary"></div>
                                 </div>
                             </div>
@@ -163,12 +163,53 @@
         setWidth("vhfRatioBar", n(kpi.vhfRatio));
         setWidth("autoSwitchRatioBar", n(kpi.autoSwitchRatio));
 
+        updateKpiStatusColors(kpi);
+
         drawTrendChart(trendList);
         drawRadioChart(radioList);
         drawRsrpRadarChart(rsrpStatusList, rsrqStatusList);
         drawRsrqRsrpStatusSummary(rsrpStatusList, rsrqStatusList);
         drawReceiveTable(lastDataList);
         updateSortHeader();
+    }
+
+    function updateKpiStatusColors(kpi) {
+        var avgRsrp = Number(kpi.avgRsrp);
+        var avgRsrq = Number(kpi.avgRsrq);
+        var totalDeviceCnt = n(kpi.totalDeviceCnt);
+        var cautionDeviceCnt = n(kpi.cautionDeviceCnt);
+        var cautionRatio = totalDeviceCnt > 0 ? (cautionDeviceCnt / totalDeviceCnt) * 100 : 0;
+
+        setKpiStatusClass("kpiAvgRsrpCard", getRsrpStatusClass(avgRsrp));
+        setKpiStatusClass("kpiAvgRsrqCard", getRsrqStatusClass(avgRsrq));
+        setKpiStatusClass("kpiCautionDeviceCard", getCautionRatioStatusClass(cautionRatio));
+    }
+
+    function getRsrpStatusClass(value) {
+        if (value < -110) return "critical";
+        if (value < -100) return "warning";
+        if (value < -90) return "caution";
+        return "normal";
+    }
+
+    function getRsrqStatusClass(value) {
+        if (value < -18) return "critical";
+        if (value < -15) return "warning";
+        if (value < -10) return "caution";
+        return "normal";
+    }
+
+    function getCautionRatioStatusClass(ratio) {
+        if (ratio >= 75) return "critical";
+        if (ratio >= 50) return "warning";
+        if (ratio >= 25) return "caution";
+        return "normal";
+    }
+
+    function setKpiStatusClass(id, statusClass) {
+        var $card = $("#" + id);
+        $card.removeClass("kpi-status-normal kpi-status-caution kpi-status-warning kpi-status-critical")
+             .addClass("kpi-status-" + statusClass);
     }
 
     function drawTrendChart(list) {

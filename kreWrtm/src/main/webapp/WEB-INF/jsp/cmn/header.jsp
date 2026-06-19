@@ -10,10 +10,10 @@
 	<div class="username">
 		<c:choose>
 			<c:when test="${login.userName != null}">
-				<ul class="nav-icons" style="margin-top: 0px;">
+				<ul class="nav-icons" style="margin-top: 0px; padding:0px;">
 					<li style="display: flex;">
 						<i class="ion-person"></i>
-						<div style="margin-left: 10px;">${login.userName}님 환영합니다.</div>
+						<div>${login.userName}님 환영합니다.</div>
 						<a href="<%=request.getContextPath()%>/login/logout.do" style="margin-left: 10px;">logout</a>
 					</li>
 				</ul>

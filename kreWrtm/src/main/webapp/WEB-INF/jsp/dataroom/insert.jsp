@@ -11,6 +11,7 @@
 
 	$(document).ready(function(){
 		console.log("등록");
+		var maxFileSize = 10000000;
 
 		
 		// 등록 시 유효성 검사 체크하기
@@ -37,8 +38,8 @@
 				    validChk = false;
 				    return false;
 				
-				} else if (fileName[0].size > 10 * 1024 * 1024) { 
-				    alert("첨부파일의 용량은 10MB 미만이어야 합니다.");
+				} else if (fileName[0].size > maxFileSize) { 
+				    alert("첨부파일의 용량은 최대 10MB입니다.");
 				    validChk = false;
 				    return false;
 				
@@ -137,7 +138,7 @@
 								<div class="ctn_tbl_th fm_rep">첨부파일</div>
 								<div class="ctn_tbl_td" style="display : flex; flex-direction: column; align-items: flex-start;">
 									<input type="file" id="fileName" name="multiFile" placeholder="" class="form-control input_base_require" accept=".xls,.xlsx,.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.ppt,.pptx,.hwp" multiple>
-									<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀 , PPT, 한글 , 워드, PDF </p>
+					<p style="margin:0; font-size:14px;">업로드 가능한 파일 : 사진(.jpg, .png, .jpeg, .gif), 엑셀, PPT, 한글, 워드, PDF / 최대 용량 : 10MB</p>
 								</div>
 							</div>	
 						</div>

@@ -37,6 +37,9 @@
 				if(!validChk) {
 					return false;
 				} else {
+					if (!validateAddedOrgRows()) {
+						return false;
+					}
 					reindexOrgRows();
 					let queryString = $("#insertForm").serialize();
 					ajaxMethod('<%=request.getContextPath()%>/company/companyInsert.ajax',queryString,'<%=request.getContextPath()%>/company/companyList.do','저장되었습니다');
@@ -92,7 +95,7 @@
 		function addOrgRow(orgId, orgName){
 			let idx = $("#orgTbody tr").length;
 			let html = '';
-			html += '<tr>';
+			html += '<tr data-added-row="Y">';
 			html += '  <td><input type="text" name="orgList['+idx+'].orgId" class="form-control  org-id-input" maxlength="10" value="'+orgId+'" placeholder="예: CTRL"></td>';
 			html += '  <td><input type="text" name="orgList['+idx+'].orgName" class="form-control " maxlength="20" value="'+orgName+'" placeholder="예: 관제실"></td>';
 			html += '  <td style="text-align:center;"><input type="button" class="btn btnRemoveOrg" value="삭제" /></td>';
@@ -109,6 +112,47 @@
 
 		function updateOrgRemoveButtons(){
 			$(".btnRemoveOrg").prop("disabled", $("#orgTbody tr").length <= 1);
+		}
+
+		function validateAddedOrgRows(){
+			var valid = true;
+			var totalRowCount = $("#orgTbody tr").length;
+			$("#orgTbody tr").each(function(){
+				var isAddedRow = $(this).attr("data-added-row") === "Y";
+				var $orgId = $(this).find('input[name$=".orgId"]');
+				var $orgName = $(this).find('input[name$=".orgName"]');
+				var orgId = $.trim($orgId.val());
+				var orgName = $.trim($orgName.val());
+
+				// 빈 기본 행 또는 기존 행은 선택사항입니다.
+				if (orgId === "" && orgName === "" && !isAddedRow) {
+					return true;
+				}
+
+				// 기존 행을 삭제하여 빈 추가 행 하나만 남은 경우에도 선택사항으로 처리합니다.
+				if (totalRowCount === 1 && orgId === "" && orgName === "") return true;
+
+				// 추가 버튼으로 만든 행이 여러 행 중 하나라면 두 값 모두 입력해야 합니다.
+				if (isAddedRow && orgId === "" && orgName === "") {
+					alert("추가한 본부/처/실 코드와 본부/처/실명을 모두 입력해 주세요.");
+					$orgId.focus();
+					valid = false;
+					return false;
+				}
+				if (orgId === "") {
+					alert("본부/처/실 코드를 입력해 주세요.");
+					$orgId.focus();
+					valid = false;
+					return false;
+				}
+				if (orgName === "") {
+					alert("본부/처/실명을 입력해 주세요.");
+					$orgName.focus();
+					valid = false;
+					return false;
+				}
+			});
+			return valid;
 		}
 	</script>
 

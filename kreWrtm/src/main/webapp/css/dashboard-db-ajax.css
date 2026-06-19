@@ -1786,3 +1786,24 @@
 .dashboard-db-page .table-wrap tbody tr:hover td {
     background: #f8fbff !important;
 }
+
+/* KPI 우측 상태 표시: 정상(초록), 주의(노랑), 경고(주황), 심각(빨강) */
+#contents_box.dashboard-db-page .kpi-card.kpi-status-normal::after {
+    background: linear-gradient(135deg, #39c978, #20a960) !important;
+    box-shadow: 0 10px 20px rgba(32, 169, 96, .20) !important;
+}
+
+#contents_box.dashboard-db-page .kpi-card.kpi-status-caution::after {
+    background: linear-gradient(135deg, #f7d75c, #e5b82d) !important;
+    box-shadow: 0 10px 20px rgba(229, 184, 45, .22) !important;
+}
+
+#contents_box.dashboard-db-page .kpi-card.kpi-status-warning::after {
+    background: linear-gradient(135deg, #ffad45, #f08022) !important;
+    box-shadow: 0 10px 20px rgba(240, 128, 34, .22) !important;
+}
+
+#contents_box.dashboard-db-page .kpi-card.kpi-status-critical::after {
+    background: linear-gradient(135deg, #f06b6b, #d9363e) !important;
+    box-shadow: 0 10px 20px rgba(217, 54, 62, .22) !important;
+}

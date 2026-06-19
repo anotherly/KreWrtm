@@ -254,7 +254,9 @@
 										placeholder="예: 010-1234-5678"
 										class="form-control input_base_require user_form_input"
 										maxLength="13"
-										oninput="formatPhoneAuto(this)"
+										oncompositionstart="beginUserPhoneComposition(this)"
+										oncompositionend="endUserPhoneComposition(this)"
+										oninput="formatUserPhoneInput(this)"
 										value="${data.userPhone}">
 								</div>
 								<div class="ctn_tbl_th">연락처 #2</div>
@@ -265,7 +267,9 @@
 										placeholder="예: 02-1234-5678"
 										class="form-control user_form_input"
 										maxLength="13"
-										oninput="formatPhoneAuto(this)"
+										oncompositionstart="beginUserPhoneComposition(this)"
+										oncompositionend="endUserPhoneComposition(this)"
+										oninput="formatUserPhoneInput(this)"
 										value="${data.userPhone2}">
 								</div>
 							</div>

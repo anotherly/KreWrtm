@@ -96,7 +96,7 @@ function tbDelete(that,paramUrl,callback,tb){
 	if(typeof idArr.length==="undefined" || idArr.length==0){
 		alert("삭제할 항목을 선택해 주세요");
 	}else{
-		if(confirm("선택하신 항목을 삭제하시겠습니까?")==true){
+		if(confirm("선택하신 항목을 삭제하시겠습니까?\n주의! 한번 삭제하신 데이터는 다시 복구할 수 없습니다.")==true){
 			var url=paramUrl;
 			var data = {"idArr":idArr};
 			ajaxMethod(url, data, callback);
