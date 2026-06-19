@@ -34,54 +34,64 @@
         FROM tbl_last_data A
         INNER JOIN tbl_router_info R
             ON A.VoLTE_NUM = R.volte_num
-        WHERE 1=1
+        WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 1 MINUTE)
         <if test='!"코레일".equals(userType)'>
             AND R.company_id = #{companyId}
         </if>
     </select>
-<!-- 전체 시간 훑어서 가져옴 -->
-<!--     <select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
-        SELECT
-            DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
-            COUNT(*) AS totalCnt,
-            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
-            SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
-        FROM tbl_receive_data A
-        INNER JOIN tbl_router_info R
-            ON A.VoLTE_NUM = R.volte_num
-        WHERE A.RCV_DT <![CDATA[ >= ]]> (
-            SELECT DATE_SUB(MAX(A2.RCV_DT), INTERVAL 11 MINUTE)
-            FROM tbl_receive_data A2
-            INNER JOIN tbl_router_info R2
-                ON A2.VoLTE_NUM = R2.volte_num
-            WHERE 1=1
-            <if test='!"코레일".equals(userType)'>
-                AND R2.company_id = #{companyId}
-            </if>
-        )
-        <if test='!"코레일".equals(userType)'>
-            AND R.company_id = #{companyId}
-        </if>
-        GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
-        ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
-    </select> -->
     
 	<!-- 현재 시각 기점으로 12분(데이터 없으면 안나옴) -->
 	<select id="selectDashboardTrendList" parameterType="java.util.Map" resultType="java.util.HashMap">
-	    SELECT
-	        DATE_FORMAT(A.RCV_DT, '%H:%i') AS label,
-	        COUNT(*) AS totalCnt,
-	        SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'LTE-R' THEN 1 ELSE 0 END) AS lteCnt,
-	        SUM(CASE WHEN UPPER(TRIM(A.CurrentRadioType)) = 'VHF' THEN 1 ELSE 0 END) AS vhfCnt
-	    FROM tbl_receive_data A
-	    INNER JOIN tbl_router_info R
-	        ON A.VoLTE_NUM = R.volte_num
-	    WHERE A.RCV_DT <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 12 MINUTE)
-	    <if test='!"코레일".equals(userType)'>
-	        AND R.company_id = #{companyId}
-	    </if>
-	    GROUP BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i'), DATE_FORMAT(A.RCV_DT, '%H:%i')
-	    ORDER BY DATE_FORMAT(A.RCV_DT, '%Y-%m-%d %H:%i') ASC
+		WITH receive_ranked AS (
+		    SELECT
+		        A.VoLTE_NUM,
+		        A.CurrentRadioType,
+		        A.RCV_DT,
+		
+		        FROM_UNIXTIME(
+		            CEIL(UNIX_TIMESTAMP(A.RCV_DT) / 60) * 60
+		        ) AS minute_bucket,
+		
+		        ROW_NUMBER() OVER (
+		            PARTITION BY
+		                A.VoLTE_NUM,
+		                FROM_UNIXTIME(
+		                    CEIL(UNIX_TIMESTAMP(A.RCV_DT) / 60) * 60
+		                )
+		            ORDER BY A.RCV_DT DESC
+		        ) AS rn
+		
+		    FROM tbl_receive_data A
+		    INNER JOIN tbl_router_info R
+		        ON A.VoLTE_NUM = R.volte_num
+		    WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 12 MINUTE)
+		    <if test='!"코레일".equals(userType)'>
+	            AND R.company_id = #{companyId}
+	        </if>
+		)
+		
+		SELECT
+		    DATE_FORMAT(minute_bucket, '%H:%i') AS label,
+		    COUNT(*) AS totalCnt,
+		
+		    SUM(
+		        CASE
+		            WHEN UPPER(TRIM(CurrentRadioType)) = 'LTE-R'
+		            THEN 1 ELSE 0
+		        END
+		    ) AS lteCnt,
+		
+		    SUM(
+		        CASE
+		            WHEN UPPER(TRIM(CurrentRadioType)) = 'VHF'
+		            THEN 1 ELSE 0
+		        END
+		    ) AS vhfCnt
+		
+		FROM receive_ranked
+		WHERE rn = 1
+		GROUP BY minute_bucket
+		ORDER BY minute_bucket ASC
 	</select>
 
     <select id="selectDashboardRadioList" parameterType="java.util.Map" resultType="java.util.HashMap">
@@ -101,7 +111,7 @@
             FROM tbl_last_data A
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
-            WHERE 1=1
+            WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 12 MINUTE)
             <if test='!"코레일".equals(userType)'>
                 AND R.company_id = #{companyId}
             </if>
@@ -139,7 +149,7 @@
             FROM tbl_last_data A
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
-            WHERE 1=1
+            WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 12 MINUTE)
             <if test='!"코레일".equals(userType)'>
                 AND R.company_id = #{companyId}
             </if>
@@ -178,7 +188,7 @@
             FROM tbl_last_data A
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
-            WHERE 1=1
+            WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 12 MINUTE)
             <if test='!"코레일".equals(userType)'>
                 AND R.company_id = #{companyId}
             </if>
@@ -240,7 +250,7 @@
             FROM tbl_last_data A
             INNER JOIN tbl_router_info R
                 ON A.VoLTE_NUM = R.volte_num
-            WHERE 1=1
+            WHERE A.RCV_DT >= DATE_SUB(NOW(), INTERVAL 12 MINUTE)
             <if test='!"코레일".equals(userType)'>
                 AND R.company_id = #{companyId}
             </if>

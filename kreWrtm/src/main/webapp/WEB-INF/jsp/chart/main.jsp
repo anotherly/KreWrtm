@@ -221,9 +221,9 @@
         receiveTrendChart = new Chart(document.getElementById("receiveTrendChart"), {
             type: "line",
             data: { labels: labels, datasets: [
-                { label: "전체 수신", data: total, borderWidth: 2, tension: 0.35, fill: true, backgroundColor: "rgba(24,136,218,0.16)", borderColor: "#1688da", pointRadius: 2.5 },
-                { label: "LTE-R", data: lte, borderWidth: 2, tension: 0.35, borderColor: "#20b872", pointRadius: 2.5 },
-                { label: "VHF", data: vhf, borderWidth: 2, tension: 0.35, borderColor: "#ff9f1a", pointRadius: 2.5 }
+                { label: "전체 수신", data: total, borderWidth: 2, tension: 0, fill: true, backgroundColor: "rgba(24,136,218,0.16)", borderColor: "#1688da", pointRadius: 2.5 },
+                { label: "LTE-R", data: lte, borderWidth: 2, tension: 0, borderColor: "#20b872", pointRadius: 2.5 },
+                { label: "VHF", data: vhf, borderWidth: 2, tension: 0, borderColor: "#ff9f1a", pointRadius: 2.5 }
             ]},
             options: chartLineOptions()
         });

@@ -165,13 +165,14 @@
 							<div class="ctn_tbl_row user-form-id-row">
 								<div class="ctn_tbl_th fm_rep">ID</div>
 								<div class="ctn_tbl_td">
-									<input type="text"
-										id="userId"
-										name="userId"
-										placeholder="6~12자리 영문소문자 숫자 조합"
-										class="form-control input_base_require user_form_input"
-										oninput="checkId(this)"
-										maxLength="12">
+								<input type="text"
+								       id="userId"
+								       name="userId"
+								       placeholder="6~12자리 영문소문자 숫자 조합"
+								       class="form-control input_base_require user_form_input"
+								       maxlength="12"
+								       onbeforeinput="return blockInvalidIdInput(event)"
+								       oninput="checkId(this)">
 								</div>
 								<div class="ctn_tbl_td">
 									<div class="id_check_box">
@@ -255,7 +256,7 @@
 								</div>
 								<div class="ctn_tbl_th fm_rep">소속</div>
 								<div class="ctn_tbl_td">
-					<select class="table_sel" id="companyId" name="companyId">
+									<select class="table_sel" id="companyId" name="companyId">
 										<option value="">선택</option>
 									</select>
 								</div>

@@ -231,9 +231,9 @@
 									<input type="text" 
 										id="carNum" 
 										name ="carNum" 
-										placeholder="예: 123456ab" 
+										placeholder="예: 123456" 
 										class="form-control input_base_require"
-										maxLength="10"
+										maxLength="6"
 									>
 								</div>
 							</div>
