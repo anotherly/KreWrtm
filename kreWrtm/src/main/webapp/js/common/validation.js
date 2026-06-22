@@ -1,34 +1,85 @@
-/**
- * 사용자 ID 최종 형식 검사
- * - 영문 소문자와 숫자를 각각 1자 이상 포함
- * - 전체 길이 6~12자
- */
+// 영문 소문자와 숫자 이외의 입력을 값이 변경되기 전에 차단
+function blockInvalidIdInput(event) {
+    // 삭제, 커서 이동 등은 허용
+    if (event.data == null) {
+        return true;
+    }
+
+    if (!/^[a-z0-9]+$/.test(event.data)) {
+        event.preventDefault();
+        return false;
+    }
+
+    return true;
+}
+
+// 붙여넣기 등 예외 상황에 대한 보조 검사
+function checkId(input) {
+    var value = input.value || "";
+
+    if (/[^a-z0-9]/.test(value)) {
+        input.value = input._lastValidId || "";
+        return;
+    }
+
+    if (value.length > 12) {
+        value = value.substring(0, 12);
+        input.value = value;
+    }
+
+    input._lastValidId = value;
+}
+
+//비밀번호 검사 (영문+숫자+특수문자 최소 1개씩 포함, 6~20자리)
+function checkPw(that) {
+	  let val = $(that).val();
+	  // 허용 문자 이외 제거
+	  val = val.replace(/[^A-Za-z0-9~!@#$%^&*()_+|\[\]]/g, "");
+	  // 길이 제한 (20자)
+	  if (val.length > 20) {
+	    val = val.substring(0, 20);
+	  }
+	  $(that).val(val);
+}
+
+//ID 검사 함수 (영문 소문자 반드시 포함, 숫자는 선택, 6~12자리)
+// ^ 시작 ~ $ 끝
+// (?=.*[a-z]) → 소문자 반드시 1개 이상
+// [a-z0-9]{6,12} → 허용 문자로만 6~12자리
 function validateId(id) {
-    return /^(?=.*[a-z])(?=.*\d)[a-z0-9]{6,12}$/.test(String(id || ""));
+    const regex = /^(?=.*[a-z])[a-z0-9]{6,12}$/;
+    return regex.test(id);
 }
 
-/**
- * 비밀번호 최종 형식 검사
- * - 영문, 숫자, 허용 특수문자를 각각 1자 이상 포함
- * - 전체 길이 6~20자
- */
+// 비밀번호 검사 함수 
+// 조건: 6~20자리, 영문+숫자+특수문자 최소 1개씩 포함
+// 허용 특수문자: ~!@#$%^&*()_+|[]
 function validatePassword(password) {
-    var regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()_+|\[\]])[A-Za-z\d~!@#$%^&*()_+|\[\]]{6,20}$/;
-    return regex.test(String(password || ""));
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()_+|\[\]])[A-Za-z\d~!@#$%^&*()_+|\[\]]{6,20}$/;
+    return regex.test(password);
 }
 
-/**
- * 사용자 등록/수정 폼 저장 전 최종 유효성 검사
- * - 필수 입력값, 신규 ID 형식, 비밀번호 형식과 일치 여부 확인
- * - 수정 화면의 hidden ID는 기존 데이터 호환을 위해 재검사하지 않음
- */
+/************************************************************************
+함수명 : boardWriteCheck
+설 명 : 입력정보 null 체크
+인 자 : form
+사용법 : 로그인 회원가입, 등록 등의 입력정보 체크시 사용
+작성일 : 2020-07-30
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2020.07.30   정다빈       최초작성
+************************************************************************/
 function boardWriteCheck(form) {
     console.log("사용자정보 저장 시 유효성검사");
-
+    
+    // form 안의 input 요소만 가져오기
     var inputs = $(form).find("input");
+
     for (var i = 0; i < inputs.length; i++) {
         var el = inputs[i];
 
+        //  필수값 체크 (class="input_base_require")
         if ($(el).hasClass("input_base_require")) {
             if ($(el).val() == null || $(el).val().trim() === "") {
                 alert("필수 항목을 기재해 주세요");
@@ -37,15 +88,17 @@ function boardWriteCheck(form) {
             }
         }
 
-        if (el.name === "userId" && el.type !== "hidden" && !el.readOnly) {
+        //  ID 검사
+        if (el.name === 'userId') {
             if (!validateId(el.value)) {
-                alert("ID는 영문 소문자와 숫자를 조합하여 6~12자리로 입력해 주세요.");
+                alert("ID 형식이 올바르지 않습니다.");
                 el.focus();
                 return false;
             }
         }
 
-        if (el.name === "userPw" && el.value.length > 0) {
+        // 비밀번호 검사
+        if (el.name === 'userPw' && el.value.length > 0) {
             if (!validatePassword(el.value)) {
                 alert("비밀번호 형식이 올바르지 않습니다.");
                 el.focus();
@@ -53,344 +106,480 @@ function boardWriteCheck(form) {
             }
         }
     }
-
+    //  비밀번호 확인 검사
     if ($("#userPw").val() !== $("#userPw2").val()) {
         alert("비밀번호가 서로 일치하지 않습니다.");
         $("#userPw2").focus();
         return false;
     }
+    return true;
+}
+
+/************************************************************************
+함수명 : valComCode
+설 명 : 회사코드 영문대문자 4자리만 허용
+인 자 : 이벤트
+사용법 : 
+작성일 : 2025-08-25
+작성자 : 솔루션디자인팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2025.08.25   정다빈       최초작성
+************************************************************************/
+function valComCode(e){
+    const input = e.target;
+    let val = input.value.toUpperCase();
+    val=val.replace(/[^A-Z]/g,'');
+    if(val.length>4){
+    	val=val.substring(0,4);
+    }
+    input.value=val;
+}
+
+
+/************************************************************************
+함수명 : removeChar
+설 명 : 불필요 문자열 제거
+인 자 : 
+사용법 : 
+작성일 : 2020-08-25
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2020.08.25   정다빈       최초작성
+************************************************************************/
+function removeChar(event) {
+    event = event || window.event;
+    var keyID = (event.which) ? event.which : event.keyCode;
+    if ( keyID == 8 || keyID == 46 || keyID == 37 || keyID == 39 ){
+    	return;
+    }else{
+    	event.target.value = event.target.value.replace(/[^0-9]/g, "");
+    }
+}
+
+/************************************************************************
+함수명 : onlyNumber
+설 명 : 숫자만 입력가능하게 제한, 범위 제한
+인 자 : 
+사용법 : 
+작성일 : 2020-09-11
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2020.08.25   정다빈       최초작성
+ ************************************************************************/
+function onlyNumber(event,that,min,max) {
+	//console.log(event+" "+that+" "+min+" "+max);
+	event = event || window.event;
+	var keyID = (event.which) ? event.which : event.keyCode;
+	if ( keyID == 8 || keyID == 46 || keyID == 37 || keyID == 39 ){
+		//console.log("키코드 해당 : "+event.target.value+" "+$(that).val());
+		return;
+	}else{
+		//console.log("키코드 해당없음1 : "+event.target.value+" "+$(that).val());
+		event.target.value = event.target.value.replace(/[^0-9]/g, "");
+		//console.log("키코드 해당없음 2: "+event.target.value+" "+$(that).val());
+	}
+	if(parseInt($(that).val())<min || parseInt($(that).val())>max){
+		//console.log("값 초과1 : "+event.target.value+" "+$(that).val());
+		event.target.value = "";
+		//console.log("값 초과2 : "+event.target.value+" "+$(that).val());
+	}else{
+		console.log("값 초과 안함 : "+event.target.value+" "+$(that).val());
+		return;
+	}
+}
+
+/************************************************************************
+함수명 : phoneCellChk
+설 명 : 전화번호 체크
+인 자 : 
+사용법 : 
+작성일 : 2020-08-25
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2025.08.25   정다빈       최초작성
+************************************************************************/
+
+function phoneCellChk(phone1,phone2) {
+    var makeVal1 = $('input[name="'+phone1+'"]').val().trim();
+    var makeVal2 = $('input[name="'+phone2+'"]').val().trim();
+
+    if (!isValidPhoneNumber(makeVal1)) {
+        console.log(phone1 + " 전화번호 형식 불일치");
+        alert("연락처1 형식이 올바르지 않습니다.");
+        $('input[name="'+phone1+'"]').focus();
+        return false;
+    }
+
+    // 연락처2는 선택값이면 입력한 경우에만 검사
+    if (makeVal2 !== "" && !isValidPhoneNumber(makeVal2)) {
+        console.log(phone2 + " 전화번호 형식 불일치");
+        alert("연락처2 형식이 올바르지 않습니다.");
+        $('input[name="'+phone2+'"]').focus();
+        return false;
+    }
 
     return true;
 }
 
 /**
- * 일반 전화번호 최종 형식 검사
- * - 휴대전화: 010/011/016/017/018/019-xxxx-xxxx
- * - 서울: 02-xxx(x)-xxxx
- * - 지역번호: 실제 국내 지역번호-xxx(x)-xxxx
+ * 허용 전화번호 형식을 공통으로 검사합니다.
+ * - 휴대전화: 010/011/016/017/018/019 + 8자리
+ * - 서울: 02 + 7~8자리
+ * - 지역번호: 031~064의 실제 지역번호 + 7~8자리
  */
 function isValidPhoneNumber(value) {
     var onlyNum = String(value || "").replace(/-/g, "");
-    var regex = /^(01[016789]\d{8}|02\d{7,8}|0(31|32|33|41|42|43|44|51|52|53|54|55|61|62|63|64)\d{7,8})$/;
-    return regex.test(onlyNum);
-}
-
-/* VoLTE 번호에서 허용하는 3자리 접두어 목록 */
-var VOLTE_PREFIXES = [
-    "010", "011", "016", "017", "018", "019",
-    "031", "032", "033",
-    "041", "042", "043", "044",
-    "051", "052", "053", "054", "055",
-    "061", "062", "063", "064"
-];
-
-/**
- * 장비 VoLTE 번호 최종 형식 검사
- * - 허용 접두어 3자리와 가입자 번호 8자리로 구성된 번호만 허용
- */
-function isValidVolteNumber(value) {
-    var onlyNum = String(value || "").replace(/-/g, "");
-    return /^\d{11}$/.test(onlyNum)
-        && VOLTE_PREFIXES.indexOf(onlyNum.substring(0, 3)) !== -1;
+    var reg = /^(01[016789]\d{8}|02\d{7,8}|0(31|32|33|41|42|43|44|51|52|53|54|55|61|62|63|64)\d{7,8})$/;
+    return reg.test(onlyNum);
 }
 
 /**
- * 필수/선택 전화번호 2개를 저장 전에 검사
- * @param {string} phone1 첫 번째 필수 전화번호 input name
- * @param {string} phone2 두 번째 선택 전화번호 input name
+ * 전화번호 자동 하이픈 처리 함수
+ * @param {HTMLInputElement} input - 이벤트가 발생한 input
+ * @param {string} type - 'mobile' 또는 'tel'
+ *    - 'volte' → 010-1234-5678 (3-4-4)
+ *    - 'default'    → 02-1234-5678 또는 031-1234-5678 (2or3-4-4)
  */
-function phoneCellChk(phone1, phone2) {
-    var $phone1 = $('input[name="' + phone1 + '"]');
-    var $phone2 = $('input[name="' + phone2 + '"]');
-    var value1 = $.trim($phone1.val());
-    var value2 = $.trim($phone2.val());
+function formatPhoneAuto(input,type) {
+    if (!input) return;
 
-    if (!isValidPhoneNumber(value1)) {
-        alert("연락처1 형식이 올바르지 않습니다.");
-        $phone1.focus();
-        return false;
+    // 한글 IME 조합 중에는 input 값을 변경하지 않습니다.
+    if (input._phoneComposing) return;
+
+    var originalValue = input.value || "";
+
+    // 숫자와 자동 생성된 하이픈 이외 문자가 들어오면 입력 직전 정상값을 복원합니다.
+    if (/[^0-9-]/.test(originalValue)) {
+        input.value = input._phoneLastValidValue || "";
+        restorePhoneCursor(input, input._phoneLastValidCursor);
+        return;
     }
 
-    if (value2 !== "" && !isValidPhoneNumber(value2)) {
-        alert("연락처2 형식이 올바르지 않습니다.");
-        $phone2.focus();
-        return false;
+    var selectionStart = (typeof input.selectionStart === "number") ? input.selectionStart : originalValue.length;
+
+    // 현재 커서 앞에 존재하는 숫자 개수를 기준으로 포맷 후 커서 위치를 복원합니다.
+    // 이 방식은 중간 숫자 선택 후 덮어쓰기, 중간 삭제, 중간 삽입을 모두 처리합니다.
+    var digitCursorIndex = countDigits(originalValue.substring(0, selectionStart));
+    var digits = originalValue.replace(/[^0-9]/g, "");
+
+    // 국내에서 허용한 전화번호 접두어가 아니면 직전 정상값을 유지합니다.
+    if (!hasAllowedPhonePrefix(digits, type)) {
+        input.value = input._phoneLastValidValue || "";
+        restorePhoneCursor(input, input._phoneLastValidCursor);
+        return;
     }
 
-    return true;
+    // 최대 11자리 제한
+    if (digits.length > 11) {
+        digits = digits.substring(0, 11);
+        if (digitCursorIndex > 11) digitCursorIndex = 11;
+    }
+
+    var formattedValue = formatPhoneDigits(digits, type);
+    input.value = formattedValue;
+
+    var nextCursor = findCursorPositionByDigitIndex(formattedValue, digitCursorIndex);
+    try {
+        input.setSelectionRange(nextCursor, nextCursor);
+    } catch (e) {
+        // 일부 구형 브라우저/비활성 input에서는 setSelectionRange가 실패할 수 있으므로 무시합니다.
+    }
+
+    input._phoneLastValidValue = formattedValue;
+    input._phoneLastValidCursor = nextCursor;
 }
 
-/**
- * 로그인 입력값의 공백/특수문자/한글 제거
- * 기존 로그인 화면에서 호출하므로 함수명과 동작을 유지함
- */
-function spaceChk(obj) {
-    var strSpace = /\s/;
-    var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\('\"]/gi;
-
-    if (strSpace.exec(obj.value)) {
-        obj.focus();
-        obj.value = obj.value.replace(" ", "");
-        return false;
-    }
-
-    if (!(obj.name === "userPw" || obj.name === "userPw2")) {
-        if (regExp.test(obj.value)) {
-            obj.focus();
-            obj.value = "";
-            return false;
-        }
-    }
-
-    if (!(obj.name === "userName" || obj.name === "userRank" || obj.name === "userDept")) {
-        var currentEvent = window.event;
-        if (currentEvent && (currentEvent.keyCode === 8 || currentEvent.keyCode === 9
-            || currentEvent.keyCode === 37 || currentEvent.keyCode === 39)) {
-            return false;
-        }
-        obj.value = obj.value.replace(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g, "");
+function restorePhoneCursor(input, cursor) {
+    var nextCursor = (typeof cursor === "number") ? cursor : (input.value || "").length;
+    try {
+        input.setSelectionRange(nextCursor, nextCursor);
+    } catch (e) {
+        // 일부 구형 브라우저에서는 setSelectionRange가 지원되지 않을 수 있습니다.
     }
 }
 
-/**
- * 공통 실시간 입력 유효성 검사 모듈
- *
- * JSP에는 data-input-rule 속성만 지정하고 이벤트 처리는 이 모듈에서 일괄 수행합니다.
- * - user-id: 영문 소문자와 숫자만 허용
- * - password: 영문, 숫자, 지정 특수문자만 허용
- * - company-code: 영문만 허용하고 대문자로 변환
- * - phone: 국내 일반 전화번호 형식으로 자동 하이픈 처리
- * - volte: 허용된 3자리 접두어의 xxx-xxxx-xxxx 형식으로 자동 하이픈 처리
- *
- * 한글 IME 조합 중에는 값을 변경하지 않고 compositionend에서 조합 전 정상값을
- * 복원하므로, 한글 입력 때문에 기존 영문/숫자가 사라지는 현상을 방지합니다.
+/*
+ * 기존 사용자 등록/수정 JSP에 연결된 함수명입니다.
+ * 화면 파일 교체 순서와 관계없이 공통 전화번호 로직이 동작하도록 유지합니다.
  */
-(function (window, document) {
-    "use strict";
+function beginUserPhoneComposition(input) {
+    if (!input) return;
+    input._phoneComposing = true;
+    input._phoneValueBeforeComposition = input._phoneLastValidValue !== undefined
+        ? input._phoneLastValidValue : (input.value || "");
+    input._phoneCursorBeforeComposition = (typeof input.selectionStart === "number")
+        ? input.selectionStart : input._phoneValueBeforeComposition.length;
+}
 
-    if (window.KreInputValidationInitialized) return;
-    window.KreInputValidationInitialized = true;
+function formatUserPhoneInput(input, type) {
+    if (!input || input._phoneComposing) return;
+    formatPhoneAuto(input, type);
+}
 
-    var RULE_USER_ID = "user-id";
-    var RULE_PASSWORD = "password";
-    var RULE_COMPANY_CODE = "company-code";
-    var RULE_PHONE = "phone";
-    var RULE_VOLTE = "volte";
+function endUserPhoneComposition(input, type) {
+    if (!input) return;
+    input._phoneComposing = false;
+    input.value = input._phoneValueBeforeComposition || input._phoneLastValidValue || "";
+    restorePhoneCursor(input, input._phoneCursorBeforeComposition);
+    formatPhoneAuto(input, type);
+}
 
-    /** input에 지정된 공통 입력 규칙명을 반환합니다. */
-    function getRule(input) {
-        if (!input || input.tagName !== "INPUT") return "";
-        return input.getAttribute("data-input-rule") || "";
+function hasAllowedPhonePrefix(digits, type) {
+    digits = String(digits || "");
+    if (digits === "") return true;
+    if (digits.charAt(0) !== "0") return false;
+    if (digits.length < 2) return true;
+
+    // VoLTE 번호는 휴대전화 접두어만 허용합니다.
+    if (type === "volte") {
+        if (digits.length < 3) return digits.charAt(1) === "1";
+        return /^(010|011|016|017|018|019)/.test(digits);
     }
 
-    /** 규칙별로 사용자가 직접 입력할 수 있는 문자인지 검사합니다. */
-    function isAllowedInputText(rule, text) {
-        if (text == null || text === "") return true;
-        if (rule === RULE_USER_ID) return /^[a-z0-9]+$/.test(text);
-        if (rule === RULE_PASSWORD) return /^[A-Za-z0-9~!@#$%^&*()_+|\[\]]+$/.test(text);
-        if (rule === RULE_COMPANY_CODE) return /^[A-Za-z]+$/.test(text);
-        if (rule === RULE_PHONE || rule === RULE_VOLTE) return /^\d+$/.test(text);
-        return true;
-    }
+    // 서울 지역번호는 두 자리 접두어입니다.
+    if (/^02/.test(digits)) return true;
+    if (digits.length < 3) return digits.charAt(1) === "1" || /[3-6]/.test(digits.charAt(1));
 
-    /** input의 현재 값과 커서 위치를 마지막 정상 상태로 저장합니다. */
-    function saveState(input) {
-        input._validationLastValue = input.value || "";
-        input._validationLastStart = typeof input.selectionStart === "number"
-            ? input.selectionStart : input._validationLastValue.length;
-        input._validationLastEnd = typeof input.selectionEnd === "number"
-            ? input.selectionEnd : input._validationLastStart;
-    }
+    return /^(010|011|016|017|018|019|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)/.test(digits);
+}
 
-    /** 잘못된 입력 발생 시 마지막 정상값과 커서 위치를 복원합니다. */
-    function restoreState(input) {
-        input.value = input._validationLastValue || "";
-        setSelection(input, input._validationLastStart, input._validationLastEnd);
-    }
+function isPhoneFormatInput(input) {
+    if (!input || input.tagName !== "INPUT") return false;
+    var oninput = input.getAttribute("oninput") || "";
+    return oninput.indexOf("formatPhoneAuto") !== -1
+        || oninput.indexOf("formatUserPhoneInput") !== -1
+        || input.getAttribute("data-phone-format") === "Y";
+}
 
-    /** 브라우저가 지원하는 경우 input 커서/선택 위치를 복원합니다. */
-    function setSelection(input, start, end) {
-        var nextStart = typeof start === "number" ? start : (input.value || "").length;
-        var nextEnd = typeof end === "number" ? end : nextStart;
-        try {
-            input.setSelectionRange(nextStart, nextEnd);
-        } catch (ignore) {
-            // 비활성 또는 구형 브라우저에서는 커서 복원을 생략합니다.
-        }
-    }
+function getPhoneFormatType(input) {
+    var oninput = input.getAttribute("oninput") || "";
+    return oninput.indexOf("'volte'") !== -1 || oninput.indexOf('"volte"') !== -1 ? "volte" : undefined;
+}
 
-    /** 문자열에서 숫자 개수를 계산합니다. */
-    function countDigits(value) {
-        var matched = String(value || "").match(/\d/g);
-        return matched ? matched.length : 0;
-    }
-
-    /** 포맷된 전화번호에서 지정한 숫자 순번 다음의 커서 위치를 계산합니다. */
-    function findPhoneCursor(formattedValue, digitIndex) {
-        if (digitIndex <= 0) return 0;
-        var digitCount = 0;
-        for (var i = 0; i < formattedValue.length; i++) {
-            if (/\d/.test(formattedValue.charAt(i))) {
-                digitCount++;
-                if (digitCount >= digitIndex) return i + 1;
-            }
-        }
-        return formattedValue.length;
-    }
-
-    /** 일반 전화번호가 입력 중 허용 가능한 국내 접두어인지 검사합니다. */
-    function isAllowedPhonePrefix(digits) {
-        if (digits === "") return true;
-        if (digits.charAt(0) !== "0") return false;
-        if (digits.length === 1) return true;
-        if (/^02/.test(digits)) return true;
-        if (digits.length === 2) return digits.charAt(1) === "1" || /[3-6]/.test(digits.charAt(1));
-        return /^(010|011|016|017|018|019|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)/.test(digits);
-    }
-
-    /** VoLTE 번호가 입력 중 허용 접두어 목록을 따르는지 검사합니다. */
-    function isAllowedVoltePrefix(digits) {
-        if (digits === "") return true;
-
-        for (var i = 0; i < VOLTE_PREFIXES.length; i++) {
-            var prefix = VOLTE_PREFIXES[i];
-            if (prefix.indexOf(digits) === 0 || digits.indexOf(prefix) === 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /** 숫자 문자열을 일반 전화번호 또는 VoLTE 표시 형식으로 변환합니다. */
-    function formatPhoneDigits(digits, rule) {
-        if (rule === RULE_VOLTE) {
-            if (digits.length > 7) return digits.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
-            if (digits.length > 3) return digits.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-            return digits;
-        }
-
-        if (/^02/.test(digits)) {
-            if (digits.length === 9) return digits.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
-            if (digits.length >= 10) return digits.replace(/(\d{2})(\d{4})(\d{1,4})/, "$1-$2-$3");
-            if (digits.length > 2) return digits.replace(/(\d{2})(\d{1,4})/, "$1-$2");
-            return digits;
-        }
-
-        if (digits.length === 10) return digits.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
-        if (digits.length >= 11) return digits.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
-        if (digits.length > 3) return digits.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-        return digits;
-    }
-
-    /** 현재 input 값을 규칙에 맞게 검사·변환하고 정상 상태로 저장합니다. */
-    function applyRule(input) {
-        var rule = getRule(input);
-        if (!rule || input._validationComposing) return;
-
-        var rawValue = input.value || "";
-        var selectionStart = typeof input.selectionStart === "number" ? input.selectionStart : rawValue.length;
-        var nextValue = rawValue;
-        var nextCursor = selectionStart;
-
-        if (rule === RULE_USER_ID) {
-            if (/[^a-z0-9]/.test(rawValue)) return restoreState(input);
-            nextValue = rawValue.substring(0, 12);
-            nextCursor = Math.min(selectionStart, nextValue.length);
-        } else if (rule === RULE_PASSWORD) {
-            if (/[^A-Za-z0-9~!@#$%^&*()_+|\[\]]/.test(rawValue)) return restoreState(input);
-            nextValue = rawValue.substring(0, 20);
-            nextCursor = Math.min(selectionStart, nextValue.length);
-        } else if (rule === RULE_COMPANY_CODE) {
-            if (/[^A-Za-z]/.test(rawValue)) return restoreState(input);
-            nextValue = rawValue.toUpperCase().substring(0, 4);
-            nextCursor = Math.min(selectionStart, nextValue.length);
-        } else if (rule === RULE_PHONE || rule === RULE_VOLTE) {
-            if (/[^0-9-]/.test(rawValue)) return restoreState(input);
-
-            var digitCursorIndex = countDigits(rawValue.substring(0, selectionStart));
-            var digits = rawValue.replace(/-/g, "").substring(0, 11);
-            var allowedPrefix = rule === RULE_VOLTE
-                ? isAllowedVoltePrefix(digits) : isAllowedPhonePrefix(digits);
-
-            if (!allowedPrefix) return restoreState(input);
-
-            nextValue = formatPhoneDigits(digits, rule);
-            nextCursor = findPhoneCursor(nextValue, Math.min(digitCursorIndex, 11));
-        }
-
-        input.value = nextValue;
-        setSelection(input, nextCursor, nextCursor);
-        saveState(input);
-    }
-
-    /** 초기 표시값을 포맷하고 정상 상태를 저장합니다. */
-    function initializeInput(input) {
-        if (!getRule(input)) return;
-        input._validationLastValue = input.value || "";
-        input._validationLastStart = input._validationLastValue.length;
-        input._validationLastEnd = input._validationLastStart;
-        applyRule(input);
-    }
-
-    document.addEventListener("focus", function (event) {
-        if (!getRule(event.target)) return;
-        saveState(event.target);
+/*
+ * formatPhoneAuto()를 사용하는 모든 화면에 공통 적용합니다.
+ * 잘못된 키·한글 조합·문자 붙여넣기를 값 변경 전에 차단하여 기존 번호를 보존합니다.
+ */
+(function bindCommonPhoneInputEvents() {
+    document.addEventListener("focus", function(event) {
+        var input = event.target;
+        if (!isPhoneFormatInput(input)) return;
+        input._phoneLastValidValue = input.value || "";
+        input._phoneLastValidCursor = (typeof input.selectionStart === "number") ? input.selectionStart : input._phoneLastValidValue.length;
     }, true);
 
-    document.addEventListener("beforeinput", function (event) {
-        var rule = getRule(event.target);
-        if (!rule) return;
+    document.addEventListener("keydown", function(event) {
+        var input = event.target;
+        if (!isPhoneFormatInput(input) || event.ctrlKey || event.metaKey || event.altKey) return;
+
+        var key = event.key || "";
+        var allowedControlKeys = ["Backspace", "Delete", "Tab", "Enter", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Shift", "Control", "Alt", "CapsLock"];
+        if (/^F\d{1,2}$/.test(key)) return;
+        if (/^\d$/.test(key) || allowedControlKeys.indexOf(key) !== -1) return;
+        event.preventDefault();
+    }, true);
+
+    document.addEventListener("beforeinput", function(event) {
+        var input = event.target;
+        if (!isPhoneFormatInput(input)) return;
         if (event.inputType && (event.inputType.indexOf("delete") === 0 || event.inputType.indexOf("history") === 0)) return;
-        if (!isAllowedInputText(rule, event.data)) event.preventDefault();
+        if (event.data !== null && event.data !== undefined && !/^\d+$/.test(event.data)) {
+            event.preventDefault();
+        }
     }, true);
 
-    document.addEventListener("paste", function (event) {
-        var rule = getRule(event.target);
-        if (!rule) return;
-        var text = event.clipboardData ? event.clipboardData.getData("text") : "";
-        if (!isAllowedInputText(rule, text)) event.preventDefault();
-    }, true);
-
-    document.addEventListener("drop", function (event) {
-        var rule = getRule(event.target);
-        if (!rule) return;
-        var text = event.dataTransfer ? event.dataTransfer.getData("text") : "";
-        if (!isAllowedInputText(rule, text)) event.preventDefault();
-    }, true);
-
-    document.addEventListener("compositionstart", function (event) {
+    document.addEventListener("paste", function(event) {
         var input = event.target;
-        if (!getRule(input)) return;
-        saveState(input);
-        input._validationCompositionValue = input._validationLastValue;
-        input._validationCompositionStart = input._validationLastStart;
-        input._validationCompositionEnd = input._validationLastEnd;
-        input._validationComposing = true;
+        if (!isPhoneFormatInput(input)) return;
+        var pastedText = event.clipboardData ? event.clipboardData.getData("text") : "";
+        if (!/^\d+$/.test(pastedText)) event.preventDefault();
     }, true);
 
-    document.addEventListener("input", function (event) {
-        applyRule(event.target);
-    }, true);
-
-    document.addEventListener("compositionend", function (event) {
+    document.addEventListener("drop", function(event) {
         var input = event.target;
-        if (!getRule(input)) return;
-        input._validationComposing = false;
-        input.value = input._validationCompositionValue || "";
-        setSelection(input, input._validationCompositionStart, input._validationCompositionEnd);
-        saveState(input);
-        applyRule(input);
+        if (!isPhoneFormatInput(input)) return;
+        var droppedText = event.dataTransfer ? event.dataTransfer.getData("text") : "";
+        if (!/^\d+$/.test(droppedText)) event.preventDefault();
     }, true);
 
-    function initializeAll() {
-        var inputs = document.querySelectorAll("input[data-input-rule]");
-        for (var i = 0; i < inputs.length; i++) initializeInput(inputs[i]);
+    document.addEventListener("compositionstart", function(event) {
+        var input = event.target;
+        if (!isPhoneFormatInput(input)) return;
+        input._phoneComposing = true;
+        input._phoneValueBeforeComposition = input._phoneLastValidValue !== undefined
+            ? input._phoneLastValidValue : (input.value || "");
+        input._phoneCursorBeforeComposition = (typeof input.selectionStart === "number")
+            ? input.selectionStart : input._phoneValueBeforeComposition.length;
+    }, true);
+
+    document.addEventListener("compositionend", function(event) {
+        var input = event.target;
+        if (!isPhoneFormatInput(input)) return;
+        input._phoneComposing = false;
+        input.value = input._phoneValueBeforeComposition || "";
+        restorePhoneCursor(input, input._phoneCursorBeforeComposition);
+        formatPhoneAuto(input, getPhoneFormatType(input));
+    }, true);
+})();
+
+function countDigits(str) {
+    var match = String(str || "").match(/\d/g);
+    return match ? match.length : 0;
+}
+
+function findCursorPositionByDigitIndex(formattedValue, digitIndex) {
+    if (digitIndex <= 0) return 0;
+
+    var digitCount = 0;
+    for (var i = 0; i < formattedValue.length; i++) {
+        if (/\d/.test(formattedValue.charAt(i))) {
+            digitCount++;
+            if (digitCount >= digitIndex) {
+                return i + 1;
+            }
+        }
+    }
+    return formattedValue.length;
+}
+
+function formatPhoneDigits(val, type) {
+    val = String(val || "");
+
+    // 휴대폰 번호 (010, 011, 016, 017, 018, 019)
+    if (/^01[016789]/.test(val)) {
+        if (val.length > 7) {
+            return val.replace(/(\d{3})(\d{3,4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 3) {
+            return val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+        }
+        return val;
     }
 
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initializeAll);
-    } else {
-        initializeAll();
+    // 서울 02. VoLTE 번호는 지역번호 판단에서 제외합니다.
+    if (/^02/.test(val) && type != "volte") {
+        if (val.length === 9) {
+            return val.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
+        } else if (val.length >= 10) {
+            return val.replace(/(\d{2})(\d{4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 2) {
+            return val.replace(/(\d{2})(\d{1,4})/, "$1-$2");
+        }
+        return val;
     }
-})(window, document);
+
+    // 나머지 지역번호 또는 VoLTE 번호 (3자리-3/4자리-4자리)
+    if (/^\d{3}/.test(val)) {
+        if (val.length === 10) {
+            return val.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+        } else if (val.length >= 11) {
+            return val.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
+        } else if (val.length > 3) {
+            return val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+        }
+        return val;
+    }
+
+    return val;
+}
+/************************************************************************
+함수명 : spaceChk
+설 명 : 공백 및 특수문자를 입력방지해주는 함수(영문,숫자 입력 가능)
+인 자 : 
+사용법 : 
+작성일 : 2020-08-25
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2020.08.25   정다빈       최초작성
+************************************************************************/
+function spaceChk(obj){//공백입력방지
+	var str_space = /\s/; //공백체크변수선언
+	
+	//특수문자 정규식
+	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+	
+	if (str_space.exec(obj.value)){ //공백체크
+        obj.focus();
+        obj.value = obj.value.replace(' ',''); // 공백제거
+        return false;	
+	}
+	//패스워드,시험코드 제외 특수문자 입력 불가
+	if(!(obj.name=="userPw" || obj.name == "userPw2")){
+		if(regExp.test(obj.value)){
+			obj.focus();
+	        obj.value = obj.value.replace(obj.value,''); // 공백제거
+	        return false;
+		}
+	}
+	//이름,직급,부서, 회사명의 경우 제외하고 한글입력 불가능
+	if(!(obj.name == "userName" || obj.name == "userRank"|| obj.name == "userDept")){
+		//좌우 방향키, 백스페이스, 딜리트, 탭키에 대한 예외
+		if(event.keyCode == 8  || event.keyCode == 9 
+		|| event.keyCode == 37 || event.keyCode == 39){
+			return false;
+		}
+		obj.value=obj.value.replace(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g,'');
+	}
+	
+}
+
+/*
+ * 비밀번호 관련 정규식 
+ * */
+function pwChkInput(obj){
+	//특수문자 정규식
+	var regExp = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+	if (str_space.exec(obj.value)){ //공백체크
+        obj.focus();
+        obj.value = obj.value.replace(' ',''); // 공백제거
+        return false;	
+	}
+}
+
+
+/************************************************************************
+함수명 : schChkKey
+설 명 : 검색 값 유효성 검사
+인 자 : 
+사용법 : 
+작성일 : 2020-08-30
+작성자 : 솔루션사업팀 정다빈
+수정일        수정자       수정내용
+----------- ------ -------------------
+2020.08.30   정다빈       최초작성
+ ************************************************************************/
+function schChkKey(that,schFlag){
+	console.log("id조회");
+	var sndUrl='';
+	var dat;
+	//키워드가 무엇인지 판별
+	var schId= $(that).attr("name").split("_")[1];
+	//텍스트에 값을 입력 안했다면
+	if(schId!="empCode" && $(that).parent().children().first().val()==""){
+		$(that).parent().parent().children().last().css("color","red");
+		$(that).parent().parent().children().last().text("값을 입력해주세요");
+	}else{
+		//검색버튼이 2개이상일때는 어디로 보낼지 값이 무엇인지 분기처리
+		if(schId=="userId"){
+			sndUrl="/user/findUserId.ajax";
+			dat={"userId":$(that).parent().children().first().val()};
+			
+			var schData=ajaxMethod(sndUrl, dat);
+			//id일 경우는 값이 없을때 사용가능하고 시험코드는 값이 있을때 사용가능함
+			if(schData == "" || typeof schData.data === "undefined"){//db에 값 미존재
+				$(that).parent().parent().children().last().css("color","blue");
+				$(that).parent().parent().children().last().text("사용 가능한 id입니다.");
+				schFlag=true;
+			}else{//db에 값 존재
+				$(that).parent().parent().children().last().css("color","red");
+				$(that).parent().parent().children().last().text("이미 사용중인 id입니다.");
+				schFlag=false;
+			}
+		}
+	}
+	return schFlag;
+}
