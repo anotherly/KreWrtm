@@ -43,14 +43,6 @@ public class SettingServiceImpl implements SettingService {
 
     @Override
     public void updateDashboardRefreshSeconds(int refreshSeconds) {
-		/* 설정 화면에서 저장할 수 있는 정식 주기는 기존 4개 값만 허용합니다. */
-        if (!isAllowed(refreshSeconds)) {
-            throw new IllegalArgumentException("허용되지 않은 갱신 주기입니다.");
-        }
         settingMapper.upsertSetting(DASHBOARD_REFRESH_KEY, String.valueOf(refreshSeconds));
-    }
-
-    private boolean isAllowed(int seconds) {
-        return seconds == 30 || seconds == 60 || seconds == 300 || seconds == 600;
     }
 }
