@@ -242,7 +242,7 @@
     }
 
     function drawRsrpRadarChart(rsrpList, rsrqList) {
-        var labels = ["정상", "주의", "경고", "심각"];
+        var labels = ["양호", "주의", "경고", "심각"];
         var rsrpMap = listToStatusMap(rsrpList);
         var rsrqMap = listToStatusMap(rsrqList);
         var rsrpData = labels.map(function (label) { return n(rsrpMap[label]); });
@@ -313,8 +313,8 @@
     }
 
     function drawRsrqRsrpStatusSummary(rsrpList, rsrqList) {
-        var labels = ["정상", "주의", "경고", "심각"];
-        var classes = {"정상":"normal", "주의":"caution", "경고":"warning", "심각":"critical"};
+        var labels = ["양호", "주의", "경고", "심각"];
+        var classes = {"양호":"normal", "주의":"caution", "경고":"warning", "심각":"critical"};
 
         /*
          * 상태 기준
@@ -322,13 +322,13 @@
          * - RSRQ: 수신 품질. 0에 가까울수록 양호합니다.
          */
         var rsrpRange = {
-            "정상": "RSRP ≥ -90 dBm",
+            "양호": "RSRP ≥ -90 dBm",
             "주의": "-100 ≤ RSRP < -90 dBm",
             "경고": "-110 ≤ RSRP < -100 dBm",
             "심각": "RSRP < -110 dBm"
         };
         var rsrqRange = {
-            "정상": "RSRQ ≥ -10 dB",
+            "양호": "RSRQ ≥ -10 dB",
             "주의": "-15 ≤ RSRQ < -10 dB",
             "경고": "-18 ≤ RSRQ < -15 dB",
             "심각": "RSRQ < -18 dB"

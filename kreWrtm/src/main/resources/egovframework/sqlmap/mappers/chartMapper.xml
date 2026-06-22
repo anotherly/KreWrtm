@@ -132,7 +132,7 @@
             S.rangeText AS rangeText,
             COALESCE(T.cnt, 0) AS cnt
         FROM (
-            SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRP <![CDATA[ >= ]]> -90 dBm' AS rangeText
+            SELECT 1 AS sortOrder, '양호' AS status, 'normal' AS statusClass, 'RSRP <![CDATA[ >= ]]> -90 dBm' AS rangeText
             UNION ALL SELECT 2, '주의', 'caution', '-100 <![CDATA[ <= ]]> RSRP <![CDATA[ < ]]> -90 dBm'
             UNION ALL SELECT 3, '경고', 'warning', '-110 <![CDATA[ <= ]]> RSRP <![CDATA[ < ]]> -100 dBm'
             UNION ALL SELECT 4, '심각', 'critical', 'RSRP <![CDATA[ < ]]> -110 dBm'
@@ -171,7 +171,7 @@
             S.rangeText AS rangeText,
             COALESCE(T.cnt, 0) AS cnt
         FROM (
-            SELECT 1 AS sortOrder, '정상' AS status, 'normal' AS statusClass, 'RSRQ <![CDATA[ >= ]]> -10 dB' AS rangeText
+            SELECT 1 AS sortOrder, '양호' AS status, 'normal' AS statusClass, 'RSRQ <![CDATA[ >= ]]> -10 dB' AS rangeText
             UNION ALL SELECT 2, '주의', 'caution', '-15 <![CDATA[ <= ]]> RSRQ <![CDATA[ < ]]> -10 dB'
             UNION ALL SELECT 3, '경고', 'warning', '-18 <![CDATA[ <= ]]> RSRQ <![CDATA[ < ]]> -15 dB'
             UNION ALL SELECT 4, '심각', 'critical', 'RSRQ <![CDATA[ < ]]> -18 dB'
@@ -213,7 +213,7 @@
                 WHEN T.rsrpNum <![CDATA[ < ]]> -110 THEN '심각'
                 WHEN T.rsrpNum <![CDATA[ < ]]> -100 THEN '경고'
                 WHEN T.rsrpNum <![CDATA[ < ]]> -90 THEN '주의'
-                ELSE '정상'
+                ELSE '양호'
             END AS rsrpStatus,
             CASE
                 WHEN T.rsrpNum <![CDATA[ < ]]> -110 THEN 'critical'
@@ -227,7 +227,7 @@
                 WHEN T.rsrqNum <![CDATA[ < ]]> -18 THEN '심각'
                 WHEN T.rsrqNum <![CDATA[ < ]]> -15 THEN '경고'
                 WHEN T.rsrqNum <![CDATA[ < ]]> -10 THEN '주의'
-                ELSE '정상'
+                ELSE '양호'
             END AS rsrqStatus,
             CASE
                 WHEN T.rsrqNum <![CDATA[ < ]]> -18 THEN 'critical'
