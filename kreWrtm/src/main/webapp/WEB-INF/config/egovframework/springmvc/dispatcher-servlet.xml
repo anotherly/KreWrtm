@@ -118,6 +118,7 @@
 			<mvc:mapping path="/remote/**"/>
 			<mvc:mapping path="/obs/**"/>
 			<mvc:mapping path="/dataroom/**"/>
+			<mvc:mapping path="/setting/**"/>
 			<mvc:exclude-mapping path="/user/reloadOrKill.do"/>
 			<ref bean="authInterceptor"/>
 		</mvc:interceptor>

@@ -31,6 +31,7 @@
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/dtb.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/user.css">
 	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/user-form.css">
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/page-scroll.css">
 	<!-- DataTable -->
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/DataTables/datatables.min.css" />
 	<script type="text/javascript" src="<%=request.getContextPath()%>/DataTables/datatables.min.js"></script>
@@ -71,6 +72,10 @@
 <script>
 	$(document).ready(function() {
 		console.log("탑 화면");
+
+		var isDashboardPage = $(".dashboard-db-page").length > 0;
+		$("html, body").toggleClass("dashboard-fixed-page", isDashboardPage)
+			.toggleClass("standard-scroll-page", !isDashboardPage);
 		
 		setInterval(function(){
 			var nowhh = new Date().getHours();
@@ -106,14 +111,14 @@
 			goMenuSite($(this).attr('id'));
 		});
 		
-		window.onload = function() {
-			console.log("윈도우 온로드");
-			document.querySelector(".lnb-control").addEventListener(
-			"click", function() {
-				if ($('body').attr('class') == 'open') {
-					$('.menu-inner div').show();
-				} else {
-					$('.menu-inner div').hide();
+			window.onload = function() {
+				console.log("윈도우 온로드");
+				document.querySelector(".lnb-control").addEventListener(
+				"click", function() {
+					if ($('body').hasClass('open')) {
+						$('.menu-inner div').show();
+					} else {
+						$('.menu-inner div').hide();
 				}
 				document.body.classList.toggle('open');
 			});

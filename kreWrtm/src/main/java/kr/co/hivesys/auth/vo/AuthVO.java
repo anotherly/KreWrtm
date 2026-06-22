@@ -1,6 +1,8 @@
 package kr.co.hivesys.auth.vo;
 
 public class AuthVO {
+	private String idx;
+	private String subIdx;
 	private Integer authId;
 	private String authDefine;
 	private Integer usedYn;
@@ -9,6 +11,11 @@ public class AuthVO {
 	private String authUrlName2;
 	private String authUrlName3;
 	private String useYn;
+
+	public String getIdx() { return idx; }
+	public void setIdx(String idx) { this.idx = idx; }
+	public String getSubIdx() { return subIdx; }
+	public void setSubIdx(String subIdx) { this.subIdx = subIdx; }
 
 	public Integer getAuthId() { return authId; }
 	public void setAuthId(Integer authId) { this.authId = authId; }

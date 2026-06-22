@@ -22,6 +22,50 @@
                 <div id="contents_box" class="contents_box dashboard-page dashboard-db-page">
                     <div id="dashboardError" class="dashboard-error" style="display:none;"></div>
 
+                    <div class="dashboard-kpi-legend" aria-label="대시보드 상태 색상 범례">
+                        <span class="legend-title">상태</span>
+                        <span class="legend-item normal"><i></i>양호</span>
+                        <span class="legend-item caution"><i></i>주의</span>
+                        <span class="legend-item warning"><i></i>경고</span>
+                        <span class="legend-item critical"><i></i>심각</span>
+                        <button type="button" id="kpiStatusGuideBtn" class="status-guide-btn"
+                                aria-controls="kpiStatusGuidePopup" aria-expanded="false">
+                            <span class="info-icon">i</span> 상태 기준
+                        </button>
+                    </div>
+
+                    <div id="kpiStatusGuidePopup" class="status-guide-popup" role="dialog"
+                         aria-modal="false" aria-labelledby="statusGuideTitle" hidden>
+                        <div class="status-guide-header">
+                            <strong id="statusGuideTitle">상태 판정 기준</strong>
+                            <button type="button" id="kpiStatusGuideCloseBtn" class="status-guide-close"
+                                    title="닫기" aria-label="상태 판정 기준 닫기">X</button>
+                        </div>
+                        <div class="status-guide-body">
+                            <div class="status-guide-row">
+                                <b>RSRP</b>
+                                <span class="normal"><i></i>양호 ≥ -90 dBm</span>
+                                <span class="caution"><i></i>주의 -100 ~ -90</span>
+                                <span class="warning"><i></i>경고 -110 ~ -100</span>
+                                <span class="critical"><i></i>심각 &lt; -110</span>
+                            </div>
+                            <div class="status-guide-row">
+                                <b>RSRQ</b>
+                                <span class="normal"><i></i>양호 ≥ -10 dB</span>
+                                <span class="caution"><i></i>주의 -15 ~ -10</span>
+                                <span class="warning"><i></i>경고 -18 ~ -15</span>
+                                <span class="critical"><i></i>심각 &lt; -18</span>
+                            </div>
+                            <div class="status-guide-row caution-ratio-row">
+                                <b>주의 이상 단말 비율</b>
+                                <span class="normal"><i></i>양호 &lt; 25%</span>
+                                <span class="caution"><i></i>주의 25 ~ 50%</span>
+                                <span class="warning"><i></i>경고 50 ~ 75%</span>
+                                <span class="critical"><i></i>심각 ≥ 75%</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <section class="kpi-grid">
                         <article class="kpi-card kpi-icon-card">
                             <div class="kpi-icon" aria-hidden="true">
@@ -43,9 +87,9 @@
                             </div>
                             <div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div>
                         </article>
-                        <article id="kpiAvgRsrpCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
-                        <article id="kpiAvgRsrqCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
-                        <article id="kpiCautionDeviceCard" class="kpi-card kpi-status-normal"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
+                        <article id="kpiAvgRsrpCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div id="kpiAvgRsrpDesc" class="kpi-desc">-</div></article>
+                        <article id="kpiAvgRsrqCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div id="kpiAvgRsrqDesc" class="kpi-desc">-</div></article>
+                        <article id="kpiCautionDeviceCard" class="kpi-card kpi-status-normal"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div id="kpiCautionDeviceDesc" class="kpi-desc">-</div></article>
                     </section>
 
                     <section class="dashboard-grid">
@@ -96,6 +140,8 @@
     var commonFont = "'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif";
     var lastDataList = [];
     var tableSortState = { key: null, dir: null };
+    var dashboardRefreshTimer = null;
+    var dashboardLoading = false;
 
     /*
      * 4K + Windows 배율 150% 환경 보정
@@ -134,10 +180,14 @@
 
     $(document).ready(function () {
         bindTableEvents();
+		bindKpiStatusGuideEvents();
         loadDashboardData();
+        startDashboardAutoRefresh();
     });
 
     function loadDashboardData() {
+		if (dashboardLoading) return;
+		dashboardLoading = true;
         $.ajax({
             url: contextPath + "/chart/dashboardData.ajax",
             type: "POST",
@@ -153,9 +203,27 @@
             error: function (xhr, status, err) {
                 showError("/chart/dashboardData.ajax 호출 실패: " + status);
                 console.log(xhr, err);
+			},
+			complete: function () {
+				dashboardLoading = false;
             }
         });
     }
+
+	function startDashboardAutoRefresh() {
+		var configuredSeconds = Number("${dashboardRefreshSeconds}");
+		var refreshSeconds = 60;
+
+		/* DB에서 조회한 값이 양의 숫자이면 테스트 값도 포함해 그대로 사용합니다. */
+		if (!isNaN(configuredSeconds) && configuredSeconds > 0) {
+			refreshSeconds = configuredSeconds;
+		}
+
+		if (dashboardRefreshTimer) {
+			clearInterval(dashboardRefreshTimer);
+		}
+		dashboardRefreshTimer = setInterval(loadDashboardData, refreshSeconds * 1000);
+	}
 
     function bindDashboard(data) {
         var kpi = data.kpi || {};
@@ -198,10 +266,65 @@
         var cautionDeviceCnt = n(kpi.cautionDeviceCnt);
         var cautionRatio = totalDeviceCnt > 0 ? (cautionDeviceCnt / totalDeviceCnt) * 100 : 0;
 
-        setKpiStatusClass("kpiAvgRsrpCard", getRsrpStatusClass(avgRsrp));
-        setKpiStatusClass("kpiAvgRsrqCard", getRsrqStatusClass(avgRsrq));
-        setKpiStatusClass("kpiCautionDeviceCard", getCautionRatioStatusClass(cautionRatio));
+        var rsrpStatusClass = getRsrpStatusClass(avgRsrp);
+        var rsrqStatusClass = getRsrqStatusClass(avgRsrq);
+        var cautionStatusClass = getCautionRatioStatusClass(cautionRatio);
+
+        setKpiStatusClass("kpiAvgRsrpCard", rsrpStatusClass);
+        setKpiStatusClass("kpiAvgRsrqCard", rsrqStatusClass);
+        setKpiStatusClass("kpiCautionDeviceCard", cautionStatusClass);
+
+		setText("kpiAvgRsrpDesc", getStatusLabel(rsrpStatusClass) + " · " + getRsrpRangeText(rsrpStatusClass));
+		setText("kpiAvgRsrqDesc", getStatusLabel(rsrqStatusClass) + " · " + getRsrqRangeText(rsrqStatusClass));
+		setText("kpiCautionDeviceDesc", getStatusLabel(cautionStatusClass) + " · "
+				+ cautionDeviceCnt + "/" + totalDeviceCnt + "대 (" + cautionRatio.toFixed(1) + "%)");
     }
+
+	function getStatusLabel(statusClass) {
+		if (statusClass === "critical") return "심각";
+		if (statusClass === "warning") return "경고";
+		if (statusClass === "caution") return "주의";
+		return "양호";
+	}
+
+	function getRsrpRangeText(statusClass) {
+		if (statusClass === "critical") return "RSRP < -110 dBm";
+		if (statusClass === "warning") return "-110 ≤ RSRP < -100 dBm";
+		if (statusClass === "caution") return "-100 ≤ RSRP < -90 dBm";
+		return "RSRP ≥ -90 dBm";
+	}
+
+	function getRsrqRangeText(statusClass) {
+		if (statusClass === "critical") return "RSRQ < -18 dB";
+		if (statusClass === "warning") return "-18 ≤ RSRQ < -15 dB";
+		if (statusClass === "caution") return "-15 ≤ RSRQ < -10 dB";
+		return "RSRQ ≥ -10 dB";
+	}
+
+	function bindKpiStatusGuideEvents() {
+		$("#kpiStatusGuideBtn").on("click", function (e) {
+			e.stopPropagation();
+			var willOpen = $("#kpiStatusGuidePopup").prop("hidden");
+			setKpiStatusGuideOpen(willOpen);
+		});
+		$("#kpiStatusGuideCloseBtn").on("click", function () {
+			setKpiStatusGuideOpen(false);
+		});
+		$("#kpiStatusGuidePopup").on("click", function (e) {
+			e.stopPropagation();
+		});
+		$(document).on("click.kpiStatusGuide", function () {
+			setKpiStatusGuideOpen(false);
+		});
+		$(document).on("keydown.kpiStatusGuide", function (e) {
+			if (e.key === "Escape") setKpiStatusGuideOpen(false);
+		});
+	}
+
+	function setKpiStatusGuideOpen(open) {
+		$("#kpiStatusGuidePopup").prop("hidden", !open);
+		$("#kpiStatusGuideBtn").attr("aria-expanded", open ? "true" : "false");
+	}
 
     function getRsrpStatusClass(value) {
         if (value < -110) return "critical";

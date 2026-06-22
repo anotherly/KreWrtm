@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.hivesys.chart.service.ChartService;
+import kr.co.hivesys.setting.service.SettingService;
 import kr.co.hivesys.user.vo.UserVO;
 
 @Controller
@@ -27,6 +28,9 @@ public class ChartController {
 
     @Resource(name = "chartService")
     private ChartService chartService;
+
+    @Resource(name = "settingService")
+    private SettingService settingService;
 
     /* 일반 chart JSP 이동용 매핑. /chart/main.do는 mainChart()에서 별도로 처리한다. */
     @RequestMapping("/chart/*.do")
@@ -41,6 +45,7 @@ public class ChartController {
     public ModelAndView mainChart(HttpServletRequest request) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/chart/main");
+        mav.addObject("dashboardRefreshSeconds", settingService.selectDashboardRefreshSeconds());
         return mav;
     }
 

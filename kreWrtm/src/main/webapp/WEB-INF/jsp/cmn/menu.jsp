@@ -10,7 +10,7 @@ $(document).ready(function() {
 	$(".menu-item a").on('click',function(){
 		console.log("소메뉴 확장을 위한 메뉴 클릭");
 		//메뉴확장이 된 경우
-		if($("body").attr("class")!="open"){
+		if(!$("body").hasClass("open")){
 			//서브메뉴가 활성화 된 경우 -> 비활성화
 			if($(this).parent().attr("class").indexOf("open")!=-1){
 				$(this).parent().removeClass("open");
@@ -108,5 +108,13 @@ $(document).ready(function() {
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/list.do" class="menu-link"><div>자료실</div></a></li>
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/board/list.do" class="menu-link"><div>게시판</div></a></li>
 	</ul>
+</li>
+</c:if>
+<c:if test="${sessionScope.authUrlMap['/setting/main']}">
+<li class="menu-item" id="ROOT_SETTING">
+	<a href="<%=request.getContextPath()%>/setting/main.do" class="menu-link" style="color: rgb(255, 255, 255);">
+		<i class="menu-icon n08"></i>
+		<div>설정</div>
+	</a>
 </li>
 </c:if>

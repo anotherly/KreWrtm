@@ -21,4 +21,56 @@
 		  AND USE_YN = 'Y'
 		  AND URL IS NOT NULL
 	</select>
+
+	<select id="selectAuthUrlSettings" parameterType="int" resultType="authVo">
+		SELECT T.IDX AS idx,
+		       T.SUB_IDX AS subIdx,
+		       #{_parameter} AS authId,
+		       T.URL AS url,
+		       T.AUTH_URL_NAME1 AS authUrlName1,
+		       T.AUTH_URL_NAME2 AS authUrlName2,
+		       T.AUTH_URL_NAME3 AS authUrlName3,
+		       CASE WHEN A.USE_YN = 'Y' THEN 'Y' ELSE 'N' END AS useYn
+		FROM TBL_AUTH_URL T
+		LEFT JOIN TBL_AUTH_URL A
+		  ON A.AUTH_ID = #{_parameter}
+		 AND A.URL = T.URL
+		WHERE T.AUTH_ID = 1
+		  AND T.URL IS NOT NULL
+		  AND T.URL != ''
+		ORDER BY T.AUTH_URL_NAME1, T.AUTH_URL_NAME2, T.AUTH_URL_NAME3, T.URL
+	</select>
+
+	<insert id="insertMissingAuthUrls" parameterType="int">
+		INSERT IGNORE INTO TBL_AUTH_URL
+			(IDX, SUB_IDX, AUTH_ID, URL, AUTH_URL_NAME1, AUTH_URL_NAME2, AUTH_URL_NAME3, USE_YN)
+		SELECT CONCAT(#{_parameter}, SUBSTRING(T.IDX, LOCATE('_', T.IDX))),
+		       T.SUB_IDX,
+		       #{_parameter},
+		       T.URL,
+		       T.AUTH_URL_NAME1,
+		       T.AUTH_URL_NAME2,
+		       T.AUTH_URL_NAME3,
+		       'N'
+		FROM TBL_AUTH_URL T
+		WHERE T.AUTH_ID = 1
+		  AND T.URL IS NOT NULL
+		  AND T.URL != ''
+	</insert>
+
+	<update id="resetAuthUrls" parameterType="int">
+		UPDATE TBL_AUTH_URL
+		SET USE_YN = 'N'
+		WHERE AUTH_ID = #{_parameter}
+	</update>
+
+	<update id="enableAuthUrls">
+		UPDATE TBL_AUTH_URL
+		SET USE_YN = 'Y'
+		WHERE AUTH_ID = #{authId}
+		  AND URL IN
+		<foreach collection="urlList" item="url" open="(" separator="," close=")">
+			#{url}
+		</foreach>
+	</update>
 </mapper>

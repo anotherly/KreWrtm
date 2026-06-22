@@ -1813,6 +1813,172 @@
     box-shadow: 0 10px 20px rgba(217, 54, 62, .22) !important;
 }
 
+/* 대시보드 전용 상태 범례: 마크업은 chart/main.jsp에만 존재합니다. */
+#contents_box.dashboard-db-page .dashboard-kpi-legend {
+    position: fixed;
+    top: 0;
+    right: 400px;
+    z-index: 991;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 50px;
+    color: #596b82;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#contents_box.dashboard-db-page .legend-title {
+    color: #34485f;
+    font-weight: 900;
+}
+
+#contents_box.dashboard-db-page .legend-item,
+#contents_box.dashboard-db-page .status-guide-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#contents_box.dashboard-db-page .legend-item i,
+#contents_box.dashboard-db-page .status-guide-row span i {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+#contents_box.dashboard-db-page .normal i { background: #27ae60; }
+#contents_box.dashboard-db-page .caution i { background: #f2c94c; }
+#contents_box.dashboard-db-page .warning i { background: #f2994a; }
+#contents_box.dashboard-db-page .critical i { background: #eb5757; }
+
+#contents_box.dashboard-db-page .status-guide-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 7px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #61738b;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#contents_box.dashboard-db-page .status-guide-btn:hover,
+#contents_box.dashboard-db-page .status-guide-btn[aria-expanded="true"] {
+    background: #edf5fb;
+    color: #1688da;
+}
+
+#contents_box.dashboard-db-page .info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+#contents_box.dashboard-db-page .status-guide-popup {
+    position: fixed;
+    top: 47px;
+    right: 24px;
+    z-index: 1002;
+    width: 670px;
+    overflow: hidden;
+    border: 1px solid #d9e3ed;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(25, 49, 74, .18);
+}
+
+#contents_box.dashboard-db-page .status-guide-popup[hidden] {
+    display: none !important;
+}
+
+#contents_box.dashboard-db-page .status-guide-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 42px;
+    padding: 0 14px 0 18px;
+    border-bottom: 1px solid #e7edf4;
+    color: #22344b;
+}
+
+#contents_box.dashboard-db-page .status-guide-header strong {
+    font-size: 14px;
+    font-weight: 900;
+}
+
+#contents_box.dashboard-db-page .status-guide-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #687a90;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+#contents_box.dashboard-db-page .status-guide-close:hover {
+    background: #f0f4f8;
+    color: #d9363e;
+}
+
+#contents_box.dashboard-db-page .status-guide-body {
+    padding: 5px 18px 10px;
+}
+
+#contents_box.dashboard-db-page .status-guide-row {
+    display: grid;
+    grid-template-columns: 128px repeat(4, minmax(0, 1fr));
+    align-items: center;
+    min-height: 38px;
+    border-bottom: 1px solid #edf2f6;
+    color: #53667d;
+    font-size: 11px;
+}
+
+#contents_box.dashboard-db-page .status-guide-row:last-child {
+    border-bottom: 0;
+}
+
+#contents_box.dashboard-db-page .status-guide-row b {
+    color: #2b3e55;
+    font-size: 12px;
+}
+
+#contents_box.dashboard-db-page .status-guide-row span i {
+    width: 7px;
+    height: 7px;
+}
+
+@media screen and (max-width: 1450px) {
+    #contents_box.dashboard-db-page .dashboard-kpi-legend {
+        right: 230px;
+        gap: 8px;
+        font-size: 11px;
+    }
+
+    #contents_box.dashboard-db-page .status-guide-popup {
+        width: 620px;
+    }
+}
+
 /* 전체 관리/현재 수신 KPI의 파란 표시를 구분하는 흰색 심볼 */
 #contents_box.dashboard-db-page .kpi-icon-card::after {
     display: none;

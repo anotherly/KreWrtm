@@ -1,0 +1,33 @@
+/* 대시보드는 한 화면 고정, 그 외 업무 화면은 문서 전체를 세로 스크롤합니다. */
+html.standard-scroll-page,
+body.standard-scroll-page {
+	overflow: visible;
+}
+
+body.standard-scroll-page {
+    display: block !important;
+}
+
+body.standard-scroll-page .container-wrap {
+    /* min-height: 100vh; */
+    margin-bottom: 0;
+}
+
+body.standard-scroll-page .contents-wrap {
+    height: auto !important;
+    /* min-height: calc(100vh - 50px); */
+    overflow: visible !important;
+}
+
+body.standard-scroll-page .work-wrap,
+body.standard-scroll-page .work-wrap2 {
+    /* height: auto !important; */
+    min-height: calc(100vh - 70px);
+    overflow: visible;
+}
+
+html.dashboard-fixed-page,
+body.dashboard-fixed-page {
+    height: 100% !important;
+    overflow: hidden !important;
+}

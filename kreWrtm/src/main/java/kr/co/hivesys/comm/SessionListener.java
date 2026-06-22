@@ -144,6 +144,31 @@ public class SessionListener implements HttpSessionBindingListener {
 		return loginUsers.size();
 	}
 
+	/**
+	 * 권한 설정 변경 시 해당 권한으로 로그인한 세션의 URL 캐시를 제거합니다.
+	 * 다음 요청에서 AuthInterceptor가 최신 DB 권한을 다시 조회합니다.
+	 */
+	public synchronized void clearAuthCacheByAuthId(Integer authId) {
+		if (authId == null) {
+			return;
+		}
+
+		Enumeration e = loginUsers.keys();
+		while (e.hasMoreElements()) {
+			HttpSession session = (HttpSession) e.nextElement();
+			try {
+				UserVO login = (UserVO) session.getAttribute("login");
+				if (login != null && authId.equals(login.getAuthId())) {
+					session.removeAttribute("authId");
+					session.removeAttribute("authUrlSet");
+					session.removeAttribute("authUrlMap");
+				}
+			} catch (IllegalStateException ex) {
+				loginUsers.remove(session);
+			}
+		}
+	}
+
 	/*
 	 * 현재 접속중인 모든 사용자 아이디를 출력
 	 * @return void
