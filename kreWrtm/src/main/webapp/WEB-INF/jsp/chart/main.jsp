@@ -23,7 +23,7 @@
                     <div id="dashboardError" class="dashboard-error" style="display:none;"></div>
 
                     <section class="kpi-grid">
-                        <article class="kpi-card">
+                        <article class="kpi-card kpi-icon-card">
                             <div class="kpi-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" focusable="false">
                                     <rect x="3" y="4" width="18" height="6" rx="1.5"></rect>
@@ -33,12 +33,12 @@
                             </div>
                             <div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">장치 관리 등록 단말 기준</div>
                         </article>
-                        <article class="kpi-card">
+                        <article class="kpi-card kpi-icon-card">
                             <div class="kpi-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" focusable="false">
-                                    <path d="M12 13v8M9 21h6M12 3v2"></path>
-                                    <path d="M8.5 9.5a5 5 0 0 1 7 0M5.5 6.5a9 9 0 0 1 13 0"></path>
-                                    <circle cx="12" cy="11" r="2"></circle>
+                                    <circle cx="12" cy="9" r="1.7"></circle>
+                                    <path d="M8.5 5.8a5 5 0 0 1 7 0M5.7 3a9 9 0 0 1 12.6 0"></path>
+                                    <path d="M12 10.7V21M12 14l-4.5 7M12 14l4.5 7M8 21h8"></path>
                                 </svg>
                             </div>
                             <div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div>
