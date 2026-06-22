@@ -1807,3 +1807,42 @@
     background: linear-gradient(135deg, #f06b6b, #d9363e) !important;
     box-shadow: 0 10px 20px rgba(217, 54, 62, .22) !important;
 }
+
+/* 전체 관리/현재 수신 KPI의 파란 표시를 구분하는 흰색 심볼 */
+#contents_box.dashboard-db-page .kpi-icon {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    color: #fff;
+    pointer-events: none;
+}
+
+#contents_box.dashboard-db-page .kpi-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media screen and (min-width: 2200px) and (min-height: 1100px) {
+    #contents_box.dashboard-db-page .kpi-icon {
+        top: 22px;
+        right: 24px;
+        width: 52px;
+        height: 52px;
+    }
+
+    #contents_box.dashboard-db-page .kpi-icon svg {
+        width: 30px;
+        height: 30px;
+    }
+}

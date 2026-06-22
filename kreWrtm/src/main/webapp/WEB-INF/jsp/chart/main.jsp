@@ -23,8 +23,26 @@
                     <div id="dashboardError" class="dashboard-error" style="display:none;"></div>
 
                     <section class="kpi-grid">
-                        <article class="kpi-card"><div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">장치 관리 등록 단말 기준</div></article>
-                        <article class="kpi-card"><div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div></article>
+                        <article class="kpi-card">
+                            <div class="kpi-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" focusable="false">
+                                    <rect x="3" y="4" width="18" height="6" rx="1.5"></rect>
+                                    <rect x="3" y="14" width="18" height="6" rx="1.5"></rect>
+                                    <path d="M7 7h.01M7 17h.01M11 7h7M11 17h7"></path>
+                                </svg>
+                            </div>
+                            <div class="kpi-label">전체 관리 단말</div><div class="kpi-value"><span id="kpiTotalDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">장치 관리 등록 단말 기준</div>
+                        </article>
+                        <article class="kpi-card">
+                            <div class="kpi-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" focusable="false">
+                                    <path d="M12 13v8M9 21h6M12 3v2"></path>
+                                    <path d="M8.5 9.5a5 5 0 0 1 7 0M5.5 6.5a9 9 0 0 1 13 0"></path>
+                                    <circle cx="12" cy="11" r="2"></circle>
+                                </svg>
+                            </div>
+                            <div class="kpi-label">현재 데이터 수신 단말</div><div class="kpi-value"><span id="kpiReceiveDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">마지막 수신: <span id="kpiLastRcvDt">-</span></div>
+                        </article>
                         <article id="kpiAvgRsrpCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRP</div><div class="kpi-value"><span id="kpiAvgRsrp">0</span><span>dBm</span></div><div class="kpi-desc">0에 가까울수록 양호</div></article>
                         <article id="kpiAvgRsrqCard" class="kpi-card kpi-status-normal"><div class="kpi-label">평균 RSRQ</div><div class="kpi-value"><span id="kpiAvgRsrq">0</span><span>dB</span></div><div class="kpi-desc">수신품질 평균값</div></article>
                         <article id="kpiCautionDeviceCard" class="kpi-card kpi-status-normal"><div class="kpi-label">주의 이상 단말</div><div class="kpi-value"><span id="kpiCautionDeviceCnt">0</span><span>대</span></div><div class="kpi-desc">RSRP/RSRQ 기준 임계치 후보</div></article>
