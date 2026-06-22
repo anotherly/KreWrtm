@@ -54,6 +54,23 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void deleteAuth(Integer authId) {
+		validateAuthId(authId);
+		if (Integer.valueOf(1).equals(authId)) {
+			throw new IllegalArgumentException("코레일 관리자 권한은 삭제할 수 없습니다.");
+		}
+		if (authMapper.countUsersByAuthId(authId) > 0) {
+			throw new IllegalStateException("해당 권한을 가진 사용자가 존재합니다. 먼저 해당 사용자들을 삭제해 주세요.");
+		}
+
+		authMapper.deleteAuthUrls(authId);
+		if (authMapper.deleteAuth(authId) != 1) {
+			throw new IllegalStateException("권한을 삭제하지 못했습니다.");
+		}
+	}
+
+	@Override
 	public Set<String> selectAllowedUrls(Integer authId) {
 		return new HashSet<String>(authMapper.selectAllowedUrls(authId));
 	}

@@ -142,6 +142,35 @@ public class SettingController {
         return mav;
     }
 
+    @RequestMapping(value = "/setting/deleteAuth.ajax")
+    public @ResponseBody ModelAndView deleteAuth(HttpServletRequest request,
+            @RequestParam("authId") Integer authId) throws Exception {
+        ModelAndView mav = new ModelAndView("jsonView");
+        if (!isKorailAdmin(request)) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", "권한이 없습니다.");
+            return mav;
+        }
+
+        try {
+            authService.deleteAuth(authId);
+            SessionListener.getInstance().clearAuthCacheByAuthId(authId);
+            mav.addObject("result", "success");
+            mav.addObject("message", "권한을 삭제했습니다.");
+        } catch (IllegalArgumentException e) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", e.getMessage());
+        } catch (IllegalStateException e) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", e.getMessage());
+        } catch (Exception e) {
+            logger.error("권한 삭제 중 오류", e);
+            mav.addObject("result", "fail");
+            mav.addObject("message", "권한을 삭제하지 못했습니다.");
+        }
+        return mav;
+    }
+
     @RequestMapping(value = "/setting/saveAuthUrls.ajax")
     public @ResponseBody ModelAndView saveAuthUrls(HttpServletRequest request,
             @RequestParam("authId") Integer authId,

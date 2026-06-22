@@ -95,6 +95,24 @@
   </update>
 
   <!-- DELETE: PK 기준 -->
+  <select id="countUsersByCompanyChk" parameterType="java.util.HashMap" resultType="int">
+    SELECT COUNT(*)
+    FROM TBL_USER_INFO
+    WHERE COMPANY_ID IN
+    <foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+       #{item}
+    </foreach>
+  </select>
+
+  <select id="countRoutersByCompanyChk" parameterType="java.util.HashMap" resultType="int">
+    SELECT COUNT(*)
+    FROM TBL_ROUTER_INFO
+    WHERE COMPANY_ID IN
+    <foreach collection="chkList" item="item" index="index" separator="," open="(" close=")">
+       #{item}
+    </foreach>
+  </select>
+
   <delete id="deleteChk" parameterType="companyVo">
     DELETE FROM TBL_COMPANY_INFO
     WHERE company_id IN

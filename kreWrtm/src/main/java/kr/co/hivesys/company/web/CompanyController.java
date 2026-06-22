@@ -160,10 +160,14 @@ public class CompanyController{
 		ModelAndView mav = new ModelAndView("jsonView");
 		try {
 			companyService.deleteChk(dataArr);
+		} catch (IllegalArgumentException e) {
+			mav.addObject("msg", e.getMessage());
+		} catch (IllegalStateException e) {
+			mav.addObject("msg", e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug(""+e);
-			mav.addObject("msg","삭제가 불허되었습니다 해당 소속사에 포함되는 사용자 또는 장비 등을 먼저 삭제해 주십시오.");
+			mav.addObject("msg","소속기관을 삭제하지 못했습니다.");
 		}
 		return mav;
 	}

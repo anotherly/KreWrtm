@@ -15,6 +15,9 @@ public interface AuthMapper {
 	int selectNextAuthId();
 	int insertAuth(AuthVO auth);
 	int updateAuthName(AuthVO auth);
+	int countUsersByAuthId(Integer authId);
+	int deleteAuthUrls(Integer authId);
+	int deleteAuth(Integer authId);
 	List<String> selectAllowedUrls(Integer authId);
 	List<AuthVO> selectAuthUrlSettings(Integer authId);
 	int insertMissingAuthUrls(Integer authId);

@@ -112,6 +112,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		urls.put("/search/subDetail", urlSet("/search/monitering"));
 		urls.put("/setting/createAuth", urlSet("/setting/main"));
 		urls.put("/setting/updateAuthName", urlSet("/setting/main"));
+		urls.put("/setting/deleteAuth", urlSet("/setting/main"));
 		return Collections.unmodifiableMap(urls);
 	}
 

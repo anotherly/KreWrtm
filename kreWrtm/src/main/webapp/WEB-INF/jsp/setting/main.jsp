@@ -59,7 +59,10 @@
                             <div class="auth-panel">
                                 <div class="auth-panel-heading">
                                     <div class="panel-title">사용자 권한</div>
-                                    <button type="button" id="editAuthNameBtn" class="auth-action-btn">권한명 수정</button>
+                                    <div class="auth-heading-actions">
+                                        <button type="button" id="editAuthNameBtn" class="auth-action-btn">수정</button>
+                                        <button type="button" id="deleteAuthBtn" class="auth-action-btn danger">삭제</button>
+                                    </div>
                                 </div>
                                 <div id="authList" class="auth-list">
                                     <c:forEach var="auth" items="${authList}" varStatus="status">
@@ -170,6 +173,7 @@
         });
 
         $("#editAuthNameBtn").on("click", function () { openAuthModal("edit"); });
+        $("#deleteAuthBtn").on("click", deleteSelectedAuth);
         $("#addAuthBtn").on("click", function () { openAuthModal("create"); });
         $("#closeAuthModalBtn, #cancelAuthModalBtn, .setting-modal-backdrop").on("click", closeAuthModal);
         $("#saveAuthBtn").on("click", saveAuth);
@@ -277,6 +281,51 @@
         $button.append($("<span>", { "class": "auth-name", text: authName }));
         $button.append($("<span>", { "class": "auth-arrow", text: "›" }));
         return $button;
+    }
+
+    function deleteSelectedAuth() {
+        if (selectedAuthId === null) {
+            showToast("삭제할 권한을 선택해 주세요.", true);
+            return;
+        }
+        if (selectedAuthId === 1) {
+            alert("코레일 관리자 권한은 삭제할 수 없습니다.");
+            return;
+        }
+        if (!confirm(selectedAuthName + " 권한을 삭제하시겠습니까?\n삭제한 권한은 복구할 수 없습니다.")) return;
+
+        $("#deleteAuthBtn").prop("disabled", true);
+        $.ajax({
+            url: contextPath + "/setting/deleteAuth.ajax",
+            type: "POST",
+            dataType: "json",
+            data: { authId: selectedAuthId },
+            complete: function () { $("#deleteAuthBtn").prop("disabled", false); },
+            success: function (res) {
+                if (!res || res.result !== "success") {
+                    alert(res && res.message ? res.message : "권한을 삭제하지 못했습니다.");
+                    return;
+                }
+
+                var deletedAuthId = selectedAuthId;
+                $(".auth-item[data-auth-id='" + deletedAuthId + "']").remove();
+                selectedAuthId = null;
+                selectedAuthName = "";
+                var $firstAuth = $(".auth-item").first();
+                if ($firstAuth.length) {
+                    selectAuth($firstAuth);
+                } else {
+                    $("#selectedAuthName").text("-");
+                    $("#selectedCount").text("0개 기능 허용");
+                    $("#permissionTree").html('<div class="permission-empty">등록된 권한이 없습니다.</div>');
+                    $("#savePermissionBtn").prop("disabled", true);
+                }
+                showToast(res.message || "권한을 삭제했습니다.", false);
+            },
+            error: function () {
+                alert("권한을 삭제하지 못했습니다.");
+            }
+        });
     }
 
     function selectAuth($button) {

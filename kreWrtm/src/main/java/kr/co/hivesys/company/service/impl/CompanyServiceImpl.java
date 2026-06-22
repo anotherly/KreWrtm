@@ -8,19 +8,16 @@ import java.time.format.DateTimeFormatter;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.hivesys.company.mapper.CompanyMapper;
 import kr.co.hivesys.company.mapper.OrgMapper;
 import kr.co.hivesys.company.service.CompanyService;
 import kr.co.hivesys.company.vo.CompanyVO;
 import kr.co.hivesys.company.vo.OrgVO;
-import kr.co.hivesys.router.mapper.RouterMapper;
 
 @Service("companyService")
 public class CompanyServiceImpl implements CompanyService {
-	
-	@Resource(name = "routerMapper")
-	private RouterMapper routerMapper;
 	
 	@Resource(name = "companyMapper")
 	private CompanyMapper companyMapper;
@@ -55,13 +52,23 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void deleteChk(List<String> paramArr) {
+		if (paramArr == null || paramArr.isEmpty()) {
+			throw new IllegalArgumentException("삭제할 소속기관을 선택해 주세요.");
+		}
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("chkList", paramArr);
-		
-		// 회사 삭제 전 하위 본부/처/실 정보를 먼저 삭제한다.
+
+		if (companyMapper.countUsersByCompanyChk(map) > 0) {
+			throw new IllegalStateException("해당 소속기관을 사용하는 사용자가 존재합니다. 먼저 해당 사용자들을 삭제해 주세요.");
+		}
+		if (companyMapper.countRoutersByCompanyChk(map) > 0) {
+			throw new IllegalStateException("해당 소속기관을 사용하는 단말기가 존재합니다. 먼저 해당 단말기들을 삭제해 주세요.");
+		}
+
+		// 참조 데이터가 없을 때 하위 본부/처/실을 일괄 삭제한 후 소속기관을 삭제한다.
 		orgMapper.deleteByCompanyChk(map);
-		routerMapper.deleteCompany(map);
 		companyMapper.deleteChk(map);		
 	}
 	

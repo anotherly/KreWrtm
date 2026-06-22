@@ -198,6 +198,21 @@
     color: #1688da;
 }
 
+.auth-heading-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.auth-action-btn.danger {
+    border-color: #e5c5c7;
+    color: #c7474e;
+}
+
+.auth-action-btn.danger:hover {
+    border-color: #d9363e;
+    color: #d9363e;
+}
+
 .auth-list {
     flex: 1;
     min-height: 0;

@@ -15,6 +15,10 @@ public interface CompanyMapper {
 	List<CompanyVO> select(CompanyVO thvo);
 
 	void update(CompanyVO thvo);
+
+	int countUsersByCompanyChk(HashMap<String, Object> map);
+
+	int countRoutersByCompanyChk(HashMap<String, Object> map);
 	
 	void deleteChk(HashMap<String, Object> map);
 }

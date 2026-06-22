@@ -51,6 +51,23 @@
 		  AND USED_YN = 1
 	</update>
 
+	<select id="countUsersByAuthId" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_USER_INFO
+		WHERE AUTH_ID = #{_parameter}
+	</select>
+
+	<delete id="deleteAuthUrls" parameterType="int">
+		DELETE FROM TBL_AUTH_URL
+		WHERE AUTH_ID = #{_parameter}
+	</delete>
+
+	<delete id="deleteAuth" parameterType="int">
+		DELETE FROM TBL_AUTH_INFO
+		WHERE AUTH_ID = #{_parameter}
+		  AND USED_YN = 1
+	</delete>
+
 	<select id="selectAllowedUrls" parameterType="int" resultType="string">
 		SELECT URL
 		FROM TBL_AUTH_URL

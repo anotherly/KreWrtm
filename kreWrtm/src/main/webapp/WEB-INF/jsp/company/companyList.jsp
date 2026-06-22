@@ -165,7 +165,7 @@
 	 }
     //삭제 시 확인문구
 	 function companyDeleteBefore(obj) {
-	    alert("주의! 소속기관 삭제 시 해당 소속기관에 등록된 하위 기관 및 단말기도 함께 삭제됩니다. 삭제하시겠습니까?");
+	    alert("소속기관 삭제 시 해당 소속기관의 하위 본부/처/실 정보도 함께 삭제됩니다.");
 	    tbDelete(obj, delUrl, delbak);
 	}
 	
