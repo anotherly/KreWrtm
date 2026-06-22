@@ -36,9 +36,10 @@
 </style>
 <script>
 	var nowTagId = '${data.deviceId}';	
-	var chkTerId='${data.deviceId}';
-	var volteNum = '${data.volteNum}';
-	var nowPage = 0; // 현재 단말기 테이블 페이지 카운트
+		var chkTerId='${data.deviceId}';
+		var volteNum = '${data.volteNum}';
+		var canRemoteControl = ${sessionScope.authUrlMap['/remote/remoteControll'] == true};
+		var nowPage = 0; // 현재 단말기 테이블 페이지 카운트
 	var nextPage = 1;
 	var startNum=0;
 	var endNum=1;
@@ -165,11 +166,15 @@
 	    
 	    
 	    // 원격제어 버튼
-	    $('.custom-btn').on('click', function() {
-	    	var clickCar = $(this).attr('id');
-	    	console.log("버튼 클릭 : " + clickCar);
-	    	
-	    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
+		    $('.custom-btn').on('click', function() {
+		    	var clickCar = $(this).attr('id');
+		    	console.log("버튼 클릭 : " + clickCar);
+		    	if (!canRemoteControl) {
+		    		alert("권한이 없습니다. 코레일 관리자에게 문의하세요.");
+		    		return false;
+		    	}
+		    	
+		    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
 	    	
 	    	if(chkRemote) {
 	    		

@@ -38,7 +38,27 @@
 		WHERE T.AUTH_ID = 1
 		  AND T.URL IS NOT NULL
 		  AND T.URL != ''
-		ORDER BY T.AUTH_URL_NAME1, T.AUTH_URL_NAME2, T.AUTH_URL_NAME3, T.URL
+		ORDER BY CASE T.AUTH_URL_NAME1
+		           WHEN '대시보드' THEN 1
+		           WHEN '사용자 관리' THEN 2
+		           WHEN '소속기관 관리' THEN 3
+		           WHEN '장치 관리' THEN 4
+		           WHEN '검색 &amp; 모니터링' THEN 5
+		           WHEN '장애 관리' THEN 6
+		           WHEN '자료실' THEN 7
+		           WHEN '설정' THEN 8
+		           ELSE 99
+		         END,
+		         CASE T.AUTH_URL_NAME2
+		           WHEN '목록' THEN 1
+		           WHEN '등록' THEN 2
+		           WHEN '상세' THEN 3
+		           WHEN '수정' THEN 4
+		           WHEN '삭제' THEN 5
+		           WHEN '다운로드' THEN 6
+		           ELSE 50
+		         END,
+		         T.URL
 	</select>
 
 	<insert id="insertMissingAuthUrls" parameterType="int">

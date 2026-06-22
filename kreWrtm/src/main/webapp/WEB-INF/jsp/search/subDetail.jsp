@@ -3,16 +3,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
-<script>
-	var volteNum = '${data.volteNum}';
-	$(document).ready(function () {
+	<script>
+		var volteNum = '${data.volteNum}';
+		var canRemoteControl = ${sessionScope.authUrlMap['/remote/remoteControll'] == true};
+		$(document).ready(function () {
 		console.log("subdetail");
 		// 원격제어 버튼
-	    $('.custom-btn').on('click', function() {
-	    	var clickCar = $(this).attr('id');
-	    	console.log("버튼 클릭 : " + clickCar);
-	    	
-	    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
+		    $('.custom-btn').on('click', function() {
+		    	var clickCar = $(this).attr('id');
+		    	console.log("버튼 클릭 : " + clickCar);
+		    	if (!canRemoteControl) {
+		    		alert("권한이 없습니다. 코레일 관리자에게 문의하세요.");
+		    		return false;
+		    	}
+		    	
+		    	var chkRemote = confirm("해당 호차(" + clickCar + ") 원격 제어를 실행하시겠습니까?");
 	    	
 	    	if(chkRemote) {
 	    		// 숨긴 iframe 생성해서 커스텀 프로토콜 호출 (페이지 이동 없음)

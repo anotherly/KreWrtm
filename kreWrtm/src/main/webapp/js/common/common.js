@@ -21,6 +21,12 @@ if (typeof jQuery !== "undefined") {
 			options.url = addContextPath(options.url);
 		}
 	});
+
+	$(document).ajaxError(function(event, xhr) {
+		if (xhr && xhr.status === 403) {
+			alert("권한이 없습니다. 코레일 관리자에게 문의하세요.");
+		}
+	});
 }
 
 /************************************************************************
@@ -326,7 +332,6 @@ function compareSE(sDate,eDate) {
 	}
 	
 }
-
 
 
 

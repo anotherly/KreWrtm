@@ -19,12 +19,10 @@
         <div id="contents" class="contents-wrap">
             <div id="work" class="work-wrap setting-work">
                 <main id="contents_box" class="contents_box setting-page">
-                    <div class="setting-title-row">
-                        <div>
-                            <h2>설정</h2>
-                            <p>대시보드 갱신 주기와 사용자 권한별 접근 메뉴를 관리합니다.</p>
-                        </div>
-                    </div>
+                    <div class="ctn_tbl_header">
+					<img class="list-title-img" src="<%=request.getContextPath()%>/images/icons/ico_setting_title.png"/>
+						<div class="ttl_ctn" style="font-size : 32px;">설정</div>
+					</div>
 
                     <section class="refresh-setting" aria-labelledby="refreshTitle">
                         <div class="setting-section-heading">
@@ -142,13 +140,18 @@
 
         $("#permissionTree").on("change", ".group-check", function () {
             $(this).closest(".permission-group").find(".url-check:not(:disabled)").prop("checked", this.checked);
+			enforceAllPermissionDependencies();
             updateCheckState();
         });
 
-        $("#permissionTree").on("change", ".url-check", updateCheckState);
+        $("#permissionTree").on("change", ".url-check", function () {
+			enforcePermissionDependencies($(this));
+			updateCheckState();
+		});
 
         $("#checkAllUrls").on("change", function () {
             $(".url-check:not(:disabled)").prop("checked", this.checked);
+			enforceAllPermissionDependencies();
             updateCheckState();
         });
 
@@ -219,8 +222,71 @@
             html += '</div></section>';
         });
         $("#permissionTree").html(html);
+		enforceAllPermissionDependencies();
         updateCheckState();
     }
+
+	var crudGroups = [
+		["/user/userList", "/user/userInsert", "/user/userDetail", "/user/userUpdate", "/user/userDelete"],
+		["/company/companyList", "/company/companyInsert", "/company/companyDetail", "/company/companyUpdate", "/company/companyDelete"],
+		["/router/routerList", "/router/routerInsert", "/router/routerDetail", "/router/routerUpdate", "/router/routerDelete"],
+		["/obs/list", "/obs/insert", "/obs/detail", "/obs/update", "/obs/delete"],
+		["/dataroom/list", "/dataroom/insert", "/dataroom/detail", "/dataroom/update", "/dataroom/delete", "/dataroom/fileDownload"]
+	];
+
+	function enforceAllPermissionDependencies() {
+		$.each(crudGroups, function (_, urls) {
+			enforceCrudGroup(urls, null);
+		});
+	}
+
+	function enforcePermissionDependencies($changed) {
+		var changedUrl = String($changed.val() || "");
+		$.each(crudGroups, function (_, urls) {
+			if ($.inArray(changedUrl, urls) >= 0) {
+				enforceCrudGroup(urls, changedUrl);
+				return false;
+			}
+		});
+	}
+
+	function enforceCrudGroup(urls, changedUrl) {
+		var $list = findUrlCheck(urls[0]);
+		var $insert = findUrlCheck(urls[1]);
+		var $detail = findUrlCheck(urls[2]);
+		var $update = findUrlCheck(urls[3]);
+		var $delete = findUrlCheck(urls[4]);
+		var $additional = $();
+		for (var i = 5; i < urls.length; i++) {
+			$additional = $additional.add(findUrlCheck(urls[i]));
+		}
+
+		if (!$list.length) return;
+
+		if (changedUrl === urls[0] && !$list.prop("checked")) {
+			$insert.add($detail).add($update).add($delete).add($additional).prop("checked", false);
+		}
+		if (changedUrl === urls[2] && !$detail.prop("checked") && $update.prop("checked")) {
+			$detail.prop("checked", true);
+			alert("수정 권한을 먼저 해제해야 상세 권한을 해제할 수 있습니다.");
+		}
+		if ($update.prop("checked")) {
+			$detail.prop("checked", true);
+		}
+		if ($additional.filter(":checked").length) {
+			$detail.prop("checked", true);
+		}
+
+		var hasChild = $insert.add($detail).add($update).add($delete).add($additional)
+			.filter(":checked").length > 0;
+		if (hasChild) {
+			$list.prop("checked", true);
+		}
+	}
+
+	function findUrlCheck(url) {
+		return $(".url-check").filter(function () { return this.value === url; });
+	}
 
     function updateCheckState() {
         $(".permission-group").each(function () {

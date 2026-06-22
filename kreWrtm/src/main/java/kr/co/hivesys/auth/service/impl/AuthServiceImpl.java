@@ -42,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
 
 		List<String> selectedUrls = urlList == null
 				? new ArrayList<String>() : new ArrayList<String>(new HashSet<String>(urlList));
+		normalizeScreenDependencies(selectedUrls);
 
 		/* 로그인 후 기본 진입 및 권한 차단 시 복귀 화면이므로 모든 권한에 필수입니다. */
 		addRequiredUrl(selectedUrls, "/chart/main");
@@ -60,6 +61,42 @@ public class AuthServiceImpl implements AuthService {
 		authMapper.resetAuthUrls(authId);
 		if (!selectedUrls.isEmpty()) {
 			authMapper.enableAuthUrls(authId, selectedUrls);
+		}
+	}
+
+	private void normalizeScreenDependencies(List<String> selectedUrls) {
+		normalizeCrudGroup(selectedUrls, "/user/userList", "/user/userInsert",
+				"/user/userDetail", "/user/userUpdate", "/user/userDelete");
+		normalizeCrudGroup(selectedUrls, "/company/companyList", "/company/companyInsert",
+				"/company/companyDetail", "/company/companyUpdate", "/company/companyDelete");
+		normalizeCrudGroup(selectedUrls, "/router/routerList", "/router/routerInsert",
+				"/router/routerDetail", "/router/routerUpdate", "/router/routerDelete");
+		normalizeCrudGroup(selectedUrls, "/obs/list", "/obs/insert",
+				"/obs/detail", "/obs/update", "/obs/delete");
+		normalizeCrudGroup(selectedUrls, "/dataroom/list", "/dataroom/insert",
+				"/dataroom/detail", "/dataroom/update", "/dataroom/delete",
+				"/dataroom/fileDownload");
+	}
+
+	private void normalizeCrudGroup(List<String> selectedUrls, String listUrl, String insertUrl,
+			String detailUrl, String updateUrl, String deleteUrl, String... additionalUrls) {
+		if (selectedUrls.contains(updateUrl)) {
+			addRequiredUrl(selectedUrls, detailUrl);
+		}
+
+		boolean hasChildPermission = selectedUrls.contains(insertUrl)
+				|| selectedUrls.contains(detailUrl)
+				|| selectedUrls.contains(updateUrl)
+				|| selectedUrls.contains(deleteUrl);
+		for (String additionalUrl : additionalUrls) {
+			if (selectedUrls.contains(additionalUrl)) {
+				hasChildPermission = true;
+				addRequiredUrl(selectedUrls, detailUrl);
+			}
+		}
+
+		if (hasChildPermission) {
+			addRequiredUrl(selectedUrls, listUrl);
 		}
 	}
 

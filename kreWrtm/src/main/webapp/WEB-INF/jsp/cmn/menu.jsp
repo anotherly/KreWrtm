@@ -121,7 +121,7 @@ $(document).ready(function() {
 <c:if test="${sessionScope.authUrlMap['/setting/main']}">
 <li class="menu-item" id="ROOT_SETTING">
 	<a href="<%=request.getContextPath()%>/setting/main.do" class="menu-link" style="color: rgb(255, 255, 255);">
-		<i class="menu-icon n08"></i>
+		<i class="menu-icon n10"></i>
 		<div>설정</div>
 	</a>
 </li>
