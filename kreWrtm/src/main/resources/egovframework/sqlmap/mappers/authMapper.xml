@@ -10,9 +10,46 @@
 	<select id="selectAuthList" resultMap="authMap">
 		SELECT AUTH_ID, AUTH_DEFINE, USED_YN
 		FROM TBL_AUTH_INFO
-		WHERE USED_YN = 1 AND AUTH_ID BETWEEN 1 AND 4
+		WHERE USED_YN = 1
 		ORDER BY AUTH_ID
 	</select>
+
+	<select id="countAuthById" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_AUTH_INFO
+		WHERE AUTH_ID = #{_parameter}
+		  AND USED_YN = 1
+	</select>
+
+	<select id="countAuthByName" resultType="int">
+		SELECT COUNT(*)
+		FROM TBL_AUTH_INFO
+		WHERE AUTH_DEFINE = #{authDefine}
+		  AND USED_YN = 1
+		<if test="excludeAuthId != null">
+		  AND AUTH_ID != #{excludeAuthId}
+		</if>
+	</select>
+
+	<select id="selectNextAuthId" resultType="int">
+		SELECT COALESCE(MAX(AUTH_ID), 0) + 1
+		FROM TBL_AUTH_INFO
+	</select>
+
+	<insert id="insertAuth" parameterType="authVo">
+		INSERT INTO TBL_AUTH_INFO
+			(AUTH_ID, AUTH_DEFINE, USED_YN, REG_YDT, UPDATE_YDT)
+		VALUES
+			(#{authId}, #{authDefine}, #{usedYn}, NOW(), NOW())
+	</insert>
+
+	<update id="updateAuthName" parameterType="authVo">
+		UPDATE TBL_AUTH_INFO
+		SET AUTH_DEFINE = #{authDefine},
+		    UPDATE_YDT = NOW()
+		WHERE AUTH_ID = #{authId}
+		  AND USED_YN = 1
+	</update>
 
 	<select id="selectAllowedUrls" parameterType="int" resultType="string">
 		SELECT URL

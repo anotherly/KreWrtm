@@ -156,10 +156,12 @@
 }
 
 .auth-panel {
+    display: flex;
     min-height: 0;
+    flex-direction: column;
     border-right: 1px solid #e2eaf2;
     background: #f8fafc;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .panel-title,
@@ -169,14 +171,69 @@
     font-weight: 900;
 }
 
-.auth-panel > .panel-title {
+.auth-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0 0 48px;
     height: 48px;
     padding: 15px 18px;
     border-bottom: 1px solid #e2eaf2;
 }
 
+.auth-action-btn {
+    padding: 4px 7px;
+    border: 1px solid #cbd9e6;
+    border-radius: 4px;
+    background: #fff;
+    color: #526a82;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.auth-action-btn:hover {
+    border-color: #1688da;
+    color: #1688da;
+}
+
 .auth-list {
+    flex: 1;
+    min-height: 0;
     padding: 10px;
+    overflow-y: auto;
+}
+
+.auth-panel-footer {
+    flex: 0 0 auto;
+    padding: 10px;
+    border-top: 1px solid #e2eaf2;
+    background: #f8fafc;
+}
+
+.add-auth-btn {
+    width: 100%;
+    height: 40px;
+    border: 1px dashed #9fc8e7;
+    border-radius: 6px;
+    background: #fff;
+    color: #147fca;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.add-auth-btn span {
+    margin-right: 5px;
+    font-size: 17px;
+    vertical-align: -1px;
+}
+
+.add-auth-btn:hover {
+    border-style: solid;
+    background: #eef8ff;
 }
 
 .auth-item {
@@ -287,24 +344,24 @@
 }
 
 .permission-tree::-webkit-scrollbar,
-.auth-panel::-webkit-scrollbar {
+.auth-list::-webkit-scrollbar {
     width: 10px;
 }
 
 .permission-tree::-webkit-scrollbar-track,
-.auth-panel::-webkit-scrollbar-track {
+.auth-list::-webkit-scrollbar-track {
     background: #eef3f8;
 }
 
 .permission-tree::-webkit-scrollbar-thumb,
-.auth-panel::-webkit-scrollbar-thumb {
+.auth-list::-webkit-scrollbar-thumb {
     border: 2px solid #eef3f8;
     border-radius: 999px;
     background: #9fb2c7;
 }
 
 .permission-tree::-webkit-scrollbar-thumb:hover,
-.auth-panel::-webkit-scrollbar-thumb:hover {
+.auth-list::-webkit-scrollbar-thumb:hover {
     background: #7f93aa;
 }
 
@@ -471,6 +528,102 @@
 
 .setting-toast.error {
     background: #d9363e;
+}
+
+.setting-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.setting-modal.open {
+    display: flex;
+}
+
+.setting-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(22, 35, 50, .45);
+}
+
+.setting-modal-dialog {
+    position: relative;
+    width: min(420px, calc(100vw - 32px));
+    border: 1px solid #d6e2ed;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 16px 42px rgba(20, 37, 55, .24);
+}
+
+.setting-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 54px;
+    padding: 0 18px;
+    border-bottom: 1px solid #e4ebf2;
+}
+
+.setting-modal-header h3 {
+    margin: 0;
+    color: #23364d;
+    font-size: 16px;
+}
+
+.setting-modal-close {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #65778b;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.setting-modal-body {
+    padding: 20px 18px 16px;
+}
+
+.setting-modal-body label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334960;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.setting-modal-body input {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #bdcbd9;
+    border-radius: 5px;
+    color: #24364b;
+    font: inherit;
+    font-size: 14px;
+}
+
+.setting-modal-body input:focus {
+    border-color: #1688da;
+    outline: 2px solid rgba(22, 136, 218, .12);
+}
+
+.setting-modal-body p {
+    margin: 7px 0 0;
+    color: #8493a5;
+    font-size: 11px;
+}
+
+.setting-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 18px 16px;
 }
 
 @media screen and (max-width: 1100px) {

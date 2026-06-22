@@ -2,6 +2,7 @@ package kr.co.hivesys.auth.service.impl;
 
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,34 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public List<AuthVO> selectAuthList() {
 		return authMapper.selectAuthList();
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public AuthVO createAuth(String authDefine) {
+		String normalizedName = validateAuthName(authDefine, null);
+		AuthVO auth = new AuthVO();
+		auth.setAuthId(Integer.valueOf(authMapper.selectNextAuthId()));
+		auth.setAuthDefine(normalizedName);
+		auth.setUsedYn(Integer.valueOf(1));
+		authMapper.insertAuth(auth);
+
+		authMapper.insertMissingAuthUrls(auth.getAuthId());
+		authMapper.enableAuthUrls(auth.getAuthId(), Arrays.asList(
+				"/chart/main", "/chart/dashboardData", "/chart/dashboardLastDataList"));
+		return auth;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void updateAuthName(Integer authId, String authDefine) {
+		validateAuthId(authId);
+		AuthVO auth = new AuthVO();
+		auth.setAuthId(authId);
+		auth.setAuthDefine(validateAuthName(authDefine, authId));
+		if (authMapper.updateAuthName(auth) != 1) {
+			throw new IllegalStateException("권한명을 변경하지 못했습니다.");
+		}
 	}
 
 	@Override
@@ -101,9 +130,23 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private void validateAuthId(Integer authId) {
-		if (authId == null || authId.intValue() < 1 || authId.intValue() > 4) {
+		if (authId == null || authId.intValue() < 1 || authMapper.countAuthById(authId) != 1) {
 			throw new IllegalArgumentException("관리할 수 없는 권한 ID입니다.");
 		}
+	}
+
+	private String validateAuthName(String authDefine, Integer excludeAuthId) {
+		String name = authDefine == null ? "" : authDefine.trim();
+		if (name.length() == 0) {
+			throw new IllegalArgumentException("권한명을 입력해 주세요.");
+		}
+		if (name.length() > 16) {
+			throw new IllegalArgumentException("권한명은 16자 이내로 입력해 주세요.");
+		}
+		if (authMapper.countAuthByName(name, excludeAuthId) > 0) {
+			throw new IllegalArgumentException("이미 사용 중인 권한명입니다.");
+		}
+		return name;
 	}
 
 	private void addRequiredUrl(List<String> urlList, String url) {

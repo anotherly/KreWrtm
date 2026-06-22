@@ -88,6 +88,60 @@ public class SettingController {
         return mav;
     }
 
+    @RequestMapping(value = "/setting/createAuth.ajax")
+    public @ResponseBody ModelAndView createAuth(HttpServletRequest request,
+            @RequestParam("authDefine") String authDefine) throws Exception {
+        ModelAndView mav = new ModelAndView("jsonView");
+        if (!isKorailAdmin(request)) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", "권한이 없습니다.");
+            return mav;
+        }
+
+        try {
+            AuthVO auth = authService.createAuth(authDefine);
+            mav.addObject("result", "success");
+            mav.addObject("message", "신규 권한을 등록했습니다.");
+            mav.addObject("authId", auth.getAuthId());
+            mav.addObject("authDefine", auth.getAuthDefine());
+        } catch (IllegalArgumentException e) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", e.getMessage());
+        } catch (Exception e) {
+            logger.error("신규 권한 등록 중 오류", e);
+            mav.addObject("result", "fail");
+            mav.addObject("message", "신규 권한을 등록하지 못했습니다.");
+        }
+        return mav;
+    }
+
+    @RequestMapping(value = "/setting/updateAuthName.ajax")
+    public @ResponseBody ModelAndView updateAuthName(HttpServletRequest request,
+            @RequestParam("authId") Integer authId,
+            @RequestParam("authDefine") String authDefine) throws Exception {
+        ModelAndView mav = new ModelAndView("jsonView");
+        if (!isKorailAdmin(request)) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", "권한이 없습니다.");
+            return mav;
+        }
+
+        try {
+            authService.updateAuthName(authId, authDefine);
+            mav.addObject("result", "success");
+            mav.addObject("message", "권한명을 변경했습니다.");
+            mav.addObject("authDefine", authDefine == null ? "" : authDefine.trim());
+        } catch (IllegalArgumentException e) {
+            mav.addObject("result", "fail");
+            mav.addObject("message", e.getMessage());
+        } catch (Exception e) {
+            logger.error("권한명 변경 중 오류", e);
+            mav.addObject("result", "fail");
+            mav.addObject("message", "권한명을 변경하지 못했습니다.");
+        }
+        return mav;
+    }
+
     @RequestMapping(value = "/setting/saveAuthUrls.ajax")
     public @ResponseBody ModelAndView saveAuthUrls(HttpServletRequest request,
             @RequestParam("authId") Integer authId,

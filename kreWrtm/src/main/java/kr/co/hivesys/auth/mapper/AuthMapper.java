@@ -10,6 +10,11 @@ import kr.co.hivesys.auth.vo.AuthVO;
 @Mapper("authMapper")
 public interface AuthMapper {
 	List<AuthVO> selectAuthList();
+	int countAuthById(Integer authId);
+	int countAuthByName(@Param("authDefine") String authDefine, @Param("excludeAuthId") Integer excludeAuthId);
+	int selectNextAuthId();
+	int insertAuth(AuthVO auth);
+	int updateAuthName(AuthVO auth);
 	List<String> selectAllowedUrls(Integer authId);
 	List<AuthVO> selectAuthUrlSettings(Integer authId);
 	int insertMissingAuthUrls(Integer authId);

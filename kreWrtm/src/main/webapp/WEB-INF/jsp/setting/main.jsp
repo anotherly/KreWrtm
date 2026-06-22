@@ -57,7 +57,10 @@
 
                         <div class="permission-layout">
                             <div class="auth-panel">
-                                <div class="panel-title">사용자 권한</div>
+                                <div class="auth-panel-heading">
+                                    <div class="panel-title">사용자 권한</div>
+                                    <button type="button" id="editAuthNameBtn" class="auth-action-btn">권한명 수정</button>
+                                </div>
                                 <div id="authList" class="auth-list">
                                     <c:forEach var="auth" items="${authList}" varStatus="status">
                                         <button type="button" class="auth-item<c:if test='${status.first}'> active</c:if>"
@@ -67,6 +70,9 @@
                                             <span class="auth-arrow">›</span>
                                         </button>
                                     </c:forEach>
+                                </div>
+                                <div class="auth-panel-footer">
+                                    <button type="button" id="addAuthBtn" class="add-auth-btn"><span>+</span> 신규 권한 추가</button>
                                 </div>
                             </div>
 
@@ -85,6 +91,25 @@
                         </div>
                     </section>
                     <div id="settingToast" class="setting-toast" role="status" aria-live="polite"></div>
+
+                    <div id="authModal" class="setting-modal" aria-hidden="true">
+                        <div class="setting-modal-backdrop"></div>
+                        <div class="setting-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+                            <div class="setting-modal-header">
+                                <h3 id="authModalTitle">신규 권한 추가</h3>
+                                <button type="button" id="closeAuthModalBtn" class="setting-modal-close" aria-label="닫기">×</button>
+                            </div>
+                            <div class="setting-modal-body">
+                                <label for="authNameInput">권한명</label>
+                                <input type="text" id="authNameInput" maxlength="16" autocomplete="off" placeholder="예: 협업사 관리자">
+                                <p>권한명은 16자 이내로 입력해 주세요.</p>
+                            </div>
+                            <div class="setting-modal-footer">
+                                <button type="button" id="cancelAuthModalBtn" class="setting-btn">취소</button>
+                                <button type="button" id="saveAuthBtn" class="setting-btn primary">저장</button>
+                            </div>
+                        </div>
+                    </div>
                 </main>
             </div>
         </div>
@@ -95,6 +120,7 @@
     var contextPath = "${pageContext.request.contextPath}";
     var selectedAuthId = null;
     var selectedAuthName = "";
+    var authModalMode = "create";
 
     $(document).ready(function () {
         initRefreshSetting();
@@ -138,6 +164,20 @@
             selectAuth($(this));
         });
 
+        $("#authList").on("dblclick", ".auth-item", function () {
+            selectAuth($(this));
+            openAuthModal("edit");
+        });
+
+        $("#editAuthNameBtn").on("click", function () { openAuthModal("edit"); });
+        $("#addAuthBtn").on("click", function () { openAuthModal("create"); });
+        $("#closeAuthModalBtn, #cancelAuthModalBtn, .setting-modal-backdrop").on("click", closeAuthModal);
+        $("#saveAuthBtn").on("click", saveAuth);
+        $("#authNameInput").on("keydown", function (event) {
+            if (event.keyCode === 13) saveAuth();
+            if (event.keyCode === 27) closeAuthModal();
+        });
+
         $("#permissionTree").on("change", ".group-check", function () {
             $(this).closest(".permission-group").find(".url-check:not(:disabled)").prop("checked", this.checked);
 			enforceAllPermissionDependencies();
@@ -156,6 +196,87 @@
         });
 
         $("#savePermissionBtn").on("click", savePermissions);
+    }
+
+    function openAuthModal(mode) {
+        if (mode === "edit" && selectedAuthId === null) {
+            showToast("수정할 권한을 선택해 주세요.", true);
+            return;
+        }
+        authModalMode = mode;
+        $("#authModalTitle").text(mode === "edit" ? "권한명 수정" : "신규 권한 추가");
+        $("#authNameInput").val(mode === "edit" ? selectedAuthName : "");
+        $("#authModal").addClass("open").attr("aria-hidden", "false");
+        window.setTimeout(function () { $("#authNameInput").focus().select(); }, 0);
+    }
+
+    function closeAuthModal() {
+        $("#authModal").removeClass("open").attr("aria-hidden", "true");
+        $("#saveAuthBtn").prop("disabled", false);
+    }
+
+    function saveAuth() {
+        var authDefine = $.trim($("#authNameInput").val());
+        if (!authDefine) {
+            showToast("권한명을 입력해 주세요.", true);
+            $("#authNameInput").focus();
+            return;
+        }
+        if (authDefine.length > 16) {
+            showToast("권한명은 16자 이내로 입력해 주세요.", true);
+            return;
+        }
+
+        var isEdit = authModalMode === "edit";
+        var data = { authDefine: authDefine };
+        if (isEdit) data.authId = selectedAuthId;
+
+        $("#saveAuthBtn").prop("disabled", true);
+        $.ajax({
+            url: contextPath + (isEdit ? "/setting/updateAuthName.ajax" : "/setting/createAuth.ajax"),
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function (res) {
+                if (!res || res.result !== "success") {
+                    showToast(res && res.message ? res.message : "권한 정보를 저장하지 못했습니다.", true);
+                    $("#saveAuthBtn").prop("disabled", false);
+                    return;
+                }
+
+                if (isEdit) {
+                    var $selected = $(".auth-item[data-auth-id='" + selectedAuthId + "']");
+                    selectedAuthName = String(res.authDefine || authDefine);
+                    $selected.attr("data-auth-name", selectedAuthName).data("auth-name", selectedAuthName);
+                    $selected.find(".auth-name").text(selectedAuthName);
+                    $("#selectedAuthName").text(selectedAuthName);
+                } else {
+                    var $newAuth = createAuthItem(Number(res.authId), String(res.authDefine || authDefine));
+                    $("#authList").append($newAuth);
+                    selectAuth($newAuth);
+                    $newAuth[0].scrollIntoView({ block: "nearest" });
+                }
+                closeAuthModal();
+                showToast(res.message || "권한 정보를 저장했습니다.", false);
+            },
+            error: function () {
+                showToast("권한 정보를 저장하지 못했습니다.", true);
+                $("#saveAuthBtn").prop("disabled", false);
+            }
+        });
+    }
+
+    function createAuthItem(authId, authName) {
+        var $button = $("<button>", {
+            type: "button",
+            "class": "auth-item",
+            "data-auth-id": authId,
+            "data-auth-name": authName
+        });
+        $button.append($("<span>", { "class": "auth-id", text: authId }));
+        $button.append($("<span>", { "class": "auth-name", text: authName }));
+        $button.append($("<span>", { "class": "auth-arrow", text: "›" }));
+        return $button;
     }
 
     function selectAuth($button) {
