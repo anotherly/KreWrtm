@@ -84,10 +84,10 @@ $(document).ready(function() {
     height: 23px;"></i>
 		<div>검색 & 모니터링</div>
 	</a>
-	<ul class="menu-sub">
+	<!-- <ul class="menu-sub">
 		<li class="menu-item" style="cursor:pointer;"><a id="/depart/list.do" class="menu-link"><div>단말기 검색</div></a></li>
 		<li class="menu-item" style="cursor:pointer;"><a id="#" class="menu-link"><div>실시간 상태 조회</div></a></li>
-	</ul>
+	</ul> -->
 </li>	
 </c:if>
 <c:if test="${sessionScope.authUrlMap['/obs/list']}">
@@ -98,7 +98,7 @@ $(document).ready(function() {
 	</a>
 </li>
 </c:if>
-<c:if test="${sessionScope.authUrlMap['/dataroom/list']}">
+<!-- <c:if test="${sessionScope.authUrlMap['/dataroom/list']}">
 <li class="menu-item" id="ROOT_TEST_SW">
 	<a id="/dataroom/list.do" class="menu-link" style="color: rgb(255, 255, 255); cursor:pointer;">
 		<i class="menu-icon n06"></i>
@@ -108,6 +108,14 @@ $(document).ready(function() {
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/list.do" class="menu-link"><div>자료실</div></a></li>
 		<li class="menu-item" style="cursor:pointer;"><a id="/dataroom/board/list.do" class="menu-link"><div>게시판</div></a></li>
 	</ul>
+</li>
+</c:if> -->
+<c:if test="${sessionScope.authUrlMap['/dataroom/list']}">
+<li class="menu-item" id="ROOT_TEST_SW">
+	<a href="<%=request.getContextPath()%>/dataroom/list.do" class="menu-link" style="color: rgb(255, 255, 255);">
+		<i class="menu-icon n06"></i>
+		<div>자료실</div>
+	</a>
 </li>
 </c:if>
 <c:if test="${sessionScope.authUrlMap['/setting/main']}">
