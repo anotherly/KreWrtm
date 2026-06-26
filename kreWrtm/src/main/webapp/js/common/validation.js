@@ -334,10 +334,11 @@ function hasAllowedPhonePrefix(digits, type) {
     if (digits.charAt(0) !== "0") return false;
     if (digits.length < 2) return true;
 
-    // VoLTE 번호는 휴대전화 접두어만 허용합니다.
+    // VoLTE 번호는 현재 정책상 013으로 시작하는 번호만 허용합니다.
     if (type === "volte") {
-        if (digits.length < 3) return digits.charAt(1) === "1";
-        return /^(010|011|016|017|018|019)/.test(digits);
+        if (digits.length === 1) return digits === "0";
+        if (digits.length === 2) return digits === "01";
+        return digits.indexOf("013") === 0;
     }
 
     // 서울 지역번호는 두 자리 접두어입니다.
@@ -365,6 +366,9 @@ function getPhoneFormatType(input) {
  * 잘못된 키·한글 조합·문자 붙여넣기를 값 변경 전에 차단하여 기존 번호를 보존합니다.
  */
 (function bindCommonPhoneInputEvents() {
+    if (window.__KRE_PHONE_INPUT_BIND_DONE) return;
+    window.__KRE_PHONE_INPUT_BIND_DONE = true;
+
     document.addEventListener("focus", function(event) {
         var input = event.target;
         if (!isPhoneFormatInput(input)) return;
@@ -485,6 +489,148 @@ function formatPhoneDigits(val, type) {
 
     return val;
 }
+
+/**
+ * VoLTE 번호 최종 검사 함수입니다.
+ * - 현재 정책: 013으로 시작하는 11자리 숫자만 허용
+ * - 화면에는 013-1234-5678 형태로 표시될 수 있으므로 하이픈은 제거 후 검사
+ */
+function isValidVolteNumber(value) {
+    var onlyNum = String(value || "").replace(/[^0-9]/g, "");
+    return /^013\d{8}$/.test(onlyNum);
+}
+
+/**
+ * 차량번호 최종 검사 함수입니다.
+ * - 숫자 6자리만 허용
+ */
+function validateCarNumber(value) {
+    return /^\d{6}$/.test(String(value || ""));
+}
+
+/**
+ * 숫자 전용 입력값을 정리하는 공통 함수입니다.
+ * - 한글 IME 조합 중에는 값을 변경하지 않고, 조합 종료 시 조합 전 정상값으로 복원
+ * - 영문/한글/특수문자 입력 또는 붙여넣기 시 기존 정상값 보존
+ * - maxLength 인자가 있으면 해당 자리수까지만 허용
+ */
+function formatDigitsOnlyInput(input, maxLength) {
+    if (!input) return;
+    if (input._digitsComposing) return;
+
+    var rawValue = input.value || "";
+    var cursor = (typeof input.selectionStart === "number") ? input.selectionStart : rawValue.length;
+
+    if (/[^0-9]/.test(rawValue)) {
+        input.value = input._digitsLastValidValue || "";
+        restoreDigitsCursor(input, input._digitsLastValidCursor);
+        return;
+    }
+
+    if (maxLength && rawValue.length > maxLength) {
+        rawValue = rawValue.substring(0, maxLength);
+        input.value = rawValue;
+        cursor = Math.min(cursor, maxLength);
+    }
+
+    input._digitsLastValidValue = input.value || "";
+    input._digitsLastValidCursor = cursor;
+}
+
+function restoreDigitsCursor(input, cursor) {
+    var nextCursor = (typeof cursor === "number") ? cursor : (input.value || "").length;
+    try {
+        input.setSelectionRange(nextCursor, nextCursor);
+    } catch (e) {
+        // 일부 구형 브라우저에서는 setSelectionRange가 지원되지 않을 수 있습니다.
+    }
+}
+
+function isDigitsOnlyInput(input) {
+    if (!input || input.tagName !== "INPUT") return false;
+    return input.getAttribute("data-digits-only") === "Y"
+        || input.getAttribute("data-input-rule") === "digits"
+        || input.getAttribute("oninput") === "formatDigitsOnlyInput(this,6)"
+        || input.getAttribute("oninput") === "formatDigitsOnlyInput(this, 6)";
+}
+
+function getDigitsMaxLength(input) {
+    var dataMax = parseInt(input.getAttribute("data-digits-max"), 10);
+    if (!isNaN(dataMax) && dataMax > 0) return dataMax;
+
+    var attrMax = parseInt(input.getAttribute("maxlength"), 10);
+    if (!isNaN(attrMax) && attrMax > 0) return attrMax;
+
+    return null;
+}
+
+/*
+ * 숫자 전용 input 공통 이벤트입니다.
+ * validation.js가 중복 로드되어도 이벤트가 중복 등록되지 않도록 1회만 바인딩합니다.
+ */
+(function bindDigitsOnlyInputEvents() {
+    if (window.__KRE_DIGITS_ONLY_BIND_DONE) return;
+    window.__KRE_DIGITS_ONLY_BIND_DONE = true;
+
+    document.addEventListener("focus", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        input._digitsLastValidValue = input.value || "";
+        input._digitsLastValidCursor = (typeof input.selectionStart === "number") ? input.selectionStart : input._digitsLastValidValue.length;
+    }, true);
+
+    document.addEventListener("keydown", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input) || event.ctrlKey || event.metaKey || event.altKey) return;
+
+        var key = event.key || "";
+        var allowedControlKeys = ["Backspace", "Delete", "Tab", "Enter", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Shift", "Control", "Alt", "CapsLock"];
+        if (/^F\d{1,2}$/.test(key)) return;
+        if (/^\d$/.test(key) || allowedControlKeys.indexOf(key) !== -1) return;
+        event.preventDefault();
+    }, true);
+
+    document.addEventListener("beforeinput", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        if (event.inputType && (event.inputType.indexOf("delete") === 0 || event.inputType.indexOf("history") === 0)) return;
+        if (event.data !== null && event.data !== undefined && !/^\d+$/.test(event.data)) {
+            event.preventDefault();
+        }
+    }, true);
+
+    document.addEventListener("paste", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        var pastedText = event.clipboardData ? event.clipboardData.getData("text") : "";
+        if (!/^\d+$/.test(pastedText)) event.preventDefault();
+    }, true);
+
+    document.addEventListener("drop", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        var droppedText = event.dataTransfer ? event.dataTransfer.getData("text") : "";
+        if (!/^\d+$/.test(droppedText)) event.preventDefault();
+    }, true);
+
+    document.addEventListener("compositionstart", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        input._digitsComposing = true;
+        input._digitsValueBeforeComposition = input._digitsLastValidValue !== undefined ? input._digitsLastValidValue : (input.value || "");
+        input._digitsCursorBeforeComposition = (typeof input.selectionStart === "number") ? input.selectionStart : input._digitsValueBeforeComposition.length;
+    }, true);
+
+    document.addEventListener("compositionend", function(event) {
+        var input = event.target;
+        if (!isDigitsOnlyInput(input)) return;
+        input._digitsComposing = false;
+        input.value = input._digitsValueBeforeComposition || "";
+        restoreDigitsCursor(input, input._digitsCursorBeforeComposition);
+        formatDigitsOnlyInput(input, getDigitsMaxLength(input));
+    }, true);
+})();
+
 /************************************************************************
 함수명 : spaceChk
 설 명 : 공백 및 특수문자를 입력방지해주는 함수(영문,숫자 입력 가능)

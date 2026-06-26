@@ -52,8 +52,8 @@
 			$("#dupChk").on('click',function(){
 				var volteVal =$('input[name ="volteNum"]').val().replace(/[^0-9]/g, '');
 				var bfVolteNormalized = bfVolte.replace(/[^0-9]/g, '');
-				  if(volteVal.length !== 11){
-					  alert("유효한 volte 값을 입력하세요");
+				  if(!isValidVolteNumber(volteVal)){
+					  alert("VoLTE 번호는 013으로 시작하는 11자리 숫자만 입력 가능합니다.");
 				  }else if(volteVal === bfVolteNormalized){
 					  dupChkFlag = true;
 					  $("#dupComment").empty().css('color','blue').append("현재 장치에서 사용 중인 volte 번호입니다");
@@ -94,6 +94,14 @@
 				});
 				
 				if(!validChk) {
+					return false;
+				} else if(!isValidVolteNumber($('input[name="volteNum"]').val())) {
+					alert("VoLTE 번호는 013으로 시작하는 11자리 숫자만 입력 가능합니다.");
+					$('input[name="volteNum"]').focus();
+					return false;
+				} else if(!validateCarNumber($('input[name="carNum"]').val())) {
+					alert("차량번호는 숫자 6자리만 입력 가능합니다.");
+					$('input[name="carNum"]').focus();
 					return false;
 				} else {
 					if(dupChkFlag){
@@ -269,9 +277,12 @@
 									<input type="text" 
 										id="carNum" 
 										name ="carNum" 
-										placeholder="예: 123456ab" 
+										placeholder="예: 123456" 
 										class="form-control input_base_require"
-										maxLength="10"
+										maxLength="6"
+										data-digits-only="Y"
+										data-digits-max="6"
+										oninput="formatDigitsOnlyInput(this,6)"
 										value="${data.carNum}"
 									>
 								</div>
