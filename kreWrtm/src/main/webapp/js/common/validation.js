@@ -1,34 +1,136 @@
-// 영문 소문자와 숫자 이외의 입력을 값이 변경되기 전에 차단
+/**
+ * 사용자 ID 입력 제어
+ * - 영문 소문자(a~z)와 숫자(0~9)만 허용합니다.
+ * - 한글 IME 조합/영문 대문자/특수문자 입력 시 기존 정상값이 지워지지 않도록 복원합니다.
+ * - 최종 형식 검사는 validateId()에서 6~12자리 및 소문자 포함 여부를 확인합니다.
+ */
 function blockInvalidIdInput(event) {
-    // 삭제, 커서 이동 등은 허용
-    if (event.data == null) {
+    if (!event) return true;
+
+    var input = event.target || event.srcElement;
+    if (input) rememberValidIdValue(input);
+
+    // 삭제, 실행취소 등은 허용합니다.
+    if (event.inputType && (event.inputType.indexOf("delete") === 0 || event.inputType.indexOf("history") === 0)) {
         return true;
     }
 
-    if (!/^[a-z0-9]+$/.test(event.data)) {
-        event.preventDefault();
+    // 한글 IME 조합은 브라우저별 beforeinput 동작이 달라 compositionend에서 복원합니다.
+    if (event.isComposing || event.inputType === "insertCompositionText") {
+        return true;
+    }
+
+    if (event.data != null && !/^[a-z0-9]+$/.test(event.data)) {
+        if (event.preventDefault) event.preventDefault();
         return false;
     }
 
     return true;
 }
 
-// 붙여넣기 등 예외 상황에 대한 보조 검사
+/**
+ * 사용자 ID 입력 후 보정
+ * - 붙여넣기 등으로 잘못된 문자가 들어온 경우 해당 문자만 제거하고 기존 정상값은 유지합니다.
+ */
 function checkId(input) {
+    if (!input) return;
+    if (input._idComposing) return;
+
     var value = input.value || "";
+    var cleanValue = value.replace(/[^a-z0-9]/g, "");
 
-    if (/[^a-z0-9]/.test(value)) {
-        input.value = input._lastValidId || "";
-        return;
+    if (cleanValue.length > 12) {
+        cleanValue = cleanValue.substring(0, 12);
     }
 
-    if (value.length > 12) {
-        value = value.substring(0, 12);
-        input.value = value;
+    if (value !== cleanValue) {
+        input.value = cleanValue;
     }
 
-    input._lastValidId = value;
+    rememberValidIdValue(input);
 }
+
+/** 사용자 ID IME 조합 시작 시 현재 정상값과 커서 위치를 저장합니다. */
+function beginIdComposition(input) {
+    if (!input) return;
+    rememberValidIdValue(input);
+    input._idComposing = true;
+    input._idValueBeforeComposition = input._idLastValidValue || "";
+    input._idCursorBeforeComposition = (typeof input.selectionStart === "number")
+        ? input.selectionStart : input._idValueBeforeComposition.length;
+}
+
+/** 사용자 ID IME 조합 종료 시 조합 전 정상값으로 복원합니다. */
+function endIdComposition(input) {
+    if (!input) return;
+    input._idComposing = false;
+    input.value = input._idValueBeforeComposition || input._idLastValidValue || "";
+    restoreInputCursor(input, input._idCursorBeforeComposition);
+    checkId(input);
+}
+
+/** 사용자 ID 입력값이 정상일 때만 마지막 정상값으로 저장합니다. */
+function rememberValidIdValue(input) {
+    if (!input) return;
+    var value = input.value || "";
+    if (/^[a-z0-9]*$/.test(value)) {
+        input._idLastValidValue = value;
+        input._idLastValidCursor = (typeof input.selectionStart === "number")
+            ? input.selectionStart : value.length;
+    }
+}
+
+/** input 커서 복원 공통 함수 */
+function restoreInputCursor(input, cursor) {
+    try {
+        var pos = (typeof cursor === "number") ? cursor : (input.value || "").length;
+        input.setSelectionRange(pos, pos);
+    } catch (e) {
+        // 구형 브라우저/비활성 input에서는 무시합니다.
+    }
+}
+
+/**
+ * userId 입력칸 공통 이벤트 바인딩
+ * JSP에 oncompositionstart/oncompositionend가 빠져 있어도 한글 조합 입력 시 기존 ID가 지워지지 않도록 처리합니다.
+ */
+(function bindCommonUserIdEvents() {
+    if (window.__commonUserIdEventsBound) return;
+    window.__commonUserIdEventsBound = true;
+
+    function isUserIdInput(input) {
+        if (!input || input.tagName !== "INPUT") return false;
+        return input.name === "userId" || input.id === "userId";
+    }
+
+    document.addEventListener("focus", function(event) {
+        var input = event.target;
+        if (!isUserIdInput(input)) return;
+        rememberValidIdValue(input);
+    }, true);
+
+    document.addEventListener("keydown", function(event) {
+        var input = event.target;
+        if (!isUserIdInput(input) || event.ctrlKey || event.metaKey || event.altKey) return;
+        var key = event.key || "";
+        var allowedControlKeys = ["Backspace", "Delete", "Tab", "Enter", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Shift", "Control", "Alt", "CapsLock"];
+        if (/^F\d{1,2}$/.test(key)) return;
+        if (/^[a-z0-9]$/.test(key) || allowedControlKeys.indexOf(key) !== -1) return;
+        event.preventDefault();
+    }, true);
+
+    document.addEventListener("compositionstart", function(event) {
+        var input = event.target;
+        if (!isUserIdInput(input)) return;
+        beginIdComposition(input);
+    }, true);
+
+    document.addEventListener("compositionend", function(event) {
+        var input = event.target;
+        if (!isUserIdInput(input)) return;
+        endIdComposition(input);
+    }, true);
+})();
 
 //비밀번호 검사 (영문+숫자+특수문자 최소 1개씩 포함, 6~20자리)
 function checkPw(that) {
@@ -334,18 +436,15 @@ function hasAllowedPhonePrefix(digits, type) {
     if (digits.charAt(0) !== "0") return false;
     if (digits.length < 2) return true;
 
-    // VoLTE 번호는 현재 정책상 013으로 시작하는 번호만 허용합니다.
-    if (type === "volte") {
-        if (digits.length === 1) return digits === "0";
-        if (digits.length === 2) return digits === "01";
-        return digits.indexOf("013") === 0;
-    }
-
     // 서울 지역번호는 두 자리 접두어입니다.
     if (/^02/.test(digits)) return true;
     if (digits.length < 3) return digits.charAt(1) === "1" || /[3-6]/.test(digits.charAt(1));
 
-    return /^(010|011|016|017|018|019|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)/.test(digits);
+    // VoLTE도 기존 전화번호 접두어 + 013을 허용합니다.
+    // 일반 연락처는 기존 정책 그대로 유지하고, 013은 type='volte'에서만 추가 허용합니다.
+    var normalPrefixReg = /^(010|011|016|017|018|019|031|032|033|041|042|043|044|051|052|053|054|055|061|062|063|064)/;
+    if (type === "volte" && /^013/.test(digits)) return true;
+    return normalPrefixReg.test(digits);
 }
 
 function isPhoneFormatInput(input) {
@@ -361,13 +460,54 @@ function getPhoneFormatType(input) {
     return oninput.indexOf("'volte'") !== -1 || oninput.indexOf('"volte"') !== -1 ? "volte" : undefined;
 }
 
+/**
+ * VoLTE 번호 최종 검사
+ * - 기존 전화번호 형식은 그대로 허용합니다.
+ * - 일반 연락처에는 허용하지 않는 013-xxxx-xxxx 형식만 VoLTE에 추가 허용합니다.
+ */
+function isValidVolteNumber(value) {
+    var onlyNum = String(value || "").replace(/[^0-9]/g, "");
+    return isValidPhoneNumber(onlyNum) || /^013\d{8}$/.test(onlyNum);
+}
+
+/** 차량번호 최종 검사: 숫자 6자리만 허용합니다. */
+function isValidCarNumber(value) {
+    return /^\d{6}$/.test(String(value || ""));
+}
+
+/** 차량번호 입력 제어: 숫자 이외 문자는 입력 직전 정상값으로 복원합니다. */
+function formatCarNumberInput(input) {
+    if (!input) return;
+    if (input._carNumComposing) return;
+    var value = input.value || "";
+    var cleanValue = value.replace(/[^0-9]/g, "");
+    if (cleanValue.length > 6) cleanValue = cleanValue.substring(0, 6);
+    input.value = cleanValue;
+    input._carNumLastValidValue = cleanValue;
+}
+
+function beginCarNumberComposition(input) {
+    if (!input) return;
+    input._carNumComposing = true;
+    input._carNumValueBeforeComposition = input._carNumLastValidValue !== undefined ? input._carNumLastValidValue : (input.value || "");
+    input._carNumCursorBeforeComposition = (typeof input.selectionStart === "number") ? input.selectionStart : input._carNumValueBeforeComposition.length;
+}
+
+function endCarNumberComposition(input) {
+    if (!input) return;
+    input._carNumComposing = false;
+    input.value = input._carNumValueBeforeComposition || input._carNumLastValidValue || "";
+    restoreInputCursor(input, input._carNumCursorBeforeComposition);
+    formatCarNumberInput(input);
+}
+
 /*
  * formatPhoneAuto()를 사용하는 모든 화면에 공통 적용합니다.
  * 잘못된 키·한글 조합·문자 붙여넣기를 값 변경 전에 차단하여 기존 번호를 보존합니다.
  */
 (function bindCommonPhoneInputEvents() {
-    if (window.__KRE_PHONE_INPUT_BIND_DONE) return;
-    window.__KRE_PHONE_INPUT_BIND_DONE = true;
+    if (window.__commonPhoneInputEventsBound) return;
+    window.__commonPhoneInputEventsBound = true;
 
     document.addEventListener("focus", function(event) {
         var input = event.target;
@@ -463,8 +603,8 @@ function formatPhoneDigits(val, type) {
         return val;
     }
 
-    // 서울 02. VoLTE 번호는 지역번호 판단에서 제외합니다.
-    if (/^02/.test(val) && type != "volte") {
+    // 서울 02
+    if (/^02/.test(val)) {
         if (val.length === 9) {
             return val.replace(/(\d{2})(\d{3})(\d{4})/, "$1-$2-$3");
         } else if (val.length >= 10) {
@@ -489,148 +629,6 @@ function formatPhoneDigits(val, type) {
 
     return val;
 }
-
-/**
- * VoLTE 번호 최종 검사 함수입니다.
- * - 현재 정책: 013으로 시작하는 11자리 숫자만 허용
- * - 화면에는 013-1234-5678 형태로 표시될 수 있으므로 하이픈은 제거 후 검사
- */
-function isValidVolteNumber(value) {
-    var onlyNum = String(value || "").replace(/[^0-9]/g, "");
-    return /^013\d{8}$/.test(onlyNum);
-}
-
-/**
- * 차량번호 최종 검사 함수입니다.
- * - 숫자 6자리만 허용
- */
-function validateCarNumber(value) {
-    return /^\d{6}$/.test(String(value || ""));
-}
-
-/**
- * 숫자 전용 입력값을 정리하는 공통 함수입니다.
- * - 한글 IME 조합 중에는 값을 변경하지 않고, 조합 종료 시 조합 전 정상값으로 복원
- * - 영문/한글/특수문자 입력 또는 붙여넣기 시 기존 정상값 보존
- * - maxLength 인자가 있으면 해당 자리수까지만 허용
- */
-function formatDigitsOnlyInput(input, maxLength) {
-    if (!input) return;
-    if (input._digitsComposing) return;
-
-    var rawValue = input.value || "";
-    var cursor = (typeof input.selectionStart === "number") ? input.selectionStart : rawValue.length;
-
-    if (/[^0-9]/.test(rawValue)) {
-        input.value = input._digitsLastValidValue || "";
-        restoreDigitsCursor(input, input._digitsLastValidCursor);
-        return;
-    }
-
-    if (maxLength && rawValue.length > maxLength) {
-        rawValue = rawValue.substring(0, maxLength);
-        input.value = rawValue;
-        cursor = Math.min(cursor, maxLength);
-    }
-
-    input._digitsLastValidValue = input.value || "";
-    input._digitsLastValidCursor = cursor;
-}
-
-function restoreDigitsCursor(input, cursor) {
-    var nextCursor = (typeof cursor === "number") ? cursor : (input.value || "").length;
-    try {
-        input.setSelectionRange(nextCursor, nextCursor);
-    } catch (e) {
-        // 일부 구형 브라우저에서는 setSelectionRange가 지원되지 않을 수 있습니다.
-    }
-}
-
-function isDigitsOnlyInput(input) {
-    if (!input || input.tagName !== "INPUT") return false;
-    return input.getAttribute("data-digits-only") === "Y"
-        || input.getAttribute("data-input-rule") === "digits"
-        || input.getAttribute("oninput") === "formatDigitsOnlyInput(this,6)"
-        || input.getAttribute("oninput") === "formatDigitsOnlyInput(this, 6)";
-}
-
-function getDigitsMaxLength(input) {
-    var dataMax = parseInt(input.getAttribute("data-digits-max"), 10);
-    if (!isNaN(dataMax) && dataMax > 0) return dataMax;
-
-    var attrMax = parseInt(input.getAttribute("maxlength"), 10);
-    if (!isNaN(attrMax) && attrMax > 0) return attrMax;
-
-    return null;
-}
-
-/*
- * 숫자 전용 input 공통 이벤트입니다.
- * validation.js가 중복 로드되어도 이벤트가 중복 등록되지 않도록 1회만 바인딩합니다.
- */
-(function bindDigitsOnlyInputEvents() {
-    if (window.__KRE_DIGITS_ONLY_BIND_DONE) return;
-    window.__KRE_DIGITS_ONLY_BIND_DONE = true;
-
-    document.addEventListener("focus", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        input._digitsLastValidValue = input.value || "";
-        input._digitsLastValidCursor = (typeof input.selectionStart === "number") ? input.selectionStart : input._digitsLastValidValue.length;
-    }, true);
-
-    document.addEventListener("keydown", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input) || event.ctrlKey || event.metaKey || event.altKey) return;
-
-        var key = event.key || "";
-        var allowedControlKeys = ["Backspace", "Delete", "Tab", "Enter", "Escape", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Shift", "Control", "Alt", "CapsLock"];
-        if (/^F\d{1,2}$/.test(key)) return;
-        if (/^\d$/.test(key) || allowedControlKeys.indexOf(key) !== -1) return;
-        event.preventDefault();
-    }, true);
-
-    document.addEventListener("beforeinput", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        if (event.inputType && (event.inputType.indexOf("delete") === 0 || event.inputType.indexOf("history") === 0)) return;
-        if (event.data !== null && event.data !== undefined && !/^\d+$/.test(event.data)) {
-            event.preventDefault();
-        }
-    }, true);
-
-    document.addEventListener("paste", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        var pastedText = event.clipboardData ? event.clipboardData.getData("text") : "";
-        if (!/^\d+$/.test(pastedText)) event.preventDefault();
-    }, true);
-
-    document.addEventListener("drop", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        var droppedText = event.dataTransfer ? event.dataTransfer.getData("text") : "";
-        if (!/^\d+$/.test(droppedText)) event.preventDefault();
-    }, true);
-
-    document.addEventListener("compositionstart", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        input._digitsComposing = true;
-        input._digitsValueBeforeComposition = input._digitsLastValidValue !== undefined ? input._digitsLastValidValue : (input.value || "");
-        input._digitsCursorBeforeComposition = (typeof input.selectionStart === "number") ? input.selectionStart : input._digitsValueBeforeComposition.length;
-    }, true);
-
-    document.addEventListener("compositionend", function(event) {
-        var input = event.target;
-        if (!isDigitsOnlyInput(input)) return;
-        input._digitsComposing = false;
-        input.value = input._digitsValueBeforeComposition || "";
-        restoreDigitsCursor(input, input._digitsCursorBeforeComposition);
-        formatDigitsOnlyInput(input, getDigitsMaxLength(input));
-    }, true);
-})();
-
 /************************************************************************
 함수명 : spaceChk
 설 명 : 공백 및 특수문자를 입력방지해주는 함수(영문,숫자 입력 가능)
