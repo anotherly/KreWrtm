@@ -1,0 +1,158 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<%-- 모니터링 최초 화면과 장비 선택 AJAX 상세 화면의 공통 콘텐츠 --%>
+<div class="click_title_div">
+    <div class="sub_title_div" style="font-weight:bold;">실시간 수신 데이터 보기</div>
+    <div class="carNum_container">
+        <div class="arrow" style="margin-right:20px;">▷</div>
+        <div class="select_carNum" id="select_carNum" style="font-weight:bold;">
+            <c:out value="${empty data.carNum ? '정보 없음' : data.carNum}"/> /
+            <c:choose>
+                <c:when test="${data.location == 1}">TC1</c:when>
+                <c:when test="${data.location == 2}">TC2</c:when>
+                <c:otherwise>정보 없음</c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</div>
+<div class="click_table_div">
+    <section class="monitoring-data-section" aria-label="단말기 연동 데이터">
+        <h3 class="monitoring-section-label">단말기 연동 데이터</h3>
+        <div class="table_area">
+            <div class="table_row" style="border-bottom: 1px solid #1181d7;">
+                <div class="table_title_th">항목</div><div class="table_title_th">데이터(정보)</div>
+                <div class="table_title_th">항목</div><div class="table_title_th">데이터(정보)</div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">차량 번호</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="차량 번호"><c:out value="${empty data.carNum ? '정보 없음' : data.carNum}"/></div>
+                <div class="table_th tbl_cc">탑재 위치</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="탑재 위치"><c:choose><c:when test="${data.location == 1}">TC1</c:when><c:when test="${data.location == 2}">TC2</c:when><c:otherwise>정보 없음</c:otherwise></c:choose></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">장치명</div>
+                <div class="table_td monitoring-ellipsis" title="장치명"><c:out value="${empty data.deviceName ? '정보 없음' : data.deviceName}"/></div>
+                <div class="table_th">PTT 번호</div>
+                <div class="table_td monitoring-ellipsis" title="PTT 번호"><c:out value="${empty data.mcpttNum ? '정보 없음' : data.mcpttNum}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">모델명</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="모델명"><c:out value="${empty data.modelName ? '정보 없음' : data.modelName}"/></div>
+                <div class="table_th tbl_cc">현재 무선방식</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="현재 무선방식"><c:out value="${empty data.currentRadioType ? '정보 없음' : data.currentRadioType}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">SW 버전</div>
+                <div class="table_td monitoring-ellipsis" title="SW 버전"><c:out value="${empty data.version ? '정보 없음' : data.version}"/></div>
+                <div class="table_th">무선망 자동절체</div>
+                <div class="table_td monitoring-ellipsis" title="무선망 자동절체"><c:choose><c:when test="${data.autoSwitchingRadio == 1}">예</c:when><c:when test="${data.autoSwitchingRadio == 0}">아니오</c:when><c:otherwise>정보 없음</c:otherwise></c:choose></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">사용 유심</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="사용 유심"><c:choose><c:when test="${empty data.usimSlot}">정보 없음</c:when><c:otherwise><c:out value="${data.usimSlot}"/> 번 유심</c:otherwise></c:choose></div>
+                <div class="table_th tbl_cc">키워드</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="키워드"><c:out value="${empty data.keywords ? '정보 없음' : data.keywords}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">VNC IP</div>
+                <div class="table_td monitoring-ellipsis" title="VNC IP"><c:out value="${empty data.vncIp ? '정보 없음' : data.vncIp}"/></div>
+                <div class="table_th">로컬 IP</div>
+                <div class="table_td monitoring-ellipsis" title="로컬 IP"><c:out value="${empty data.localIp ? '정보 없음' : data.localIp}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">IMEI</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="IMEI"><c:out value="${empty data.imei ? '정보 없음' : data.imei}"/></div>
+                <div class="table_th tbl_cc">추가정보</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="추가정보"><c:out value="${empty data.extraInfo ? '정보 없음' : data.extraInfo}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">수신시간</div>
+                <div class="table_td monitoring-ellipsis" title="수신시간"><c:out value="${empty data.rcvDt ? '정보 없음' : data.rcvDt}"/></div>
+                <div class="table_th monitoring-blank-cell"></div><div class="table_td monitoring-blank-cell"></div>
+            </div>
+        </div>
+    </section>
+    <section class="monitoring-data-section" aria-label="신규시스템 전송데이터">
+        <h3 class="monitoring-section-label">신규시스템 전송데이터</h3>
+        <div class="table_area">
+            <div class="table_row" style="border-bottom: 1px solid #1181d7;">
+                <div class="table_title_th">항목</div><div class="table_title_th">데이터(정보)</div>
+                <div class="table_title_th">항목</div><div class="table_title_th">데이터(정보)</div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">MDN (VoLTE 번호)</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="MDN (VoLTE 번호)"><c:out value="${empty data.mdn ? '정보 없음' : data.mdn}"/></div>
+                <div class="table_th tbl_cc">IMSI</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="IMSI"><c:out value="${empty data.imsi ? '정보 없음' : data.imsi}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">MCC</div>
+                <div class="table_td monitoring-ellipsis" title="MCC"><c:out value="${empty data.mcc ? '정보 없음' : data.mcc}"/></div>
+                <div class="table_th">MNC</div>
+                <div class="table_td monitoring-ellipsis" title="MNC"><c:out value="${empty data.mnc ? '정보 없음' : data.mnc}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">BAND</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="BAND"><c:out value="${empty data.band ? '정보 없음' : data.band}"/></div>
+                <div class="table_th tbl_cc">EARFCN</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="EARFCN"><c:out value="${empty data.earfcn ? '정보 없음' : data.earfcn}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">BANDWIDTH (MHz)</div>
+                <div class="table_td monitoring-ellipsis" title="BANDWIDTH (MHz)"><c:out value="${empty data.bandwidth ? '정보 없음' : data.bandwidth}"/></div>
+                <div class="table_th">PCI</div>
+                <div class="table_td monitoring-ellipsis" title="PCI"><c:out value="${empty data.pci ? '정보 없음' : data.pci}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">CID (셀 아이디)</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="CID (셀 아이디)"><c:out value="${empty data.cellId ? '정보 없음' : data.cellId}"/></div>
+                <div class="table_th tbl_cc">TAC</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="TAC"><c:out value="${empty data.tac ? '정보 없음' : data.tac}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">RSRP</div>
+                <div class="table_td monitoring-ellipsis" title="RSRP"><c:out value="${empty data.rsrp ? '정보 없음' : data.rsrp}"/></div>
+                <div class="table_th">RSSI</div>
+                <div class="table_td monitoring-ellipsis" title="RSSI"><c:out value="${empty data.rssi ? '정보 없음' : data.rssi}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">RSRQ</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="RSRQ"><c:out value="${empty data.rsrq ? '정보 없음' : data.rsrq}"/></div>
+                <div class="table_th tbl_cc">SINR</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="SINR"><c:out value="${empty data.sinr ? '정보 없음' : data.sinr}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th">GPS_lat (위도)</div>
+                <div class="table_td monitoring-ellipsis" title="GPS_lat (위도)"><c:out value="${empty data.gpsLat ? '정보 없음' : data.gpsLat}"/></div>
+                <div class="table_th">GPS_lon (경도)</div>
+                <div class="table_td monitoring-ellipsis" title="GPS_lon (경도)"><c:out value="${empty data.gpsLon ? '정보 없음' : data.gpsLon}"/></div>
+            </div>
+            <div class="table_row">
+                <div class="table_th tbl_cc">GPS_ALTITUDE (고도)</div>
+                <div class="table_td tbl_cc monitoring-ellipsis" title="GPS_ALTITUDE (고도)"><c:out value="${empty data.gpsAltitude ? '정보 없음' : data.gpsAltitude}"/></div>
+                <div class="table_th monitoring-blank-cell"></div><div class="table_td monitoring-blank-cell"></div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="click_remote_div">
+    <button type="button" class="custom-btn btn-1 monitor-remote-btn"
+            data-car-num="<c:out value="${data.carNum}"/>"
+            data-volte-num="<c:out value="${data.volteNum}"/>">
+        원격제어 <span>차량번호 : <c:out value="${data.carNum}"/></span>
+    </button>
+    <div class="wireless-send-panel" data-device-id="<c:out value="${data.deviceId}"/>">
+        <div class="wireless-send-title">무선품질시스템 데이터 전송여부</div>
+        <div class="wireless-send-options">
+            <label><input type="radio" name="flagSend" value="1"
+                <c:if test="${data.flagSend == '1'}">checked="checked"</c:if>
+                <c:if test="${empty data.deviceId}">disabled="disabled"</c:if>/> 예</label>
+            <label><input type="radio" name="flagSend" value="0"
+                <c:if test="${data.flagSend != '1'}">checked="checked"</c:if>
+                <c:if test="${empty data.deviceId}">disabled="disabled"</c:if>/> 아니오</label>
+        </div>
+        <p class="wireless-send-status" role="status" aria-live="polite"></p>
+    </div>
+</div>

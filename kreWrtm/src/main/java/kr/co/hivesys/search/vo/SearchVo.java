@@ -23,10 +23,91 @@ public class SearchVo extends RouterVO{
 	private String gpsLon;
 	private String rcvDt;
 	// 25.11.18 신규추가
+    // 무선품질시스템 연동 항목 (tbl_last_data)
+    private String mdn;
+    private String mcc;
+    private String mnc;
+    private String band;
+    private String earfcn;
+    private String bandwidth;
+    private String pci;
+    private String tac;
+    private String rssi;
+    private String sinr;
+    private String gpsAltitude;
+
 	private String vncIp;
 	private String vncPort;
 	private String vncPw;
 	
+	
+	
+	public String getMdn() {
+		return mdn;
+	}
+	public void setMdn(String mdn) {
+		this.mdn = mdn;
+	}
+	public String getMcc() {
+		return mcc;
+	}
+	public void setMcc(String mcc) {
+		this.mcc = mcc;
+	}
+	public String getMnc() {
+		return mnc;
+	}
+	public void setMnc(String mnc) {
+		this.mnc = mnc;
+	}
+	public String getBand() {
+		return band;
+	}
+	public void setBand(String band) {
+		this.band = band;
+	}
+	public String getEarfcn() {
+		return earfcn;
+	}
+	public void setEarfcn(String earfcn) {
+		this.earfcn = earfcn;
+	}
+	public String getBandwidth() {
+		return bandwidth;
+	}
+	public void setBandwidth(String bandwidth) {
+		this.bandwidth = bandwidth;
+	}
+	public String getPci() {
+		return pci;
+	}
+	public void setPci(String pci) {
+		this.pci = pci;
+	}
+	public String getTac() {
+		return tac;
+	}
+	public void setTac(String tac) {
+		this.tac = tac;
+	}
+	public String getRssi() {
+		return rssi;
+	}
+	public void setRssi(String rssi) {
+		this.rssi = rssi;
+	}
+	public String getSinr() {
+		return sinr;
+	}
+	public void setSinr(String sinr) {
+		this.sinr = sinr;
+	}
+	public String getGpsAltitude() {
+		return gpsAltitude;
+	}
+	public void setGpsAltitude(String gpsAltitude) {
+		this.gpsAltitude = gpsAltitude;
+	}
 	public String getVncIp() {
 		return vncIp;
 	}

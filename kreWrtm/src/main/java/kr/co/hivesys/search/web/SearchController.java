@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -192,6 +193,50 @@ public class SearchController {
 	
 	
 	
+
+    /**
+     * 무선품질시스템 전송 여부 설정.
+     * 반드시 POST로, 세션의 회사 범위를 적용하여 해당 장비의 flag_send 한 컬럼만 변경한다.
+     */
+    @RequestMapping(value="/search/updateSendFlag.ajax", method=RequestMethod.POST)
+    public @ResponseBody ModelAndView updateSendFlag(HttpServletRequest request,
+            @ModelAttribute("SearchVo") SearchVo inputVo) {
+        ModelAndView mav = new ModelAndView("jsonView");
+        mav.addObject("result", 0);
+        if (inputVo.getDeviceId() == null || inputVo.getDeviceId().trim().isEmpty()
+                || !("0".equals(inputVo.getFlagSend()) || "1".equals(inputVo.getFlagSend()))) {
+            mav.addObject("msg", "장비 정보 또는 전송 설정 값이 올바르지 않습니다.");
+            return mav;
+        }
+
+        try {
+            applyCompanyScope(inputVo, request);
+            // 존재하지 않거나 타사 소속인 장비에 대한 수정은 차단한다.
+            SearchVo existing = searchService.selectDetail(inputVo);
+            if (existing == null) {
+                mav.addObject("msg", "장비를 찾을 수 없거나 접근 권한이 없습니다.");
+                return mav;
+            }
+            // 동일한 값 재저장도 정상 처리한다.
+            int updated = searchService.updateSendFlag(inputVo);
+            if (updated == 0) {
+                // 동일 값이 이미 설정된 경우는 정상이나, 중간에 삭제된 장비는 실패 처리.
+                SearchVo current = searchService.selectDetail(inputVo);
+                if (current == null || !inputVo.getFlagSend().equals(current.getFlagSend())) {
+                    mav.addObject("msg", "전송 설정을 저장하지 못했습니다. 장비 상태를 확인해 주세요.");
+                    return mav;
+                }
+            }
+            mav.addObject("result", 1);
+            mav.addObject("flagSend", inputVo.getFlagSend());
+        } catch (Exception e) {
+            logger.error("무선품질시스템 전송 설정 저장 실패. deviceId=" + inputVo.getDeviceId(), e);
+            mav.addObject("msg", "전송 설정 저장 중 오류가 발생했습니다.");
+        }
+        return mav;
+    }
+
+
 	// 원격 제어 버튼 클릭 시 실행
 	@RequestMapping(value="/remote/remoteControll.ajax")
 	public void remoteController(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("SearchVo") SearchVo inputVo) throws Exception{
@@ -214,11 +259,17 @@ public class SearchController {
 
 		        // ---- 동적 파일 생성 (bat) ----
 		        String fileName = "VNC_" + inputVo.getVolteNum() + ".bat";
-		        String content = "@echo off\r\n" +
+		        //기존 ultra vnc
+		        /*String content = "@echo off\r\n" +
 		            "start \"\" \"C:\\\\Program Files\\\\uvnc bvba\\\\UltraVNC\\\\vncviewer.exe\" " +
 		            "-autoconnect -connect " + ip + ":" + port + " -password " + pw + " -quickoption 4\r\n" +
-		            "exit\r\n";
-
+		            "exit\r\n";*/
+		        //신규 tight vnc
+		        String content = "@echo off\r\n" +
+		        	    "start \"\" \"C:\\Program Files (x86)\\TightVNC\\vncviewer.exe\" " +
+		        	    "connect " + ip + ":" + port + "\r\n" +
+		        	    "exit\r\n";
+		        
 		        // 응답 헤더 세팅
 		        response.setContentType("application/octet-stream");
 		        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");

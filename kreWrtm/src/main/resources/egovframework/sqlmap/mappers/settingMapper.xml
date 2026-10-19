@@ -7,11 +7,15 @@
         WHERE SETTING_KEY = #{_parameter}
     </select>
 
-    <insert id="upsertSetting">
-        INSERT INTO TBL_SYSTEM_SETTING (SETTING_KEY, SETTING_VALUE, SETTING_DESC)
+    <update id="upsertSetting">
+        <!-- INSERT INTO TBL_SYSTEM_SETTING (SETTING_KEY, SETTING_VALUE, SETTING_DESC)
         VALUES (#{settingKey}, #{settingValue}, '메인 대시보드 데이터 갱신 주기(초)')
         ON DUPLICATE KEY UPDATE
             SETTING_VALUE = VALUES(SETTING_VALUE),
-            UPDATED_AT = CURRENT_TIMESTAMP
-    </insert>
+            UPDATED_AT = CURRENT_TIMESTAMP -->
+            update TBL_SYSTEM_SETTING
+            set SETTING_VALUE = #{settingValue},
+            UPDATED_AT = now()
+            where SETTING_KEY = #{settingKey}
+    </update>
 </mapper>

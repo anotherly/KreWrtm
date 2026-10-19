@@ -43,6 +43,7 @@
     <result property="createdBy" column="CREATED_BY"/>
     <result property="updatedBy" column="UPDATED_BY"/>
     <result property="routerCount" column="ROUTER_COUNT"/>
+    <result property="flagSend" column="FLAG_SEND"/>
 </resultMap>
 	
 	<resultMap id="CompanyInfoMap" type="companyVo">

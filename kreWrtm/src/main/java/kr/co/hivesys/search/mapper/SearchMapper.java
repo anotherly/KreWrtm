@@ -39,4 +39,7 @@ public interface SearchMapper {
 	//받아온 voltenum 으로 ip port pw 조회
 	public SearchVo findVnc(SearchVo inputVo) throws Exception;
 	
+    /** tbl_router_info.flag_send 단일 변경 (0/1) */
+    public int updateSendFlag(SearchVo inputVo) throws Exception;
 }
+

@@ -91,6 +91,19 @@
     <result property="vncIp" column="VNC_IP"/>
     <result property="vncPort" column="VNC_PORT"/>
     <result property="vncPw" column="VNC_PW"/>
+    <!-- 무선품질시스템 연동 -->
+    <result property="mdn" column="LPS_MDN"/>
+    <result property="flagSend" column="FLAG_SEND"/>
+    <result property="mcc" column="MCC"/>
+    <result property="mnc" column="MNC"/>
+    <result property="band" column="BAND"/>
+    <result property="earfcn" column="EARFCN"/>
+    <result property="bandwidth" column="BANDWIDTH"/>
+    <result property="pci" column="PCI"/>
+    <result property="tac" column="TAC"/>
+    <result property="rssi" column="RSSI"/>
+    <result property="sinr" column="SINR"/>
+    <result property="gpsAltitude" column="GPS_ALTITUDE"/>
 </resultMap>
 
 	<select id="searchDataList" parameterType="searchVo" resultMap="searchVoMap">
@@ -222,6 +235,10 @@
 		    l.CELL_ID,
 		    l.GPS_Lat,
 		    l.GPS_Lon,
+            l.VoLTE_NUM AS LPS_MDN,
+            l.MCC, l.MNC, l.BAND, l.EARFCN, l.Bandwidth AS BANDWIDTH,
+            l.PCI, l.TAC, l.RSSI, l.SINR, l.GPS_ALTITUDE,
+            r.flag_send AS FLAG_SEND,
 		    l.RCV_DT    
 		FROM 
 		    tbl_router_info r
@@ -240,4 +257,14 @@
 	    WHERE REPLACE(L.VoLTE_NUM, '-', '') = REPLACE(#{volteNum}, '-', '')
 		<if test="scopeCompanyId != null and scopeCompanyId != ''">AND R.company_id = #{scopeCompanyId}</if>
 	</select>
+
+    <!-- 장비 1대의 신규 무선품질시스템 데이터 전송여부만 저장 -->
+    <update id="updateSendFlag" parameterType="searchVo">
+        UPDATE tbl_router_info
+        SET flag_send = #{flagSend}
+        WHERE device_id = #{deviceId}
+        <if test="scopeCompanyId != null and scopeCompanyId != ''">
+            AND company_id = #{scopeCompanyId}
+        </if>
+    </update>
 </mapper>

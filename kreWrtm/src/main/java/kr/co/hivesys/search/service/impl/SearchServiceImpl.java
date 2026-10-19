@@ -62,4 +62,9 @@ public class SearchServiceImpl implements SearchService{
 	}
 	
 	
+    @Override
+    public int updateSendFlag(SearchVo inputVo) throws Exception {
+        return searchMapper.updateSendFlag(inputVo);
+    }
 }
+

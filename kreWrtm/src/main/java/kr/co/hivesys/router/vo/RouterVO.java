@@ -42,6 +42,11 @@ public class RouterVO extends OrgVO {
 	
 	private String routerCount;
 	private String scopeCompanyId;
+	/** 무선품질시스템 전송 설정 (0: 미전송, 1: 전송) */
+	private String flagSend;
+
+	public String getFlagSend() { return flagSend; }
+	public void setFlagSend(String flagSend) { this.flagSend = flagSend; }
 
 	// ===== Getter / Setter =====
 	
